@@ -1,0 +1,22 @@
+:root {
+    /* --dark: #22252a; */
+    --dark: #36393f;
+    --regularWhite: rgba(255, 255, 255, .7);
+}
+
+body {
+    background-color: var(--dark);
+    color: rgba(255, 255, 255, .7);
+}
+
+h1 {
+    color: #FFF;
+}
+
+td {
+    color: var(--regularWhite) !important;
+}
+
+thead tr th {
+    color: #FFF;
+}

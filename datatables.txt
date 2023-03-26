@@ -1,0 +1,6 @@
+Rechercher "sInfo" pour changer le texte du tableau
+_START_ à _END_ sur _TOTAL_
+
+
+phpmyadmin colonnes csv :
+num_serie,modele,statut,bdd,site_installation
