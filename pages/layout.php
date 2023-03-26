@@ -26,8 +26,8 @@ $_SESSION['message'] = [];
         <?php endif ?>
     <?php endif ?>
 
-        <link rel="stylesheet" href="/src/CSS/selectize/selectize.css">
-        <link rel="stylesheet" href="/src/CSS/datatables/datatables.css">
+    <link rel="stylesheet" href="/src/CSS/selectize/selectize.css">
+    <link rel="stylesheet" href="/src/CSS/datatables/datatables.css">
     <link rel="icon" href="/src/icon/print.png">
     
     <script src="/src/JS/utils/chartjs.js"></script>

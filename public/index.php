@@ -39,7 +39,7 @@ if (Driver::estConnecte()) {
     $router->request('/compte', '/user/compte.php', 'edit_my_account', 'POST');
     $router->request('/deconnexion', '/user/deconnexion.php', 'logout', 'POST');
 } else {
-    $router->request('/', 'connexion.php', 'login');
+    $router->request('/', 'connexion.php', 'home');
     $router->request('/', 'connexion.php', 'login_post', 'POST');
 }
 

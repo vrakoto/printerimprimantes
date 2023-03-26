@@ -1,11 +1,21 @@
 <?php
-
+use App\Compteur;
 use App\Imprimante;
 
 $imprimante = Imprimante::getImprimante($params['num']);
+$total_101 = 0;
+$total_112 = 0;
+$total_113 = 0;
+$total_123 = 0;
 ?>
 
 <?php if (count($imprimante) > 0) : ?>
+    <?php foreach (Compteur::searchCompteurByNumSerie($params['num']) as $test) {
+        $total_101 += $test['101_total'];
+        $total_112 += $test['112_total'];
+        $total_113 += $test['113_total'];
+        $total_123 += $test['123_total'];
+    } ?>
     <section>
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -54,8 +64,45 @@ $imprimante = Imprimante::getImprimante($params['num']);
             <div>
                 <canvas id="myChart"></canvas>
             </div>
+
+            <hr>
+
+            <h3>101 Total</h3>
+
+            <div>
+                <canvas id="total_101"></canvas>
+            </div>
         </div>
     </section>
+
+    <script>
+        const relevesImprimantes = [<?= $total_101 ?>, <?= $total_112 ?>, <?= $total_113 ?>, <?= $total_123 ?>];
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['101 Total', '112 Total', '113 Total', '123 Total'],
+                datasets: [{
+                    label: 'Relevés total',
+                    data: relevesImprimantes,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            }
+        });
+    </script>
 
 <?php else : ?>
     <div class="container alert alert-danger text-center">
