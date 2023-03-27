@@ -11,7 +11,19 @@ class Connexion extends Driver {
         $this->mdp = $mdp;
     }
 
-    function getPasswordToVerify(): string
+    // Sans chiffrement
+    function verifierAuth(): bool
+    {
+        $req = "SELECT id FROM users WHERE messagerie = :messagerie AND mdp = :mdp";
+        $p = self::$pdo->prepare($req);
+        $p->execute([
+            'messagerie' => $this->messagerie,
+            'mdp' => $this->mdp
+        ]);
+        return !empty($p->fetchAll());
+    }
+
+    /* function getPasswordToVerify(): string
     {
         $req = "SELECT mdp FROM users WHERE messagerie = :messagerie";
         $p = self::$pdo->prepare($req);
@@ -30,7 +42,7 @@ class Connexion extends Driver {
             'messagerie' => $this->messagerie
         ]);
         return !empty($p->fetchAll()) && password_verify($this->mdp, $this->getPasswordToVerify());
-    }
+    } */
 
     private function getInformations(): array
     {

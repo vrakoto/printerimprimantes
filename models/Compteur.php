@@ -9,6 +9,7 @@ class Compteur extends Driver {
     private static $champ_total_101 = '101_total';
     private static $champ_total_112 = '112_total';
     private static $champ_total_113 = '113_total';
+    private static $champ_total_122 = '122_total';
     private static $champ_total_123 = '123_total';
     private static $champ_date_maj = 'date_maj';
     private static $champ_modif_par = 'modif_par';
@@ -30,6 +31,7 @@ class Compteur extends Driver {
                 <th>BDD</th>
                 <th>101 Total</th>
                 <th>112 Total</th>
+                <th>122 Total</th>
                 <th>113 Total</th>
                 <th>123 Total</th>
                 <th>Mise à jour le</th>
@@ -50,6 +52,7 @@ HTML;
         $total_101 = (int)$lesReleves[self::$champ_total_101];
         $total_112 = (int)$lesReleves[self::$champ_total_112];
         $total_113 = (int)$lesReleves[self::$champ_total_113];
+        $total_122 = (int)$lesReleves[self::$champ_total_122];
         $total_123 = (int)$lesReleves[self::$champ_total_123];
         $date_maj = convertDate(htmlentities($lesReleves[self::$champ_date_maj]), true);
         $realNameUser = self::releveUserName($num_serie, $dateReleveNonConvert) ?? 'Un administrateur';
@@ -66,6 +69,7 @@ HTML;
                 <td>$total_101</td>
                 <td>$total_112</td>
                 <td>$total_113</td>
+                <td>$total_122</td>
                 <td>$total_123</td>
                 <td>$date_maj</td>
                 <td>$realNameUser</td>
