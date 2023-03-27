@@ -53,8 +53,7 @@ if (!empty($_POST)) {
 
 <div class="container">
 
-
-    <form class="border p-3" action="/ajouterReleve" id="add_releve" method="post">
+    <form class="border p-3" action="<?= $router->url('add_counter') ?>" id="add_releve" method="post">
 
         <?= messageForm($lesErreurs) ?>
 

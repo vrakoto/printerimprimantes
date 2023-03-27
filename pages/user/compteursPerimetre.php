@@ -5,11 +5,16 @@ use App\Users\User;
 ?>
 
 <div class="container">
+    
+    <?php //echo '<pre>'; print_r($_SESSION); echo '</pre>'; ?>
+    <?= messageForm() ?>
+
     <h1 class="mt-5">Compteurs du périmètre</h1>
     <br>
 
     <?php if (count(User::copieursPerimetre()) > 0) : ?>
-        <a href="<?= $router->url('add_counter') ?>" class="mb-4 btn btn-primary">Ajouter un relevé</a>
+        <!-- <a href="<?= $router->url('add_counter') ?>" class="mb-4 btn btn-primary">Ajouter un relevé</a> -->
+        <button class="mb-4 btn btn-primary" id="btn_add_releve" onclick="test(this)">Ajouter un relevé</button>
     <?php else : ?>
         <div class="mb-3">
             <h5>Vous n'avez aucun copieur dans votre périmètre.</h5>

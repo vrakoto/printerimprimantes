@@ -109,30 +109,48 @@ $(function () {
 });
 
 
-/* $('#add_releve').submit(function (e) {
-    e.preventDefault()
+function test (e) {
+    // $(e).hide();
+    $(e).css('visibility', 'hidden');
+    var donnees = [
+        '<button type="submit" onclick="addreleve()">Add</button><button onclick="cancelReleve(this)">Cancel</button>',
+        '<input type="text" id="num_serie">',
+        '<input type="text" id="date_releve">',
+        '<input type="text" id="bdd">',
+        '<input type="text" id="total_101">',
+        '<input type="text" id="total_112">',
+        '<input type="text" id="total_113">',
+        '<input type="text" id="total_123">',
+        '<input type="text" id="maj">',
+        '<input type="text" id="modif_par">',
+        '<input type="text" id="type_releve">',
+    ];
+    $('#copieurs_new_added').DataTable().row.add(donnees).order([1, 'asc']).draw();
+}
+
+function cancelReleve(e) {
+    // $('#btn_add_releve').show();
+    $('#btn_add_releve').css('visibility', 'visible');
+    $('#copieurs_new_added').DataTable().row( $(e).parent().parent('tr') ).remove().draw();
+}
+
+function addreleve() {
     const num_serie = $('#num_serie').val();
     const date_releve = $('#date_releve').val();
-    const total_112 = $('#112_total').val();
-    const total_113 = $('#113_total').val();
-    const total_123 = $('#123_total').val();
+    const total_112 = $('#total_112').val();
+    const total_113 = $('#total_113').val();
+    const total_123 = $('#total_123').val();
     const type_releve = $('#type_releve').val();
 
     $.ajax({
         type: "post",
-        url: "/ajouterReleve",
+        url: "/test",
         data: "num_serie=" + num_serie + "&date_releve=" + date_releve + "&total_112=" + total_112 + "&total_113=" + total_113 + "&total_123=" + total_123 + "&type_releve=" + type_releve,
         success: function (e) {
-            const message = JSON.parse(e)
-            $('#message').empty()
-            if (message.error) {
-                $('#message').append(message.error)
-            } else {
-                $('#message').append(message.success)
-            }
+            location.reload();
         },
         error: function (e, r) {
             console.log(e);
         }
     });
-}) */
+}
