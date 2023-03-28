@@ -28,6 +28,10 @@ if (Driver::estConnecte()) {
     $router->request('/copieurs_perimetre', '/user/copieursPerimetre.php', 'machines_area');
     $router->request('/ajouterCopieurPerimetre', '/user/ajouterCopieurPerimetre.php', 'view_add_machine_area');
     $router->request('/ajouterCopieurPerimetre', '/user/ajouterCopieurPerimetre.php', 'add_machine_area', 'POST');
+
+    $router->request('/copieurSansResponsable', '/user/copieurSansResponsable.php', 'list_machines_without_owner');
+    $router->request('/copieurSansReleve3Mois', '/user/copieurSansReleve3Mois.php', 'list_machines_without_counter_3_months');
+
     $router->request('/retirerCopieurPerimetre', '/user/retirerCopieurPerimetre.php', 'view_remove_machine_area');
     $router->request('/retirerCopieurPerimetre', '/user/retirerCopieurPerimetre.php', 'remove_machine_area', 'POST');
     

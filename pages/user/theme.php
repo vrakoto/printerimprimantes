@@ -1,5 +1,5 @@
 <?php
-use App\Users\User;
+use App\User;
 
 try {
     User::setTheme();

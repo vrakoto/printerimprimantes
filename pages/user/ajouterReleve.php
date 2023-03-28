@@ -1,8 +1,8 @@
 <?php
 use App\Compteur;
-use App\Users\Coordsic;
-use App\Users\Corsic;
-use App\Users\User;
+use App\Coordsic;
+use App\Corsic;
+use App\User;
 
 $title = "Inscrire un nouveau compteur";
 
@@ -14,6 +14,7 @@ if (!empty($_POST)) {
     $date_releve = htmlentities($_POST['date_releve']);
     $total_112 = (int)$_POST['112_total'];
     $total_113 = (int)$_POST['113_total'];
+    $total_122 = (int)$_POST['122_total'];
     $total_123 = (int)$_POST['123_total'];
     $type_releve = htmlentities($_POST['type_releve']);
     $currentDay = date('Y-m-d');
@@ -32,7 +33,7 @@ if (!empty($_POST)) {
 
     if (empty($lesErreurs)) {
         try {
-            Coordsic::ajouterReleve($num_serie, $date_releve, $total_112, $total_113, $total_123, $type_releve);
+            Coordsic::ajouterReleve($num_serie, $date_releve, $total_112, $total_113, $total_122, $total_123, $type_releve);
             $_SESSION['message'] = ['success' => 'Relevé ajouté avec succès.'];
             header('Location:/ajouterReleve');
             exit();
@@ -121,7 +122,7 @@ if (!empty($_POST)) {
             </div>
         </div>
 
-        <table id="copieurs_new_added" class="table table-striped personalTable">
+        <table id="table_compteurs" class="table table-striped personalTable">
             <?= Compteur::ChampsCompteur() ?>
             <tbody>
                 <?php foreach (Compteur::getLesRelevesParBDD(User::getBDD()) as $releve): ?>

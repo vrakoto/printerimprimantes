@@ -1,5 +1,5 @@
 <?php
-namespace App\Users;
+namespace App;
 
 class Corsic extends User
 {

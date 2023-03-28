@@ -49,26 +49,26 @@ $(function () {
         }
     }
 
-    const tousLesImprimantes = $('#table_content_imprimantes').DataTable({
+    const tableImprimante = $('#table_imprimantes').DataTable({
         "order": [[ 2, "desc" ]],
         dom: '<"top"i>rt<"bottom"flp><"clear">'
     });
 
     // Search Bar
-    $('#table_search_imprimantes').keyup(function() {
-        tousLesImprimantes.search($(this).val()).draw();
+    $('#table_search').keyup(function() {
+        tableImprimante.search($(this).val()).draw();
     });
 
-    /* $(document).on('click', '#table_content_imprimantes tbody tr', function() {
+    /* $(document).on('click', '#table_imprimantes tbody tr', function() {
         $("#modaldata tbody tr").html("");
         $("#modaldata tbody tr").html($(this).closest("tr").html());
         $("#exampleModal").modal("show");
     }); */
 
     // Add event listener for opening and closing details
-    $('#table_content_imprimantes tbody').on('click', 'td.dt-control', function () {
+    $('#table_imprimantes tbody').on('click', 'td.dt-control', function () {
         let tr = $(this).closest('tr');
-        let row = tousLesImprimantes.row(tr);
+        let row = tableImprimante.row(tr);
  
         if (row.child.isShown()) {
             // This row is already open - close it
@@ -81,20 +81,20 @@ $(function () {
         }
     });
 
-    const newImprimantes = $('#copieurs_new_added').DataTable({
+    const tableCompteurs = $('#table_compteurs').DataTable({
         "order": [[ 8, "desc" ]],
         dom: '<"top"i>rt<"bottom"flp><"clear">'
     });
 
     // Search Bar
     $('#customSearch').keyup(function() {
-        newImprimantes.search($(this).val()).draw();
+        tableCompteurs.search($(this).val()).draw();
     });
 
     // Add event listener for opening and closing details
-    $('#copieurs_new_added tbody').on('click', 'td.dt-control', function () {
+    $('#table_compteurs tbody').on('click', 'td.dt-control', function () {
         let tr = $(this).closest('tr');
-        let row = newImprimantes.row(tr);
+        let row = tableCompteurs.row(tr);
  
         if (row.child.isShown()) {
             // This row is already open - close it
@@ -125,13 +125,13 @@ function test (e) {
         '<input type="text" id="modif_par">',
         '<input type="text" id="type_releve">',
     ];
-    $('#copieurs_new_added').DataTable().row.add(donnees).order([1, 'asc']).draw();
+    $('#table_compteurs').DataTable().row.add(donnees).order([1, 'asc']).draw();
 }
 
 function cancelReleve(e) {
     // $('#btn_add_releve').show();
     $('#btn_add_releve').css('visibility', 'visible');
-    $('#copieurs_new_added').DataTable().row( $(e).parent().parent('tr') ).remove().draw();
+    $('#table_compteurs').DataTable().row( $(e).parent().parent('tr') ).remove().draw();
 }
 
 function addreleve() {

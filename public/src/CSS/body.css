@@ -4,14 +4,22 @@
     --nav_width: 258px;
 }
 
+html,
 body {
-    background-color: var(--light);
+    height: 100%;
+}
+
+body {
     color: var(--regularLight);
+    display: flex;
+    height: 100vh;
 }
 
 .body_content {
-    /* margin-left: 350px; */
-    margin-left: var(--nav_width);
+    overflow-y: scroll;
+    height: 100%;
+    flex-grow: 1;
+    padding: 20px;
 }
 
 .obligatoire {

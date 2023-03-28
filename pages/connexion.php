@@ -2,9 +2,6 @@
 use App\Connexion;
 
 if (isset($_POST['messagerie'], $_POST['mdp'])) {
-    require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'users' . DIRECTORY_SEPARATOR . 'User.php';
-    require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'Connexion.php';
-
     $messagerie = htmlentities($_POST['messagerie']);
     $mdp = htmlentities($_POST['mdp']);
 

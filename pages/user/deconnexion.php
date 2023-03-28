@@ -1,4 +1,4 @@
 <?php
-use App\Users\User;
+use App\User;
 User::deconnexion();
 ?>

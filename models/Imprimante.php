@@ -2,8 +2,19 @@
 namespace App;
 
 class Imprimante extends Driver {
+    protected static $champ_num_ordo = 'num_ordo';
     protected static $champ_num_serie = 'num_serie';
     protected static $champ_modele = 'modele';
+    protected static $champ_date_cde_minarm = 'date_cde_minarm';
+    protected static $champ_num_oracle = 'num_oracle';
+    protected static $champ_config = 'Config';
+    protected static $champ_hostname = 'HostName';
+    protected static $champ_mac = 'adresse_mac';
+    protected static $champ_reseau = 'reseau';
+    protected static $champ_cp = 'CP INSTA';
+    protected static $champ_dep = 'DEP INSTA';
+    protected static $champ_adresse = 'adresse';
+    protected static $champ_localisation = 'localisation';
     protected static $champ_statut = 'statut';
     protected static $champ_bdd = 'bdd';
     protected static $champ_site_installation = 'site_installation';
@@ -91,6 +102,36 @@ HTML;
         $req = "SELECT * FROM copieurs WHERE " . self::$champ_bdd . " = :bdd";
         $p = self::$pdo->prepare($req);
         $p->execute(['bdd' => $bdd]);
+        return $p->fetchAll();
+    }
+
+    static function sansResponsable($bdd = ''): array
+    {
+        $champ_num_serie = self::$champ_num_serie;
+        $query = "SELECT * FROM copieurs WHERE " . $champ_num_serie . " NOT IN (SELECT " . $champ_num_serie . " FROM users_copieurs)";
+        $options = [];
+        if ($bdd !== '') {
+            $query = "SELECT * FROM copieurs WHERE " . self::$champ_bdd . " = :bdd AND " . $champ_num_serie . " NOT IN (SELECT " . $champ_num_serie . " FROM users_copieurs)";
+            $options = ['bdd' => $bdd];
+        }
+        $p = self::$pdo->prepare($query);
+        $p->execute($options);
+
+        return $p->fetchAll();
+    }
+
+    static function sansReleves3Mois($bdd = ''): array
+    {
+        $champ_num_serie = self::$champ_num_serie;
+        $query = "SELECT * FROM copieurs WHERE " . self::$champ_statut .  " = 'LIVRE' AND " . $champ_num_serie . " NOT IN ( SELECT " . $champ_num_serie . " FROM compteurs WHERE date_maj >= DATE_SUB(NOW(), INTERVAL 3 MONTH) )"; 
+        $options = [];
+        if ($bdd !== '') {
+            $query = "SELECT * FROM copieurs WHERE " . self::$champ_statut .  " = 'LIVRE' AND " . self::$champ_bdd . " = :bdd" . " AND " . $champ_num_serie . " NOT IN ( SELECT " . $champ_num_serie . " FROM compteurs WHERE date_maj >= DATE_SUB(NOW(), INTERVAL 3 MONTH) )"; 
+            $options = ['bdd' => $bdd];
+        }
+        $p = self::$pdo->prepare($query);
+        $p->execute($options);
+
         return $p->fetchAll();
     }
 }

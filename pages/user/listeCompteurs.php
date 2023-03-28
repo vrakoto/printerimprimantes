@@ -2,7 +2,7 @@
 
 use App\BdD;
 use App\Compteur;
-use App\Users\User;
+use App\User;
 
 $title = "Liste total des compteurs";
 $bdd_selectionne = User::getBDD();
@@ -50,7 +50,7 @@ if (!empty($_GET['num_serie'])) {
         </div>
     </form>
 
-    <table id="copieurs_new_added" class="table table-striped personalTable">
+    <table id="table_compteurs" class="table table-striped personalTable">
         <?= Compteur::ChampsCompteur() ?>
         <tbody>
             <?php foreach ($lesImprimantes as $releve): ?>

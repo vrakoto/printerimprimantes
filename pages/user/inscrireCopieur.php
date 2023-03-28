@@ -1,5 +1,5 @@
 <?php
-use App\Users\Coordsic;
+use App\Coordsic;
 $title = "Inscrire une machine";
 
 $lesErreurs = [];

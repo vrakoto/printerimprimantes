@@ -1,7 +1,7 @@
 <?php
 
 use App\Compteur;
-use App\Users\User;
+use App\User;
 ?>
 
 <div class="container">
@@ -33,7 +33,7 @@ use App\Users\User;
         </div>
     </div>
 
-    <table id="copieurs_new_added" class="table table-striped personalTable">
+    <table id="table_compteurs" class="table table-striped personalTable">
         <?= Compteur::ChampsCompteur() ?>
         <tbody>
             <?php foreach (User::getLesRelevesMonPerimetre() as $releve) : ?>

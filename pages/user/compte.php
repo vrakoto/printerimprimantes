@@ -1,5 +1,5 @@
 <?php
-use App\Users\User;
+use App\User;
 
 if (!empty($_POST)) {
     $mdp_actuel = htmlentities($_POST['mdp_actuel']);

@@ -1,5 +1,5 @@
 <?php
-namespace App\Users;
+namespace App;
 use App\Driver;
 use App\Compteur;
 

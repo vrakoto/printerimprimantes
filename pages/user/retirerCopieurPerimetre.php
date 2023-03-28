@@ -1,5 +1,5 @@
 <?php
-use App\Users\Corsic;
+use App\Corsic;
 
 $title = "Retirer Copieur Perimètre";
 $lesNumeros = Corsic::copieursPerimetre();

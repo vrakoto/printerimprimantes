@@ -1,7 +1,7 @@
 <?php
-namespace App\Users;
+namespace App;
 
-use App\Users\User;
+use App\User;
 
 class Coordsic extends User {
     static function inscrireCopieur($num_serie, $modele, $bdd, $site_insta): bool

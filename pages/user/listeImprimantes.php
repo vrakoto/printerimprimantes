@@ -1,7 +1,7 @@
 <?php
 use App\BdD;
 use App\Imprimante;
-use App\Users\User;
+use App\User;
 
 $title = "Liste des machines";
 $bdd_selectionne = User::getBDD();
@@ -27,10 +27,10 @@ if (!empty($_GET['num_serie'])) {
 
     <form action="" class="mt-5 row g-3 align-items-center mb-2">
         <div class="col-auto">
-            <label for="table_search_imprimantes" class="col-form-label">Rechercher un copieur</label>
+            <label for="table_search" class="col-form-label">Rechercher un copieur</label>
         </div>
         <div class="col-auto">
-            <input type="text" name="num_serie" class="form-control" id="table_search_imprimantes" placeholder="Insérer son numéro de série" value="<?= (isset($num_serie)) ? $num_serie : '' ?>">
+            <input type="text" name="num_serie" class="form-control" id="table_search" placeholder="Insérer son numéro de série" value="<?= (isset($num_serie)) ? $num_serie : '' ?>">
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">Rechercher dans toutes les BdD</button>
@@ -55,7 +55,7 @@ if (!empty($_GET['num_serie'])) {
     <hr>
     <br>
 
-    <table id="table_content_imprimantes" class="table table-striped personalTable">
+    <table id="table_imprimantes" class="table table-striped personalTable">
         <?= Imprimante::ChampsCopieur() ?>
         <tbody>
             <?php foreach ($lesImprimantes as $uneImprimante) : ?>

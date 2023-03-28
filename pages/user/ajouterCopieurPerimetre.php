@@ -1,6 +1,6 @@
 <?php
-use App\Users\Corsic;
-use App\Users\User;
+use App\Corsic;
+use App\User;
 
 // User::requireRole(1);
 

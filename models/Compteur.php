@@ -1,6 +1,6 @@
 <?php
 namespace App;
-use App\Users\User;
+use App\User;
 
 class Compteur extends Driver {
     private static $champ_num_serie = 'num_serie';

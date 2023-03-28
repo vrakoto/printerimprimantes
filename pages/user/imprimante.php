@@ -10,12 +10,12 @@ $total_123 = 0;
 ?>
 
 <?php if (count($imprimante) > 0) : ?>
-    <?php foreach (Compteur::searchCompteurByNumSerie($params['num']) as $test) {
+    <?php /* foreach (Compteur::searchCompteurByNumSerie($params['num']) as $test) {
         $total_101 += $test['101_total'];
         $total_112 += $test['112_total'];
         $total_113 += $test['113_total'];
         $total_123 += $test['123_total'];
-    } ?>
+    } */ ?>
     <section>
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -33,6 +33,40 @@ $total_123 = 0;
                                 <div class="card-body p-4">
                                     <h6>Information</h6>
                                     <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3">
+                                            <h6>N° ORDO</h6>
+                                            <p class="text-muted"><?= htmlentities($imprimante[Imprimante::getChamps('champ_num_ordo')]) ?></p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Date CDE MINARM</h6>
+                                            <p class="text-muted"><?= htmlentities($imprimante[Imprimante::getChamps('champ_date_cde_minarm')]) ?></p>
+                                        </div>
+                                    </div>
+                                    <h6>Technique</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3">
+                                            <h6>N° Oracle</h6>
+                                            <p class="text-muted"><?= htmlentities($imprimante[Imprimante::getChamps('champ_num_oracle')]) ?></p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Config</h6>
+                                            <p class="text-muted"><?= htmlentities($imprimante[Imprimante::getChamps('champ_config')]) ?></p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Modèle</h6>
+                                            <p class="text-muted"><?= htmlentities($imprimante[Imprimante::getChamps('champ_modele')]) ?></p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>HostName</h6>
+                                            <p class="text-muted"><?= htmlentities($imprimante[Imprimante::getChamps('champ_hostname')]) ?></p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Réseau</h6>
+                                            <p class="text-muted"><?= htmlentities($imprimante[Imprimante::getChamps('champ_reseau')]) ?></p>
+                                        </div>
+                                    </div>
                                     <div class="row pt-1">
                                         <div class="col-6 mb-3">
                                             <h6>Modèle</h6>
