@@ -2,6 +2,7 @@
 use App\Compteur;
 use App\Coordsic;
 use App\Corsic;
+use App\Imprimante;
 use App\User;
 
 $title = "Inscrire un nouveau compteur";
@@ -68,7 +69,7 @@ if (!empty($_POST)) {
         <div class="mb-3">
             <label for="num_serie" class="form-label">Numéro de Série<span class="obligatoire">*</span></label>
             <select class="selectize" name="num_serie" id="num_serie">
-                <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero['num_serie']) ?>
+                <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero[Imprimante::getChamps('champ_num_serie')]) ?>
                     <option value="<?= $num ?>"><?= $num ?></option>
                 <?php endforeach ?>
             </select>

@@ -1,5 +1,7 @@
 <?php
 
+use App\User;
+
 function nav_link(string $form_fieldsien, string $icon, string $titre): string
 {
     $active = '';
@@ -82,13 +84,16 @@ HTML;
 
 function link_add_machine($urlRouter): string
 {
-    return <<<HTML
-    <a href="$urlRouter" class="home_action text-center">
-        <i class="fa-solid fa-print mx-2"></i>
-        <i class="fa-solid fa-pen"></i>
-        <h3>Inscrire une machine</h3>
-    </a>
+    if (User::getRole() === 2 || User::getRole() === 4) {
+        return <<<HTML
+        <a href="$urlRouter" class="home_action text-center">
+            <i class="fa-solid fa-print mx-2"></i>
+            <i class="fa-solid fa-pen"></i>
+            <h3>Inscrire une machine</h3>
+        </a>
 HTML;
+    }
+    return '';
 }
 
 function link_counters_area($urlRouter): string

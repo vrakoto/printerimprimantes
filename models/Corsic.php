@@ -1,13 +1,14 @@
 <?php
 namespace App;
+use App\Imprimante;
 
 class Corsic extends User
 {
     static function copieursPerimetrePasDansMaListe(): array
     {
-        $req = "SELECT `num_serie` FROM copieurs
-                WHERE `bdd` = :bdd
-                AND num_serie NOT IN
+        $req = "SELECT " . Imprimante::getChamps('champ_num_serie') . " FROM copieurs
+                WHERE " . Imprimante::getChamps('champ_bdd') . " = :bdd
+                AND " . Imprimante::getChamps('champ_num_serie') . " NOT IN
                     (SELECT num_serie FROM users_copieurs
                     WHERE id_user = :id_profil)
                 ORDER BY num_serie ASC";

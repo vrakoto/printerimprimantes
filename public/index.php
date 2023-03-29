@@ -18,11 +18,10 @@ if (Driver::estConnecte()) {
     $router->request('/imprimante/[*:num]', '/user/imprimante.php', 'machine_details');
     
     $router->request('/liste_imprimantes', '/user/listeImprimantes.php', 'list_machines');
-    $router->request('/ajouterReleve', '/user/ajouterReleve.php', 'view_add_counter');
-    $router->request('/ajouterReleve', '/user/ajouterReleve.php', 'add_counter', 'POST');
     
     $router->request('/liste_compteurs', '/user/listeCompteurs.php', 'list_counters');
     $router->request('/compteurs_perimetre', '/user/compteursPerimetre.php', 'counters_area');
+    $router->request('/compteurs_perimetre', '/user/compteursPerimetre.php', 'add_counter', 'POST');
     
     
     $router->request('/copieurs_perimetre', '/user/copieursPerimetre.php', 'machines_area');

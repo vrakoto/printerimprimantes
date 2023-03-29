@@ -67,7 +67,6 @@ $_SESSION['message'] = [];
                     <ul class="container_submenu">
                         <a href="<?= $router->url('list_counters') ?>" class="submenu"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
                         <a href="<?= $router->url('counters_area') ?>" class="submenu"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">Du périmètre</span></a>
-                        <a href="<?= $router->url('add_counter') ?>" class="submenu"><i class="fa-solid fa-pen"></i> <span class="mx-2">Ajouter</span></a>
                     </ul>
                 </li>
 

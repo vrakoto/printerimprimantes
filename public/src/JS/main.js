@@ -28,6 +28,9 @@ $(function () {
         sortField: 'text'
     });
 
+    /* const selectize = $('.selectize')[0].selectize;
+    selectize.setValue(''); */
+
     function optionsImprimantes(urlAjax) {
         return {
             dom: '<"top"i>rt<"bottom"flp><"clear">',
@@ -82,7 +85,7 @@ $(function () {
     });
 
     const tableCompteurs = $('#table_compteurs').DataTable({
-        "order": [[ 8, "desc" ]],
+        "order": [[ 9, "desc" ]],
         dom: '<"top"i>rt<"bottom"flp><"clear">'
     });
 
@@ -109,35 +112,24 @@ $(function () {
 });
 
 
-function test (e) {
-    // $(e).hide();
-    $(e).css('visibility', 'hidden');
-    var donnees = [
-        '<button type="submit" onclick="addreleve()">Add</button><button onclick="cancelReleve(this)">Cancel</button>',
-        '<input type="text" id="num_serie">',
-        '<input type="text" id="date_releve">',
-        '<input type="text" id="bdd">',
-        '<input type="text" id="total_101">',
-        '<input type="text" id="total_112">',
-        '<input type="text" id="total_113">',
-        '<input type="text" id="total_123">',
-        '<input type="text" id="maj">',
-        '<input type="text" id="modif_par">',
-        '<input type="text" id="type_releve">',
-    ];
-    $('#table_compteurs').DataTable().row.add(donnees).order([1, 'asc']).draw();
+function toggle_inputs_releve (e) {
+    $(e).css('visibility', 'hidden'); // Btn ajouter relevé disparait
+    $('#form_add_counter').attr('class', '');
+    $('#num_serie').focus();
+    // $('#container').attr('class', '');
 }
 
 function cancelReleve(e) {
-    // $('#btn_add_releve').show();
     $('#btn_add_releve').css('visibility', 'visible');
-    $('#table_compteurs').DataTable().row( $(e).parent().parent('tr') ).remove().draw();
+    $('#form_add_counter').attr('class', 'd-none');
+    // $('#container').attr('class', 'container');
 }
 
 function addreleve() {
     const num_serie = $('#num_serie').val();
     const date_releve = $('#date_releve').val();
     const total_112 = $('#total_112').val();
+    const total_122 = $('#total_122').val();
     const total_113 = $('#total_113').val();
     const total_123 = $('#total_123').val();
     const type_releve = $('#type_releve').val();
@@ -145,9 +137,16 @@ function addreleve() {
     $.ajax({
         type: "post",
         url: "/test",
-        data: "num_serie=" + num_serie + "&date_releve=" + date_releve + "&total_112=" + total_112 + "&total_113=" + total_113 + "&total_123=" + total_123 + "&type_releve=" + type_releve,
+        data: "num_serie=" + num_serie + "&date_releve=" + date_releve + "&total_112=" + total_112 + "&total_122=" + total_122 + "&total_113=" + total_113 + "&total_123=" + total_123 + "&type_releve=" + type_releve,
         success: function (e) {
-            location.reload();
+            if (e) {
+                $('#msgExceptForm').attr('class', 'alert alert-danger');
+                $('#msgExceptForm').empty();
+                $('#msgExceptForm').append(e);
+                console.log(e);
+            } else {
+                location.reload();
+            }
         },
         error: function (e, r) {
             console.log(e);

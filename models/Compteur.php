@@ -1,6 +1,7 @@
 <?php
 namespace App;
 use App\User;
+use DateTime;
 
 class Compteur extends Driver {
     private static $champ_num_serie = 'num_serie';
@@ -31,8 +32,8 @@ class Compteur extends Driver {
                 <th>BDD</th>
                 <th>101 Total</th>
                 <th>112 Total</th>
-                <th>122 Total</th>
                 <th>113 Total</th>
+                <th>122 Total</th>
                 <th>123 Total</th>
                 <th>Mise à jour le</th>
                 <th>Ajouté par</th>
@@ -54,7 +55,8 @@ HTML;
         $total_113 = (int)$lesReleves[self::$champ_total_113];
         $total_122 = (int)$lesReleves[self::$champ_total_122];
         $total_123 = (int)$lesReleves[self::$champ_total_123];
-        $date_maj = convertDate(htmlentities($lesReleves[self::$champ_date_maj]), true);
+        $date_maj = DateTime::createFromFormat('Y-m-d H:i:s', htmlentities($lesReleves[self::$champ_date_maj]))->format('d/m/Y H:i:s');
+        
         $realNameUser = self::releveUserName($num_serie, $dateReleveNonConvert) ?? 'Un administrateur';
         $type_releve = htmlentities($lesReleves[self::$champ_type_releve]);
 

@@ -7,6 +7,7 @@ if (!empty($_POST)) {
     $num_serie = htmlentities($_POST['num_serie']);
     $date_releve = htmlentities($_POST['date_releve']);
     $total_112 = (int)$_POST['total_112'];
+    $total_122 = (int)$_POST['total_122'];
     $total_113 = (int)$_POST['total_113'];
     $total_123 = (int)$_POST['total_123'];
     $type_releve = htmlentities($_POST['type_releve']);
@@ -26,9 +27,8 @@ if (!empty($_POST)) {
 
     if (empty($lesErreurs)) {
         try {
-            Coordsic::ajouterReleve($num_serie, $date_releve, $total_112, $total_113, $total_123, $type_releve);
+            Coordsic::ajouterReleve($num_serie, $date_releve, $total_112, $total_113, $total_122, $total_123, $type_releve);
             $_SESSION['message'] = ['success' => 'Relevé ajouté avec succès.'];
-            $msg = "Relevé ajouté";
         } catch (PDOException $th) {
             if ($th->getCode() === "23000") {
                 $msg = "Error duplication";
@@ -41,7 +41,7 @@ if (!empty($_POST)) {
         }
     } else {
         $_SESSION['message']['error'] = $lesErreurs;
-        $msg = "erreur vide";
+        $msg = $lesErreurs;
     }
 }
 die($msg);
