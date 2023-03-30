@@ -1,21 +1,23 @@
 <?php
 namespace App;
+
+use App\UserLevels;
 use App\Driver;
 use App\Compteur;
 
 class User extends Driver {
-    protected static $champ_id = 'id';
-    protected static $champ_gpn = 'grade_nom_prenom';
-    protected static $champ_bdd = 'bdd';
-    protected static $champ_messagerie = 'messagerie';
+    protected static $champ_id = 'id_profil';
+    protected static $champ_bdd = 'BDD';
+    protected static $champ_gpn = 'grade-prenom-nom';
+    protected static $champ_messagerie = 'Courriel';
     protected static $champ_role = 'role';
+    protected static $champ_mdp = 'mdp';
     protected static $champ_theme = 'theme';
-    protected static $mdp = 'mdp';
 
     
     private static function getInfoFromDatabase($champ): string
     {
-        $req = "SELECT " . $champ . " FROM users WHERE " . self::$champ_id . " = :id AND " . self::$champ_messagerie . " = :messagerie"; 
+        $req = "SELECT " . $champ . " FROM profil WHERE " . self::$champ_id . " = :id AND " . self::$champ_messagerie . " = :messagerie"; 
         $p = self::$pdo->prepare($req);
         $p->execute([
             self::$champ_id => $_SESSION['user'][self::$champ_id],
@@ -60,10 +62,13 @@ class User extends Driver {
     }
     static function getLibelleRole(): string
     {
-        $req = "SELECT libelle FROM users_level WHERE id = :id";
+        $userlevelid = UserLevels::getChamps('champ_id');
+        $userlevelname = UserLevels::getChamps('champ_name');
+        
+        $req = "SELECT $userlevelname FROM userlevels WHERE $userlevelid = :id";
         $p = self::$pdo->prepare($req);
         $p->execute(['id' => self::getRole()]);
-        return $p->fetch()['libelle'];
+        return $p->fetch()[$userlevelname];
     }
 
     static function getTheme(): string
@@ -77,7 +82,7 @@ class User extends Driver {
         } else {
             $theme = "clair";
         }
-        $req = "UPDATE users SET theme = :theme WHERE id = :id";
+        $req = "UPDATE profil SET theme = :theme WHERE id = :id";
         $p = self::$pdo->prepare($req);
         return $p->execute(['id' => self::getMonID(), 'theme' => $theme]);
     }
@@ -85,22 +90,32 @@ class User extends Driver {
 
     static function verifierMDP($proposed_password): bool
     {
-        $req = "SELECT mdp FROM users WHERE id = :id AND messagerie = :messagerie";
+        $champ_mdp = self::getChamp('champ_mdp');
+        $champ_id = self::getChamp('champ_id');
+        $champ_messagerie = self::getChamp('champ_messagerie');
+
+        $req = "SELECT $champ_mdp FROM profil WHERE $champ_id = :id AND $champ_messagerie = :messagerie";
         $p = self::$pdo->prepare($req);
         $p->execute([
             'id' => self::getMonID(),
             'messagerie' => self::getMessagerie()
         ]);
-        $mdp_actuel = $p->fetch()['mdp'];
-        return password_verify($proposed_password, $mdp_actuel);
+        return !empty($p->fetch());
+        // $mdp_actuel = $p->fetch()[$champ_mdp];
+        // return password_verify($proposed_password, $mdp_actuel);
     }
 
     static function changerMDP($mdp): bool
     {
-        $req = "UPDATE users SET mdp = :mdp WHERE id = :id AND messagerie = :messagerie";
+        $champ_mdp = self::getChamp('champ_mdp');
+        $champ_id = self::getChamp('champ_id');
+        $champ_messagerie = self::getChamp('champ_messagerie');
+
+        $req = "UPDATE profil SET $champ_mdp = :mdp WHERE $champ_id = :id AND $champ_messagerie = :messagerie";
         $p = self::$pdo->prepare($req);
         return $p->execute([
-            'mdp' => password_hash($mdp,  PASSWORD_DEFAULT, ['cost' => 12]),
+            // 'mdp' => password_hash($mdp,  PASSWORD_DEFAULT, ['cost' => 12]),
+            'mdp' => $mdp,
             'id' => self::getMonID(),
             'messagerie' => self::getMessagerie()
         ]);
@@ -125,8 +140,8 @@ class User extends Driver {
         if (self::getRole() === 1 || self::getRole() === 3) {
             $query = "SELECT * FROM compteurs
                       WHERE modif_par IN
-                        (SELECT id_user FROM users_copieurs
-                        WHERE id_user = :id_profil)";
+                        (SELECT  " . UsersCopieurs::getChamps('champ_id_user') . " FROM users_copieurs
+                        WHERE " . UsersCopieurs::getChamps('champ_id_user') . " = :id_profil)";
 
             $p = self::$pdo->prepare($query);
             $p->execute([
@@ -145,10 +160,14 @@ class User extends Driver {
         if (self::getRole() === 2) {
             return Imprimante::getImprimantesParBDD(self::getBDD());
         }
+        $champ_num_serie_users_copieurs = UsersCopieurs::getChamps('champ_num_serie');
+        $champ_id_user_users_copieurs = UsersCopieurs::getChamps('champ_id_user');
+        $champ_num_serie_imprimante = Imprimante::getChamps('champ_num_serie');
+
         $query = "SELECT * FROM copieurs c
-            JOIN users_copieurs uc on uc.num_serie = c.num_serie
-            WHERE id_user = :id_profil
-            ORDER BY c.num_serie ASC";
+            JOIN users_copieurs uc on uc.`$champ_num_serie_users_copieurs` = c.`$champ_num_serie_imprimante`
+            WHERE $champ_id_user_users_copieurs = :id_profil
+            ORDER BY c.`$champ_num_serie_imprimante` ASC";
         
         $p = self::$pdo->prepare($query);
         $p->execute([
@@ -160,8 +179,13 @@ class User extends Driver {
 
     static function ajouterReleve($num_serie, $date_releve, $total_112, $total_113, $total_122, $total_123, $type_releve): bool
     {
+        $champ_num_serie = Compteur::getChamps('champ_num_serie');
+        $champ_bdd = Compteur::getChamps('champ_bdd');
+        $champ_date_releve = Compteur::getChamps('champ_date_releve');
+        $champ_type_releve = Compteur::getChamps('champ_type_releve');
+
         $query = "INSERT INTO compteurs
-        (num_serie, bdd, date_releve, 112_total, 113_total, 122_total, 123_total, modif_par, type_releve)
+        (`$champ_num_serie`, $champ_bdd, $champ_date_releve, 112_total, 113_total, 122_total, 123_total, modif_par, $champ_type_releve)
         VALUES
         (:num_serie, :bdd, :date_releve, :112_total, :113_total, :122_total, :123_total, :modif_par, :type_releve)";
 

@@ -59,7 +59,7 @@ if (!empty($_GET['num_serie'])) {
         <?= Imprimante::ChampsCopieur() ?>
         <tbody>
             <?php foreach ($lesImprimantes as $uneImprimante) : ?>
-                <?= Imprimante::ValeursCopieur($uneImprimante) ?>
+                <?php Imprimante::ValeursCopieur($uneImprimante) ?>
             <?php endforeach ?>
         </tbody>
     </table>

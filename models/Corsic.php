@@ -1,17 +1,23 @@
 <?php
 namespace App;
 use App\Imprimante;
+use App\UsersCopieurs;
 
 class Corsic extends User
 {
     static function copieursPerimetrePasDansMaListe(): array
     {
-        $req = "SELECT " . Imprimante::getChamps('champ_num_serie') . " FROM copieurs
-                WHERE " . Imprimante::getChamps('champ_bdd') . " = :bdd
-                AND " . Imprimante::getChamps('champ_num_serie') . " NOT IN
-                    (SELECT num_serie FROM users_copieurs
-                    WHERE id_user = :id_profil)
-                ORDER BY num_serie ASC";
+        $champ_num_serie_imprimante = Imprimante::getChamps('champ_num_serie');
+        $champ_bdd_imprimante = Imprimante::getChamps('champ_bdd');
+        $champ_num_serie_users_copieurs = UsersCopieurs::getChamps('champ_num_serie');
+        $champ_id_user_users_copieurs = UsersCopieurs::getChamps('champ_id_user');
+
+        $req = "SELECT `$champ_num_serie_imprimante` FROM copieurs
+                WHERE $champ_bdd_imprimante = :bdd
+                AND `$champ_num_serie_imprimante` NOT IN
+                    (SELECT $champ_num_serie_users_copieurs FROM users_copieurs
+                    WHERE $champ_id_user_users_copieurs = :id_profil)
+                ORDER BY `$champ_num_serie_imprimante` ASC";
 
         $p = self::$pdo->prepare($req);
         $p->execute([
@@ -24,7 +30,7 @@ class Corsic extends User
     static function ajouterDansPerimetre($num_serie): bool
     {
         $query = "INSERT INTO users_copieurs
-        (id_user, num_serie)
+        (" . UsersCopieurs::getChamps('champ_id_user') . "," . UsersCopieurs::getChamps('champ_num_serie') . ")
         VALUES
         (:id_profil, :num_serie)";
 
@@ -37,7 +43,7 @@ class Corsic extends User
 
     static function retirerDansPerimetre($num_serie): bool
     {
-        $query = "DELETE FROM users_copieurs WHERE id_user = :id_user AND num_serie = :num_serie";
+        $query = "DELETE FROM users_copieurs WHERE " . UsersCopieurs::getChamps('champ_id_user') . " = :id_user AND " . UsersCopieurs::getChamps('champ_num_serie') . " = :num_serie";
         $p = self::$pdo->prepare($query);
         return $p->execute([
             'id_user' => self::getMonID(),

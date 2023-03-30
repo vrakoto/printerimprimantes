@@ -1,23 +1,27 @@
 <?php
 namespace App;
+use App\User;
 
 class Connexion extends Driver {
-    private $messagerie;
+    private $courriel;
     private $mdp;
 
-    function __construct(string $messagerie, string $mdp)
+    function __construct(string $courriel, string $mdp)
     {
-        $this->messagerie = $messagerie;
+        $this->courriel = $courriel;
         $this->mdp = $mdp;
     }
 
     // Sans chiffrement
     function verifierAuth(): bool
     {
-        $req = "SELECT id FROM users WHERE messagerie = :messagerie AND mdp = :mdp";
+        $champ_id_profil = User::getChamp('champ_id');
+        $champ_courriel = User::getChamp('champ_messagerie');
+        $champ_mdp = User::getChamp('champ_mdp');
+        $req = "SELECT $champ_id_profil FROM profil WHERE $champ_courriel = :courriel AND $champ_mdp = :mdp";
         $p = self::$pdo->prepare($req);
         $p->execute([
-            'messagerie' => $this->messagerie,
+            'courriel' => $this->courriel,
             'mdp' => $this->mdp
         ]);
         return !empty($p->fetchAll());
@@ -25,10 +29,10 @@ class Connexion extends Driver {
 
     /* function getPasswordToVerify(): string
     {
-        $req = "SELECT mdp FROM users WHERE messagerie = :messagerie";
+        $req = "SELECT mdp FROM profil WHERE Courriel = :courriel";
         $p = self::$pdo->prepare($req);
         $p->execute([
-            'messagerie' => $this->messagerie
+            'courriel' => $this->courriel
         ]);
 
         return $p->fetch()['mdp'];
@@ -36,20 +40,21 @@ class Connexion extends Driver {
 
     function verifierAuth(): bool
     {
-        $req = "SELECT * FROM users WHERE messagerie = :messagerie";
+        $req = "SELECT * FROM profil WHERE Courriel = :courriel";
         $p = self::$pdo->prepare($req);
         $p->execute([
-            'messagerie' => $this->messagerie
+            'courriel' => $this->courriel
         ]);
         return !empty($p->fetchAll()) && password_verify($this->mdp, $this->getPasswordToVerify());
     } */
 
     private function getInformations(): array
     {
-        $req = "SELECT * FROM users WHERE messagerie = :messagerie";
+        $champ_courriel = User::getChamp('champ_messagerie');
+        $req = "SELECT * FROM profil WHERE $champ_courriel = :courriel";
         $p = self::$pdo->prepare($req);
         $p->execute([
-            'messagerie' => $this->messagerie
+            'courriel' => $this->courriel
         ]);
 
         return $p->fetch();

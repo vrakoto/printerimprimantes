@@ -2,7 +2,7 @@
 namespace App;
 
 class BdD extends Driver {
-    private static $trigramme = 'trigramme';
+    private static $trigramme = 'BDD';
 
     static function getChampBDD(): string
     {
@@ -11,7 +11,7 @@ class BdD extends Driver {
 
     static function getTousLesBDD(): array
     {
-        $req = "SELECT * FROM BDD ORDER BY 1";
+        $req = "SELECT * FROM bdd ORDER BY 1";
         $p = self::$pdo->query($req);
         return $p->fetchAll();
     }

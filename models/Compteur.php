@@ -4,17 +4,17 @@ use App\User;
 use DateTime;
 
 class Compteur extends Driver {
-    private static $champ_num_serie = 'num_serie';
-    private static $champ_bdd = 'bdd';
-    private static $champ_date_releve = 'date_releve';
-    private static $champ_total_101 = '101_total';
-    private static $champ_total_112 = '112_total';
-    private static $champ_total_113 = '113_total';
-    private static $champ_total_122 = '122_total';
-    private static $champ_total_123 = '123_total';
+    private static $champ_num_serie = 'Numéro_série';
+    private static $champ_bdd = 'BDD';
+    private static $champ_date_releve = 'Date';
+    private static $champ_total_101 = '101_Total_1';
+    private static $champ_total_112 = '112_Total';
+    private static $champ_total_113 = '113_Total';
+    private static $champ_total_122 = '122_Total';
+    private static $champ_total_123 = '123_Total';
     private static $champ_date_maj = 'date_maj';
     private static $champ_modif_par = 'modif_par';
-    private static $champ_type_releve = 'type_releve';
+    private static $champ_type_releve = 'type_relevé';
 
     static function getChamps($champ): string
     {
@@ -55,7 +55,7 @@ HTML;
         $total_113 = (int)$lesReleves[self::$champ_total_113];
         $total_122 = (int)$lesReleves[self::$champ_total_122];
         $total_123 = (int)$lesReleves[self::$champ_total_123];
-        $date_maj = DateTime::createFromFormat('Y-m-d H:i:s', htmlentities($lesReleves[self::$champ_date_maj]))->format('d/m/Y H:i:s');
+        $date_maj = DateTime::createFromFormat('Y-m-d H:i:s', ($lesReleves[self::$champ_date_maj]))->format('d/m/Y H:i:s');
         
         $realNameUser = self::releveUserName($num_serie, $dateReleveNonConvert) ?? 'Un administrateur';
         $type_releve = htmlentities($lesReleves[self::$champ_type_releve]);
@@ -82,16 +82,22 @@ HTML;
 
     static function releveUserName($num_serie, $date_releve): string
     {
-        $req = "SELECT " . User::getChamp('champ_gpn') . " FROM users u
-                JOIN compteurs c on c." . self::$champ_modif_par . " = u.id
-                AND " . self::$champ_num_serie . " = :num_serie
-                AND " . self::$champ_date_releve . " = :dr";
+        $champ_gpn_user = User::getChamp('champ_gpn');
+        $champ_modif_par_compteur = self::$champ_modif_par;
+        $champ_id_user = User::getChamp('champ_id');
+        $champ_num_serie_compteur = self::$champ_num_serie;
+        $champ_date_releve_compteur = self::$champ_date_releve;
+
+        $req = "SELECT `$champ_gpn_user` as gpn FROM profil u
+                JOIN compteurs c on c.$champ_modif_par_compteur = u.$champ_id_user
+                AND $champ_num_serie_compteur = :num_serie
+                AND $champ_date_releve_compteur = :dr";
         $p = self::$pdo->prepare($req);
         $p->execute([
             'num_serie' => $num_serie,
             'dr' => $date_releve
         ]);
-        $name = $p->fetch()['grade_nom_prenom'];
+        $name = $p->fetch()['gpn'] ?? 'Un administrateur';
         return $name;
     }
 

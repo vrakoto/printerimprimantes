@@ -6,10 +6,13 @@ use App\User;
 class Coordsic extends User {
     static function inscrireCopieur($num_serie, $modele, $bdd, $site_insta): bool
     {
+        $champ_num_serie_imprimante = Imprimante::getChamps('champ_num_serie');
+        $champ_modele_imprimante = Imprimante::getChamps('champ_modele');
+        $champ_bdd_imprimante = Imprimante::getChamps('champ_bdd');
+        $champ_site_installation_imprimante = Imprimante::getChamps('champ_site_installation');
+
         $query = "INSERT INTO copieurs
-        (" . Imprimante::getChamps('champ_num_serie') . "," .
-        Imprimante::getChamps('champ_modele') . "," .
-        Imprimante::getChamps('champ_bdd') . "," . Imprimante::getChamps('champ_site_installation') . ")
+        (`$champ_num_serie_imprimante`,`$champ_modele_imprimante`,$champ_bdd_imprimante,`$champ_site_installation_imprimante`)
         VALUES
         (:num_serie, :modele, :bdd, :site_installation)";
 

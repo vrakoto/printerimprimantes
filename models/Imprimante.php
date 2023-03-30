@@ -2,22 +2,22 @@
 namespace App;
 
 class Imprimante extends Driver {
-    protected static $champ_num_ordo = 'num_ordo';
-    protected static $champ_num_serie = 'num_serie';
-    protected static $champ_modele = 'modele';
-    protected static $champ_date_cde_minarm = 'date_cde_minarm';
-    protected static $champ_num_oracle = 'num_oracle';
+    protected static $champ_num_ordo = 'N° ORDO';
+    protected static $champ_num_serie = 'N° de Série';
+    protected static $champ_bdd = 'BDD';
+    protected static $champ_modele = 'Modele demandé';
+    protected static $champ_date_cde_minarm = 'DATE CDE MINARM';
+    protected static $champ_num_oracle = 'N° Saisie ORACLE';
     protected static $champ_config = 'Config';
     protected static $champ_hostname = 'HostName';
-    protected static $champ_mac = 'adresse_mac';
-    protected static $champ_reseau = 'reseau';
+    protected static $champ_mac = 'MAC@';
+    protected static $champ_reseau = 'réseau';
     protected static $champ_cp = 'CP INSTA';
     protected static $champ_dep = 'DEP INSTA';
     protected static $champ_adresse = 'adresse';
     protected static $champ_localisation = 'localisation';
-    protected static $champ_statut = 'statut';
-    protected static $champ_bdd = 'bdd';
-    protected static $champ_site_installation = 'site_installation';
+    protected static $champ_statut = 'STATUT PROJET';
+    protected static $champ_site_installation = "Site d'installation";
     protected static $champ_date_ajout = 'date_ajout';
 
     static function getChamps($champ): string
@@ -36,7 +36,7 @@ class Imprimante extends Driver {
                 <th>Statut Projet</th>
                 <th>BDD</th>
                 <th>Site d'installation</th>
-                <th>Date d'ajout</th>
+                <!-- <th>Date d'ajout</th> -->
             </tr>
         </thead>
 HTML;
@@ -49,7 +49,7 @@ HTML;
         $statut = htmlentities($lesCopieurs[self::$champ_statut]);
         $bdd = htmlentities($lesCopieurs[self::$champ_bdd]);
         $site_installation = htmlentities($lesCopieurs[self::$champ_site_installation]);
-        $date_ajout = convertDate(htmlentities($lesCopieurs[self::$champ_date_ajout]));
+        // $date_ajout = convertDate(htmlentities($lesCopieurs[self::$champ_date_ajout]));
 
         echo <<<HTML
         <tr>
@@ -59,7 +59,6 @@ HTML;
             <td>$statut</td>
             <td>$bdd</td>
             <td>$site_installation</td>
-            <td>$date_ajout</td>
         </tr>
 HTML;
     }
@@ -69,7 +68,8 @@ HTML;
      */
     static function getImprimante($num_serie): array
     {
-        $req = "SELECT * FROM copieurs WHERE " . self::$champ_num_serie . " LIKE :num_serie";
+        $champ_num_serie = self::$champ_num_serie;
+        $req = "SELECT * FROM copieurs WHERE `$champ_num_serie` LIKE :num_serie";
         $p = self::$pdo->prepare($req);
         $p->execute(['num_serie' => '%' . $num_serie . '%']);
         if ($p->rowCount() > 0) {
@@ -108,10 +108,11 @@ HTML;
     static function sansResponsable($bdd = ''): array
     {
         $champ_num_serie = self::$champ_num_serie;
-        $query = "SELECT * FROM copieurs WHERE " . $champ_num_serie . " NOT IN (SELECT " . $champ_num_serie . " FROM users_copieurs)";
+        $champ_num_serie_users_copieurs = UsersCopieurs::getChamps('champ_num_serie');
+        $query = "SELECT * FROM copieurs WHERE `$champ_num_serie` NOT IN (SELECT $champ_num_serie_users_copieurs FROM users_copieurs)";
         $options = [];
         if ($bdd !== '') {
-            $query = "SELECT * FROM copieurs WHERE " . self::$champ_bdd . " = :bdd AND " . $champ_num_serie . " NOT IN (SELECT " . $champ_num_serie . " FROM users_copieurs)";
+            $query = "SELECT * FROM copieurs WHERE " . self::$champ_bdd . " = :bdd AND `$champ_num_serie` NOT IN (SELECT $champ_num_serie_users_copieurs FROM users_copieurs)";
             $options = ['bdd' => $bdd];
         }
         $p = self::$pdo->prepare($query);
@@ -123,10 +124,11 @@ HTML;
     static function sansReleves3Mois($bdd = ''): array
     {
         $champ_num_serie = self::$champ_num_serie;
-        $query = "SELECT * FROM copieurs WHERE " . self::$champ_statut .  " = 'LIVRE' AND " . $champ_num_serie . " NOT IN ( SELECT " . $champ_num_serie . " FROM compteurs WHERE date_maj >= DATE_SUB(NOW(), INTERVAL 3 MONTH) )"; 
+        $champ_statut = self::$champ_statut;
+        $query = "SELECT * FROM copieurs WHERE `$champ_statut` = 'LIVRE' AND `$champ_num_serie` NOT IN ( SELECT `$champ_num_serie` FROM compteurs WHERE date_maj >= DATE_SUB(NOW(), INTERVAL 3 MONTH) )"; 
         $options = [];
         if ($bdd !== '') {
-            $query = "SELECT * FROM copieurs WHERE " . self::$champ_statut .  " = 'LIVRE' AND " . self::$champ_bdd . " = :bdd" . " AND " . $champ_num_serie . " NOT IN ( SELECT " . $champ_num_serie . " FROM compteurs WHERE date_maj >= DATE_SUB(NOW(), INTERVAL 3 MONTH) )"; 
+            $query = "SELECT * FROM copieurs WHERE `$champ_statut` = 'LIVRE' AND " . self::$champ_bdd . " = :bdd" . " AND `$champ_num_serie` NOT IN ( SELECT `$champ_num_serie` FROM compteurs WHERE date_maj >= DATE_SUB(NOW(), INTERVAL 3 MONTH) )"; 
             $options = ['bdd' => $bdd];
         }
         $p = self::$pdo->prepare($query);

@@ -43,13 +43,13 @@ if (!empty($_GET['num_serie'])) {
         </div>
         <div class="col-auto">
             <select name="bdd" class="form-select" onchange="this.form.submit()" id="bdd">
-                <?php foreach (BdD::getTousLesBDD() as $bdd) : $bdd = htmlentities($bdd['trigramme']) ?>
+                <?php foreach (BdD::getTousLesBDD() as $bdd) : $bdd = htmlentities($bdd[BdD::getChampBDD()]) ?>
                     <option value="<?= $bdd ?>" <?php if ($bdd_selectionne === $bdd) : ?>selected="selected" <?php endif ?>><?= $bdd ?></option>
                 <?php endforeach ?>
             </select>
         </div>
     </form>
-
+    
     <table id="table_compteurs" class="table table-striped personalTable">
         <?= Compteur::ChampsCompteur() ?>
         <tbody>

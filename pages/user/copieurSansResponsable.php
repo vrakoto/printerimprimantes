@@ -2,7 +2,6 @@
 
 use App\Imprimante;
 use App\User;
-use App\Compteur;
 ?>
 
 <div class="mt-5">

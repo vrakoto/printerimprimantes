@@ -37,6 +37,7 @@ if (!empty($_POST)) {
             } else {
                 $_SESSION['message']['error'] = "Une erreur interne a été rencontrée. Veuillez contacter l'administrateur du site.";
             }
+            var_dump($th);
             
         }
     } else {

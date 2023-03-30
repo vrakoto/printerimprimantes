@@ -28,6 +28,9 @@ if (!empty($_POST)) {
             }
         } catch (PDOException $th) {
             $erreur = "Erreur interne, veuillez contacter l'administrateur du site";
+            echo '<pre>';
+            var_dump($th);
+            echo '</pre>';
         }
     }
 }

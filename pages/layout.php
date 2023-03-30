@@ -22,10 +22,10 @@ $_SESSION['message'] = [];
     <link type="text/css" rel="stylesheet" href="/src/CSS/modal.css">
 
     <?php if (Driver::estConnecte()) : ?>
-        <?php if (User::getTheme() === "dark") : ?>
-            <link rel="stylesheet" href="/src/CSS/darkTheme/body.css">
-            <link rel="stylesheet" href="/src/CSS/darkTheme/navbar.css">
-        <?php endif ?>
+        <?php //if (User::getTheme() === "dark") : ?>
+            <!-- <link rel="stylesheet" href="/src/CSS/darkTheme/body.css">
+            <link rel="stylesheet" href="/src/CSS/darkTheme/navbar.css"> -->
+        <?php //endif ?>
     <?php endif ?>
 
     <link rel="stylesheet" href="/src/CSS/selectize/selectize.css">
@@ -75,13 +75,13 @@ $_SESSION['message'] = [];
             <ul class="bottom-links">
                 <li>
                     <a href="<?= $router->url('theme') ?>" class="link">
-                        <?php if (User::getTheme() === 'clair') : ?>
+                        <?php //if (User::getTheme() === 'clair') : ?>
                             <i class="fa-solid fa-moon"></i>
                             <span class="mx-2">Sombre</span>
-                        <?php else : ?>
+                        <?php //else : ?>
                             <i class="fa-solid fa-lightbulb"></i>
                             <span class="mx-2">Clair</span>
-                        <?php endif ?>
+                        <?php //endif ?>
                     </a>
                 </li>
                 <li><a href="compte" class="link"><i class="fa-solid fa-user"></i> <span class="mx-2">Mon Compte</span></a></li>
@@ -104,14 +104,6 @@ $_SESSION['message'] = [];
         </div> -->
 
         <span class="text-primary mx-3"><a href="<?= $router->url('home') ?>"><i class="fa-solid fa-house"></i></a> / <?= trim($_SERVER['REQUEST_URI'], '/') ?></span>
-
-        <?php
-        // echo '<pre>';
-        // print_r($match);
-        // var_dump($_SERVER);
-        // print_r($router);
-        // echo '</pre>';
-        ?>
 
         <?= $content ?? '' ?>
     </div>
