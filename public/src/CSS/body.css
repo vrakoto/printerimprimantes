@@ -37,3 +37,7 @@ body {
 thead th {
     font-weight: normal;
 }
+
+.highlightFirstRow {
+    background-color: green;
+}

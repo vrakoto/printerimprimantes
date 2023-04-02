@@ -118,13 +118,24 @@ function link_list_counters($urlRouter): string
 HTML;
 }
 
-function link_add_counter($urlRouter): string
+function link_ownersInMyArea($urlRouter): string
 {
     return <<<HTML
     <a href="$urlRouter" class="home_action text-center">
         <i class="fa-solid fa-book mx-2"></i>
-        <i class="fa-solid fa-pen"></i>
-        <h3>Ajouter un relevé</h3>
+        <i class="fa-solid fa-list"></i>
+        <h3>Responsables de mon périmètre</h3>
+    </a>
+HTML;
+}
+
+function link_list_owners($urlRouter): string
+{
+    return <<<HTML
+    <a href="$urlRouter" class="home_action text-center">
+        <i class="fa-solid fa-list mx-2"></i>
+        <i class="fa-solid fa-users"></i>
+        <h3>Liste des responsables</h3>
     </a>
 HTML;
 }

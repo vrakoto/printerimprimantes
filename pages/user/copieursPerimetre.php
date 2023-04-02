@@ -1,6 +1,5 @@
 <?php
 use App\Imprimante;
-use App\Corsic;
 use App\User;
 
 $title = "Copieurs Périmètre";
@@ -8,10 +7,10 @@ $title = "Copieurs Périmètre";
 $mesImprimantes = User::copieursPerimetre();
 ?>
 
-<div class="container">
+<div class="container mt-5">
     <h1>Copieurs du périmètre</h1>
     
-    <div class="mt-5">
+    <div class="mt-5 mb-0">
 
         <?php if (User::getRole() !== 2): ?>
 
@@ -29,66 +28,39 @@ $mesImprimantes = User::copieursPerimetre();
 
     </div>
 
-    <hr>
-    <div class="mt-4 row g-3 align-items-center mb-2">
+    <hr class="mt-5 mb-0">
+
+    <div class="mt-1 row g-3 align-items-center mb-2">
         <div class="col-auto">
-            <label for="table_search" class="col-form-label">Rechercher un copieur</label>
+            <label for="table_search_copieurs" class="col-form-label">Rechercher un copieur</label>
         </div>
         <div class="col-auto">
-            <input type="text" name="num_serie" class="form-control" id="table_search" placeholder="Insérer son numéro de série">
+            <input type="text" name="num_serie" class="form-control" id="table_search_copieurs" placeholder="Insérer son numéro de série">
         </div>
     </div>
+
+    <div class="row g-3 align-items-center mt-1">
+        <div class="col-auto">
+            <label for="table_imprimantes_select_nb_elements_par_pages">Nombre de résultats par page:</label>
+        </div>
+        <div class="col-auto">
+            <select class="form-select" id="table_imprimantes_select_nb_elements_par_pages">
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+    </div>
+
+    <hr>
 
     <table id="table_imprimantes" class="table table-striped personalTable" style="width:100%">
         <?= Imprimante::ChampsCopieur() ?>
-        <tbody>
-            <?php foreach ($mesImprimantes as $imprimante): ?>
-                <?= Imprimante::ValeursCopieur($imprimante) ?>
-            <?php endforeach ?>
-        </tbody>
+        <tbody></tbody>
     </table>
-
-
-    <style>
-        #modaldata tbody tr>td:last-of-type {
-            display: none;
-        }
-    </style>
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">User Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <table id="modaldata" class="table table-striped table-hover table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Office</th>
-                                <th>Age</th>
-                                <th>Start date</th>
-                                <th>Salary</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-
 </div>
+
+<script defer>
+    imprimante('/getImprimantesPerimetre');
+</script>

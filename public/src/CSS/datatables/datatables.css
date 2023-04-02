@@ -21,12 +21,15 @@
     border: 1px solid grey;
 }
 
-/* Custom Search Bar */
-.dataTables_filter {
-    display: none;
+.table_users_copieurs_wrapper {
+    float: right;
 }
 
 table thead tr {
     background-color: rgb(25, 123, 25);
     color: #FFF;
+}
+
+[id$='_info'] {
+    font-size: 1.3rem;
 }

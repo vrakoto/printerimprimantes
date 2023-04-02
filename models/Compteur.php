@@ -26,17 +26,17 @@ class Compteur extends Driver {
         return <<<HTML
         <thead>
             <tr>
-                <th></th>
+                <!-- <th></th> -->
                 <th>Numéro Série</th>
-                <th>Date de relevé</th>
                 <th>BDD</th>
+                <th>Date de relevé</th>
                 <th>101 Total</th>
                 <th>112 Total</th>
                 <th>113 Total</th>
                 <th>122 Total</th>
                 <th>123 Total</th>
-                <th>Mise à jour le</th>
                 <th>Ajouté par</th>
+                <th>Mise à jour le</th>
                 <th>Type de relevé</th>
             </tr>
         </thead>
@@ -66,15 +66,15 @@ HTML;
                     <!-- <a title="Consulter l'imprimante $num_serie (nouvel onglet)" href="imprimante/$num_serie" target="_blank" class="btn btn-primary "><i class="fa-solid fa-list"></i> -->
                 </td>
                 <td><a href="imprimante/$num_serie">$num_serie</a></td>
-                <td>$dateReleve</td>
                 <td>$bdd</td>
+                <td>$dateReleve</td>
                 <td>$total_101</td>
                 <td>$total_112</td>
                 <td>$total_113</td>
                 <td>$total_122</td>
                 <td>$total_123</td>
-                <td>$date_maj</td>
                 <td>$realNameUser</td>
+                <td>$date_maj</td>
                 <td>$type_releve</td>
             </tr>
 HTML;

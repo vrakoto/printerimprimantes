@@ -9,3 +9,9 @@
         order: 1;
     }
 } */
+
+@media screen and (max-height: 880px) {
+    nav {
+        overflow-y: scroll;
+    }
+}

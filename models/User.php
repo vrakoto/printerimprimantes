@@ -166,8 +166,7 @@ class User extends Driver {
 
         $query = "SELECT * FROM copieurs c
             JOIN users_copieurs uc on uc.`$champ_num_serie_users_copieurs` = c.`$champ_num_serie_imprimante`
-            WHERE $champ_id_user_users_copieurs = :id_profil
-            ORDER BY c.`$champ_num_serie_imprimante` ASC";
+            WHERE $champ_id_user_users_copieurs = :id_profil";
         
         $p = self::$pdo->prepare($query);
         $p->execute([

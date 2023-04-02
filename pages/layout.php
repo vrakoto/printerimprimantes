@@ -19,7 +19,6 @@ $_SESSION['message'] = [];
     <link type="text/css" rel="stylesheet" href="/src/CSS/body.css">
     <link type="text/css" rel="stylesheet" href="/src/CSS/accueil.css">
     <link type="text/css" rel="stylesheet" href="/src/CSS/navbar.css">
-    <link type="text/css" rel="stylesheet" href="/src/CSS/modal.css">
 
     <?php if (Driver::estConnecte()) : ?>
         <?php //if (User::getTheme() === "dark") : ?>
@@ -34,6 +33,12 @@ $_SESSION['message'] = [];
     <link type="text/css" rel="stylesheet" href="/src/CSS/responsive.css">
 
     <link rel="icon" href="/src/icon/print.png">
+
+    <script src="/src/JS/utils/jquery.js"></script>
+    <script src="/src/JS/utils/selectize.js"></script>
+    <script src="/src/JS/utils/datatables.js"></script>
+    <script src="/src/JS/utils/sortdt.js"></script>
+    <script src="/src/JS/main.js"></script>
 
     <title><?= $title ?? 'Sapollon' ?></title>
 </head>
@@ -51,7 +56,7 @@ $_SESSION['message'] = [];
             <ul class="middle-links">
                 <a href="/" class="link"><i class="fa-solid fa-house"></i> <span class="mx-2">Accueil</span></a>
 
-                <li class="hassubmenu mt-3 mb-3">
+                <li class="mt-3">
                     <a href="/menuCopieur" class="link"><i class="fa-solid fa-print"></i> <span class="mx-2">Suivi des Copieurs</span></a>
                     <ul class="container_submenu">
                         <a href="<?= $router->url('list_machines') ?>" class="submenu"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
@@ -62,7 +67,7 @@ $_SESSION['message'] = [];
                     </ul>
                 </li>
 
-                <li class="hassubmenu">
+                <li class="mt-3 mb-3">
                     <a href="/menuCompteurs" class="link"><i class="fa-solid fa-file"></i> <span class="mx-2">Suivi des Compteurs</span></a>
                     <ul class="container_submenu">
                         <a href="<?= $router->url('list_counters') ?>" class="submenu"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
@@ -70,19 +75,31 @@ $_SESSION['message'] = [];
                     </ul>
                 </li>
 
+                <li>
+                    <a href="/menuResponsables" class="link"><i class="fa-solid fa-users"></i> <span class="mx-2">Responsables</span></a>
+                    <ul class="container_submenu">
+                        <a href="<?= $router->url('list_owners') ?>" class="submenu"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
+                        <a href="<?= $router->url('owners_area') ?>" class="submenu"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">Du périmètre</span></a>
+                    </ul>
+                </li>
+
             </ul>
 
+            <hr class="text-white">
+            
             <ul class="bottom-links">
                 <li>
+                    <?php /*
                     <a href="<?= $router->url('theme') ?>" class="link">
-                        <?php //if (User::getTheme() === 'clair') : ?>
+                        <?php if (User::getTheme() === 'clair') : ?>
                             <i class="fa-solid fa-moon"></i>
                             <span class="mx-2">Sombre</span>
-                        <?php //else : ?>
+                        <?php else : ?>
                             <i class="fa-solid fa-lightbulb"></i>
                             <span class="mx-2">Clair</span>
-                        <?php //endif ?>
+                        <?php endif ?>
                     </a>
+                    */ ?>
                 </li>
                 <li><a href="compte" class="link"><i class="fa-solid fa-user"></i> <span class="mx-2">Mon Compte</span></a></li>
                 <li>
@@ -96,24 +113,10 @@ $_SESSION['message'] = [];
     </nav>
 
     <div class="body_content">
-        <!-- <div id="myModal" class="Modal is-hidden is-visuallyHidden">
-            <div class="Modal-content">
-                <span id="closeModal" class="Close">&times;</span>
-                <p>Simple Modal</p>
-            </div>
-        </div> -->
-
         <span class="text-primary mx-3"><a href="<?= $router->url('home') ?>"><i class="fa-solid fa-house"></i></a> / <?= trim($_SERVER['REQUEST_URI'], '/') ?></span>
 
         <?= $content ?? '' ?>
     </div>
 
-    <script src="/src/JS/utils/jquery.js"></script>
-    <script src="/src/JS/utils/selectize.js"></script>
-    <script src="/src/JS/utils/datatables.js"></script>
-    <script src="/src/JS/main.js"></script>
-    <script>
-    </script>
 </body>
-
 </html>

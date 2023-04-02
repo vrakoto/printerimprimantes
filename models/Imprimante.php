@@ -18,6 +18,9 @@ class Imprimante extends Driver {
     protected static $champ_localisation = 'localisation';
     protected static $champ_statut = 'STATUT PROJET';
     protected static $champ_site_installation = "Site d'installation";
+    protected static $champ_entite_beneficiaire = "Entité Bénéficiaire";
+    protected static $champ_credo_unite = "credo_unité";
+    protected static $champ_accessoires = "Accessoires";
     protected static $champ_date_ajout = 'date_ajout';
 
     static function getChamps($champ): string
@@ -27,16 +30,25 @@ class Imprimante extends Driver {
 
     static function ChampsCopieur(): string
     {
-        return <<<HTML
-        <thead>
+        /* <thead>
             <tr>
-                <th></th>
+                <!-- <th></th> -->
                 <th>Numéro Série</th>
                 <th>Modèle</th>
                 <th>Statut Projet</th>
                 <th>BDD</th>
                 <th>Site d'installation</th>
                 <!-- <th>Date d'ajout</th> -->
+            </tr>
+        </thead> */
+        return <<<HTML
+        <thead>
+            <tr>
+                <th>Numéro Série</th>
+                <th>Modèle</th>
+                <th>Statut Projet</th>
+                <th>BDD</th>
+                <th>Site d'installation</th>
             </tr>
         </thead>
 HTML;
