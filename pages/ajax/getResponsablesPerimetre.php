@@ -1,4 +1,7 @@
 <?php
+
+use App\User;
+
 $host = "localhost";
 $user = "root";
 $password = "";
@@ -19,6 +22,8 @@ try {
     $columnSortOrder = $_GET['order'][0]['dir']; // asc or desc
     $searchValue = htmlentities($_GET['search']['value']); // Search value
 
+    $bdd = User::getBDD();
+
     ## Search
     $searchQuery = " ";
     if ($searchValue != '') {
@@ -26,17 +31,22 @@ try {
     }
 
     ## Total number of records without filtering
-    $sel = $pdo->query("select count(*) as allcount from users_copieurs");
+    $sel = $pdo->query("SELECT count(*) as allcount FROM users_copieurs uc
+                        JOIN profil p on uc.responsable = p.id_profil WHERE p.BDD = '$bdd'");
     $records = $sel->fetch();
     $totalRecords = $records['allcount'];
 
     ## Total number of records with filtering
-    $sel = $pdo->query("SELECT count(*) as allcount from users_copieurs uc JOIN profil p on uc.responsable = p.id_profil WHERE 1 " . $searchQuery);
+    $sel = $pdo->query("SELECT count(*) as allcount FROM users_copieurs uc
+                        JOIN profil p on uc.responsable = p.id_profil WHERE p.BDD = '$bdd' " . $searchQuery);
     $records = $sel->fetch();
     $totalRecordwithFilter = $records['allcount'];
 
     ## Fetch records
-    $empQuery = "SELECT `grade-prenom-nom` as gpn, numéro_série as num_serie FROM users_copieurs uc JOIN profil p on uc.responsable = p.id_profil WHERE 1 " . $searchQuery . " ORDER BY " . $columnName . " " . $columnSortOrder . " limit " . $row . "," . $rowperpage;
+    $empQuery = "SELECT `grade-prenom-nom` as gpn, numéro_série as num_serie FROM users_copieurs uc
+                JOIN profil p on uc.responsable = p.id_profil WHERE p.BDD = '$bdd' "
+                . $searchQuery . "
+                ORDER BY " . $columnName . " " . $columnSortOrder . " limit " . $row . "," . $rowperpage;
     $empRecords = $pdo->query($empQuery);
     $data = [];
 

@@ -21,7 +21,6 @@ try {
     $columnSortOrder = $_GET['order'][0]['dir']; // asc or desc
     $searchValue = htmlentities($_GET['search']['value']); // Search value
 
-    $id_profil = User::getMonID();
     $bdd = User::getBDD();
 
     ## Search
@@ -33,28 +32,42 @@ try {
     }
 
     ## Total number of records without filtering
-    $sel = $pdo->query("SELECT count(*) as allcount FROM copieurs
-                        WHERE `STATUT PROJET` LIKE '1 - LIVRE' AND BDD = '$bdd' AND `N° de Série` NOT IN
-                        (SELECT `Numéro_série` FROM compteurs
-                        WHERE date_maj >= DATE_SUB(NOW(), INTERVAL 3 MONTH))");
+    $sel = $pdo->query("SELECT count(*) as allcount FROM copieurs c
+                        LEFT JOIN (
+                            SELECT Numéro_série, MAX(date_maj) as dernier_releve
+                            FROM compteurs
+                            WHERE BDD = '$bdd'
+                            GROUP BY Numéro_série
+                        ) co ON c.`N° de Série` = co.Numéro_série
+                        WHERE c.`STATUT PROJET` = '1 - LIVRE' AND c.BDD = 'BSL' AND (co.dernier_releve < DATE_SUB(NOW(), INTERVAL 3 MONTH) OR co.dernier_releve IS NULL)");
     $records = $sel->fetch();
     $totalRecords = $records['allcount'];
 
     ## Total number of records with filtering
-    $sel = $pdo->prepare("SELECT count(*) as allcount FROM copieurs
-                        WHERE `STATUT PROJET` LIKE '1 - LIVRE' AND BDD = '$bdd' AND `N° de Série` NOT IN
-                        (SELECT `Numéro_série` FROM compteurs
-                        WHERE date_maj >= DATE_SUB(NOW(), INTERVAL 3 MONTH))" . $searchQuery);
+    $sel = $pdo->prepare("SELECT count(*) as allcount FROM copieurs c
+                        LEFT JOIN (
+                            SELECT Numéro_série, MAX(date_maj) as dernier_releve
+                            FROM compteurs
+                            WHERE BDD = '$bdd'
+                            GROUP BY Numéro_série
+                        ) co ON c.`N° de Série` = co.Numéro_série
+                        WHERE c.`STATUT PROJET` = '1 - LIVRE' AND c.BDD = 'BSL' AND (co.dernier_releve < DATE_SUB(NOW(), INTERVAL 3 MONTH) OR co.dernier_releve IS NULL) " . $searchQuery);
     $sel->execute($option);
     $records = $sel->fetch();
     $totalRecordwithFilter = $records['allcount'];
-     
+
 
     ## Fetch records
-    $empQuery = "SELECT `N° de Série` as num_serie, `Modele demandé` as modele, `STATUT PROJET` as statut, `BDD` as bdd, `Site d'installation` as site_installation FROM copieurs
-                WHERE `STATUT PROJET` LIKE '1 - LIVRE' AND BDD = '$bdd' AND `N° de Série` NOT IN
-                (SELECT `Numéro_série` FROM compteurs
-                WHERE date_maj >= DATE_SUB(NOW(), INTERVAL 3 MONTH)) " . $searchQuery . " 
+    $empQuery = "SELECT c.`N° de Série` as num_serie, c.`Modele demandé` as modele, c.`STATUT PROJET` as statut, c.BDD as bdd, c.`Site d'installation` as site_installation
+                FROM copieurs c
+                LEFT JOIN (
+                    SELECT Numéro_série, MAX(date_maj) as dernier_releve
+                    FROM compteurs
+                    WHERE BDD = '$bdd'
+                    GROUP BY Numéro_série
+                ) co ON c.`N° de Série` = co.Numéro_série
+                WHERE c.`STATUT PROJET` = '1 - LIVRE' AND c.BDD = 'BSL' AND (co.dernier_releve < DATE_SUB(NOW(), INTERVAL 3 MONTH) OR co.dernier_releve IS NULL) "
+                . $searchQuery . " 
                 ORDER BY " . $columnName . " " . $columnSortOrder . " limit " . $row . "," . $rowperpage;
 
     $empRecords = $pdo->prepare($empQuery);

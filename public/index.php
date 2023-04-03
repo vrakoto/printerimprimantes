@@ -4,6 +4,7 @@ session_start();
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 use App\Driver;
 use App\Router;
+use App\User;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'elements' . DIRECTORY_SEPARATOR . 'helper.php';
 
@@ -28,8 +29,10 @@ if (Driver::estConnecte()) {
     $router->request('/liste_responsables', '/user/listeResponsables.php', 'list_owners');
     $router->request('/responsablesPerimetre', '/user/responsablesPerimetre.php', 'owners_area');
 
-    $router->request('/ajouterCopieurPerimetre', '/user/ajouterCopieurPerimetre.php', 'view_add_machine_area');
-    $router->request('/ajouterCopieurPerimetre', '/user/ajouterCopieurPerimetre.php', 'add_machine_area', 'POST');
+    if (User::getRole() === 4 || User::getRole() === 2) {
+        $router->request('/ajouterCopieurPerimetre', '/user/ajouterCopieurPerimetre.php', 'view_add_machine_area');
+        $router->request('/ajouterCopieurPerimetre', '/user/ajouterCopieurPerimetre.php', 'add_machine_area', 'POST');
+    }
 
     $router->request('/copieurSansResponsable', '/user/copieurSansResponsable.php', 'list_machines_without_owner');
     $router->request('/copieurSansReleve3Mois', '/user/copieurSansReleve3Mois.php', 'list_machines_without_counter_3_months');
@@ -44,11 +47,13 @@ if (Driver::estConnecte()) {
     $router->request('/getCompteursPerimetre', '/ajax/getCompteursPerimetre.php', 'ajax_get_compteurs_perimetre');
     $router->request('/ajouterReleve', '/ajax/ajouterReleve.php', 'add_counter', 'POST');
 
-    $router->request('/getUsersCopieurs', '/ajax/getUsersCopieurs.php', 'ajax_get_users_copieurs');
     $router->request('/getImprimantes', '/ajax/getImprimantes.php', 'ajax_get_imprimantes');
     $router->request('/getImprimantesPerimetre', '/ajax/getImprimantesPerimetre.php', 'ajax_get_imprimantes_perimetre');
     $router->request('/getImprimantesSansResponsable', '/ajax/getImprimantesSansResponsable.php', 'ajax_get_imprimantes_sans_responsables'); // perimetre
     $router->request('/getImprimantesSansReleve3Mois', '/ajax/getImprimantesSansReleve3Mois.php', 'ajax_get_imprimantes_sans_releve_3_mois'); // perimetre
+
+    $router->request('/getListeResponsables', '/ajax/getListeResponsables.php', 'ajax_get_users_copieurs');
+    $router->request('/getResponsablesPerimetre', '/ajax/getResponsablesPerimetre.php', 'ajax_get_responsables_perimetre');
     
     $router->request('/theme', '/user/theme.php', 'theme');
     $router->request('/compte', '/user/compte.php', 'my_account');

@@ -71,14 +71,17 @@ $hasFormMessage = !empty($_SESSION['message']);
 
     <hr class="mt-5">
 
-    <div class="row g-3 align-items-center">
+    <form class="row g-3 align-items-center" id="form_search_compteurs">
         <div class="col-auto">
             <label for="table_search_compteurs" class="col-form-label">Rechercher par numéro de série</label>
         </div>
         <div class="col-auto">
             <input type="text" class="form-control" id="table_search_compteurs" name="num_serie" placeholder="Saisir un numéro de série">
         </div>
-    </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+    </form>
 
     <div class="row g-3 align-items-center mt-1">
         <div class="col-auto">

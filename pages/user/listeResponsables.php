@@ -11,6 +11,9 @@ use App\UsersCopieurs;
         <div class="col-auto">
             <input type="text" class="form-control" id="table_search_users_copieurs" name="num_serie" placeholder="Saisir un élement">
         </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
     </div>
 
     <table id="table_users_copieurs" class="table table-striped personalTable">
@@ -20,5 +23,5 @@ use App\UsersCopieurs;
 </div>
 
 <script defer>
-    users_copieurs('/getUsersCopieurs')
+    users_copieurs('/getListeResponsables')
 </script>

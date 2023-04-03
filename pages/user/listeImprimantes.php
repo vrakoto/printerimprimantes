@@ -8,14 +8,17 @@ $title = "Liste des machines";
     
     <hr class="mt-5 mb-0">
 
-    <div class="mt-1 row g-3 align-items-center mb-2">
+    <form class="mt-1 row g-3 align-items-center mb-2">
         <div class="col-auto">
             <label for="table_search_copieurs" class="col-form-label">Rechercher un copieur</label>
         </div>
         <div class="col-auto">
             <input type="text" name="num_serie" class="form-control" id="table_search_copieurs" placeholder="Insérer son numéro de série">
         </div>
-    </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass "></i></button>
+        </div>
+    </form>
 
     <div class="row g-3 align-items-center mt-1">
         <div class="col-auto">

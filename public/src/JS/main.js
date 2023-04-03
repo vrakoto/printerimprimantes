@@ -76,8 +76,9 @@ function imprimante(url) {
     });
 
     // Search Bar pour les imprimantes
-    $('#table_search_copieurs').keyup(function () {
-        tableImprimante.search($(this).val()).draw();
+    $('form').submit(function (e) { 
+        e.preventDefault();
+        tableImprimante.search($('#table_search_copieurs').val()).draw();
     });
 }
 
@@ -118,8 +119,9 @@ function compteurs(url) {
     });
 
     // Search Bar pour les compteurs
-    $('#table_search_compteurs').keyup(function () {
-        tableCompteurs.search($(this).val()).draw();
+    $('#form_search_compteurs').submit(function (e) { 
+        e.preventDefault();
+        tableCompteurs.search($('#table_search_compteurs').val()).draw();
     });
 
     // Add event listener for opening and closing details

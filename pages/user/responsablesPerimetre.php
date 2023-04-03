@@ -22,5 +22,5 @@ use App\UsersCopieurs;
 </div>
 
 <script defer>
-    // users_copieurs('/getImprimantesSansResponsable')
+    users_copieurs('/getResponsablesPerimetre')
 </script>
