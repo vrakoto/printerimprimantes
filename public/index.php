@@ -29,7 +29,7 @@ if (Driver::estConnecte()) {
     $router->request('/liste_responsables', '/user/listeResponsables.php', 'list_owners');
     $router->request('/responsablesPerimetre', '/user/responsablesPerimetre.php', 'owners_area');
 
-    if (User::getRole() === 4 || User::getRole() === 2) {
+    if (User::getRole() !== 2) {
         $router->request('/ajouterCopieurPerimetre', '/user/ajouterCopieurPerimetre.php', 'view_add_machine_area');
         $router->request('/ajouterCopieurPerimetre', '/user/ajouterCopieurPerimetre.php', 'add_machine_area', 'POST');
     }

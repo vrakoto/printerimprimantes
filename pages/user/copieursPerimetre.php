@@ -8,24 +8,19 @@ $mesImprimantes = User::copieursPerimetre();
 ?>
 
 <div class="container mt-5">
-    <h1>Copieurs du périmètre</h1>
+    <h1>Copieurs de mon périmètre</h1>
     
     <div class="mt-5 mb-0">
-
         <?php if (User::getRole() !== 2): ?>
-
-            <?php //if (count(User::copieursPerimetrePasDansMaListe()) > 0): ?>
-            <a href="<?= $router->url('add_machine_area') ?>" class="btn btn-success" title="Ajouter un copieur existant dans mon périmètre">Ajouter un copieur dans mon périmètre</a>
+            <a href="<?= $router->url('view_add_machine_area') ?>" class="btn btn-success" title="Ajouter un copieur existant dans mon périmètre">Ajouter un copieur dans mon périmètre</a>
 
             <?php if (count($mesImprimantes) > 0): ?>
                 <a href="<?= $router->url('remove_machine_area') ?>" class="btn btn-warning" title="Retirer un copieur de mon périmètre">Retirer un copieur de mon périmètre</a>
             <?php endif ?>
 
         <?php else: ?>
-
             <a href="<?= $router->url('add_machine') ?>" class="btn btn-primary" title="Inscrire une nouvelle machine dans Sapollon">Inscrire un nouveau copieur</a>
         <?php endif ?>
-
     </div>
 
     <hr class="mt-5 mb-0">
@@ -58,7 +53,7 @@ $mesImprimantes = User::copieursPerimetre();
 
     <hr>
 
-    <table id="table_imprimantes" class="table table-striped personalTable" style="width:100%">
+    <table id="table_imprimantes" class="table table-striped table-bordered personalTable">
         <?= Imprimante::ChampsCopieur() ?>
         <tbody></tbody>
     </table>

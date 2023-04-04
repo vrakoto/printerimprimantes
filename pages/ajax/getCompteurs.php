@@ -53,6 +53,7 @@ try {
         $num_serie = htmlentities($row['Numéro_série']);
         $data[] = [
             "num_serie" => "<a href='imprimante/$num_serie'>$num_serie</a>",
+            // "num_serie" => $num_serie,
             "bdd" => $row['BDD'],
             "date_releve" => convertDate($row['Date']),
             "101" => $row['101_Total_1'],

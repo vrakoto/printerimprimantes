@@ -10,7 +10,7 @@ $hasFormMessage = !empty($_SESSION['message']);
 
 <div class="container" id="container">
 
-    <h1 class="mt-5">Compteurs du périmètre</h1>
+    <h1 class="mt-5">Compteurs de mon périmètre</h1>
     <div id="message"></div>
     <br>
 
@@ -98,7 +98,7 @@ $hasFormMessage = !empty($_SESSION['message']);
     </div>
 
     <?php if (count(Compteur::getLesRelevesParBDD()) > 0): ?>
-        <table id="table_compteurs" class="table table-striped personalTable">
+        <table id="table_compteurs" class="table table-striped table-bordered personalTable">
             <?= Compteur::ChampsCompteur() ?>
              <tbody></tbody>
         </table>

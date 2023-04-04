@@ -2,7 +2,9 @@
 use App\UsersCopieurs;
 ?>
 
-<div class="container">
+<div class="container mt-5">
+
+    <h1>Responsables du périmètre</h1>
 
     <div class="mt-5 row g-3 align-items-center">
         <div class="col-auto">
@@ -14,7 +16,7 @@ use App\UsersCopieurs;
     </div>
 
     <div class="mt-5">
-        <table id="table_users_copieurs" class="table table-striped personalTable">
+        <table id="table_users_copieurs" class="table table-striped table-bordered personalTable">
             <?= UsersCopieurs::ChampUsersCopieurs() ?>
             <tbody></tbody>
         </table>

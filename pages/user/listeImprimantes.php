@@ -36,7 +36,7 @@ $title = "Liste des machines";
 
     <hr>
 
-    <table id="table_imprimantes" class="table table-striped personalTable">
+    <table id="table_imprimantes" class="table table-striped table-bordered personalTable">
         <?= Imprimante::ChampsCopieur() ?>
         <tbody></tbody>
     </table>

@@ -29,7 +29,7 @@ $title = "Liste total des compteurs";
         </div>
     </div>
 
-    <table id="table_compteurs" class="table table-striped personalTable">
+    <table id="table_compteurs" class="table table-striped table-bordered personalTable">
         <?= Compteur::ChampsCompteur() ?>
         <tbody></tbody>
     </table>

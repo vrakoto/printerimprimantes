@@ -54,32 +54,32 @@ $_SESSION['message'] = [];
             <hr class="text-white">
 
             <ul class="middle-links">
-                <a href="/" class="link"><i class="fa-solid fa-house"></i> <span class="mx-2">Accueil</span></a>
+                <a href="<?= $router->url('home') ?>" class="link <?= $match['name'] === "home" ? " active" : "" ?>"><i class="fa-solid fa-house"></i> <span class="mx-2">Accueil</span></a>
 
                 <li class="mt-3">
-                    <a href="/menuCopieur" class="link"><i class="fa-solid fa-print"></i> <span class="mx-2">Suivi des Copieurs</span></a>
+                    <a href="<?= $router->url('menu_machine') ?>" class="link <?= $match['name'] === "menu_machine" ? " active" : "" ?>"><i class="fa-solid fa-print"></i> <span class="mx-2">Suivi des Copieurs</span></a>
                     <ul class="container_submenu">
-                        <a href="<?= $router->url('list_machines') ?>" class="submenu"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
-                        <a href="<?= $router->url('machines_area') ?>" class="submenu"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">Du périmètre</span></a>
-                        <a href="<?= $router->url('view_add_machine') ?>" class="submenu"><i class="fa-solid fa-pen"></i> <span class="mx-2">Ajouter</span></a>
-                        <a href="<?= $router->url('list_machines_without_owner') ?>" class="submenu"><i class="fa-solid fa-user-slash"></i> <span class="mx-2">Sans Responsable</span></a>
-                        <a href="<?= $router->url('list_machines_without_counter_3_months') ?>" class="submenu"><i class="fa-solid fa-user-slash"></i> <span class="mx-2">Sans Relevé depuis 3 mois</span></a>
+                        <a href="<?= $router->url('list_machines') ?>" class="submenu <?= $match['name'] === "list_machines" ? " active" : "" ?>"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
+                        <a href="<?= $router->url('machines_area') ?>" class="submenu <?= $match['name'] === "machines_area" ? " active" : "" ?>"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">De mon périmètre</span></a>
+                        <a href="<?= $router->url('view_add_machine') ?>" class="submenu <?= $match['name'] === "view_add_machine" ? " active" : "" ?>"><i class="fa-solid fa-pen"></i> <span class="mx-2">Inscrire</span></a>
+                        <a href="<?= $router->url('list_machines_without_owner') ?>" class="submenu <?= $match['name'] === "list_machines_without_owner" ? " active" : "" ?>"><i class="fa-solid fa-user-slash"></i> <span class="mx-2">Sans Responsable</span></a>
+                        <a href="<?= $router->url('list_machines_without_counter_3_months') ?>" class="submenu <?= $match['name'] === "list_machines_without_counter_3_months" ? " active" : "" ?>"><i class="fa-solid fa-user-slash"></i> <span class="mx-2">Sans Relevé depuis 3 mois</span></a>
                     </ul>
                 </li>
 
                 <li class="mt-3 mb-3">
-                    <a href="/menuCompteurs" class="link"><i class="fa-solid fa-file"></i> <span class="mx-2">Suivi des Compteurs</span></a>
+                    <a href="<?= $router->url('menu_machine_counters') ?>" class="link <?= $match['name'] === "menu_machine_counters" ? " active" : "" ?>"><i class="fa-solid fa-file"></i> <span class="mx-2">Suivi des Compteurs</span></a>
                     <ul class="container_submenu">
-                        <a href="<?= $router->url('list_counters') ?>" class="submenu"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
-                        <a href="<?= $router->url('counters_area') ?>" class="submenu"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">Du périmètre</span></a>
+                        <a href="<?= $router->url('list_counters') ?>" class="submenu <?= $match['name'] === "list_counters" ? " active" : "" ?>"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
+                        <a href="<?= $router->url('counters_area') ?>" class="submenu <?= $match['name'] === "counters_area" ? " active" : "" ?>"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">De mon périmètre</span></a>
                     </ul>
                 </li>
 
                 <li>
-                    <a href="/menuResponsables" class="link"><i class="fa-solid fa-users"></i> <span class="mx-2">Responsables</span></a>
+                    <a href="<?= $router->url('menu_machines_owners') ?>" class="link <?= $match['name'] === "menu_machines_owners" ? " active" : "" ?>"><i class="fa-solid fa-users"></i> <span class="mx-2">Responsables</span></a>
                     <ul class="container_submenu">
-                        <a href="<?= $router->url('list_owners') ?>" class="submenu"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
-                        <a href="<?= $router->url('owners_area') ?>" class="submenu"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">Du périmètre</span></a>
+                        <a href="<?= $router->url('list_owners') ?>" class="submenu <?= $match['name'] === "list_owners" ? " active" : "" ?>"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
+                        <a href="<?= $router->url('owners_area') ?>" class="submenu <?= $match['name'] === "owners_area" ? " active" : "" ?>"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">De mon périmètre</span></a>
                     </ul>
                 </li>
 

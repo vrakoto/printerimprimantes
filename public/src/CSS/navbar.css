@@ -6,24 +6,6 @@ nav {
     background-color: green;
 }
 
-.middle-links, .bottom-links {
-    margin-top: 30px;
-    list-style: none;
-}
-
-.middle-links {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: auto;
-}
-
-.bottom-links {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    margin-top: auto;
-}
-
 .nav_header i {
     font-size: 3rem;
     color: rgba(255, 255, 255, .8);
@@ -31,6 +13,7 @@ nav {
     padding: 10px;
     border-radius: 50%;
     cursor: pointer;
+    margin-top: 10px;
 }
 .nav_header i:hover {
     color: #FFF;
@@ -41,13 +24,34 @@ nav {
     letter-spacing: 2px;
 }
 
+.middle-links, .bottom-links {
+    list-style: none;
+}
+
+.middle-links {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: auto;
+}
+
+.middle-links .active {
+    color: #FFF;
+}
+
+.bottom-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
 nav a {
     text-decoration: none;
 }
 
 nav .link {
     display: inline-block;
-    color: rgba(255, 255, 255, .6);
+    color: rgba(255, 255, 255, .5);
     cursor: pointer;
     font-size: 1.3rem;
     padding: 10px 0;

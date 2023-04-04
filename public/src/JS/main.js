@@ -193,8 +193,13 @@ function users_copieurs(url) {
     });
 
     // Search Bar for Users_Copieurs
-    $('#table_search_users_copieurs').keydown(function () {
+    /* $('#table_search_users_copieurs').keydown(function () {
         tableUsersCopieurs.search($(this).val()).draw();
+    }); */
+
+    $('#form_search_users_copieurs').submit(function (e) {
+        e.preventDefault();
+        tableUsersCopieurs.search($('#input_search_users_copieurs').val()).draw();
     });
 }
 

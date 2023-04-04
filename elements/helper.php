@@ -66,7 +66,7 @@ function link_machinesInMyArea($urlRouter): string
     <a href="$urlRouter" class="home_action text-center">
         <i class="fa-solid fa-print mx-2"></i>
         <i class="fa-solid fa-location-dot"></i>
-        <h3>Copieurs du périmètre</h3>
+        <h3>Copieurs de mon périmètre</h3>
     </a>
 HTML;
 }
@@ -89,7 +89,7 @@ function link_add_machine($urlRouter): string
         <a href="$urlRouter" class="home_action text-center">
             <i class="fa-solid fa-print mx-2"></i>
             <i class="fa-solid fa-pen"></i>
-            <h3>Inscrire une machine</h3>
+            <h3>Inscrire une machine inexistante</h3>
         </a>
 HTML;
     }
@@ -102,7 +102,7 @@ function link_counters_area($urlRouter): string
     <a href="$urlRouter" class="home_action text-center">
         <i class="fa-solid fa-book mx-2"></i>
         <i class="fa-solid fa-location-dot"></i>
-        <h3>Compteurs du perimètre</h3>
+        <h3>Compteurs de mon périmètre</h3>
     </a>
 HTML;
 }
@@ -136,6 +136,28 @@ function link_list_owners($urlRouter): string
         <i class="fa-solid fa-list mx-2"></i>
         <i class="fa-solid fa-users"></i>
         <h3>Liste des responsables</h3>
+    </a>
+HTML;
+}
+
+function link_machines_without_owner($urlRouter): string
+{
+    return <<<HTML
+    <a href="$urlRouter" class="home_action text-center">
+        <i class="fa-solid fa-print mx-2"></i>
+        <i class="fa-solid fa-user-slash"></i>
+        <h3>Copieurs Sans Responsable</h3>
+    </a>
+HTML;
+}
+
+function link_machines_without_counter_3_months($urlRouter): string
+{
+    return <<<HTML
+    <a href="$urlRouter" class="home_action text-center">
+        <i class="fa-solid fa-book mx-2"></i>
+        <i class="fa-sharp fa-solid fa-circle-exclamation"></i>
+        <h3>Copieurs Sans Relevé depuis 3 Mois</h3>
     </a>
 HTML;
 }

@@ -18,7 +18,11 @@
 
 
 .personalTable {
-    border: 1px solid grey;
+    text-align: center;
+    border: 1px #000;
+}
+.personalTable thead th {
+    text-align: center !important;
 }
 
 .table_users_copieurs_wrapper {

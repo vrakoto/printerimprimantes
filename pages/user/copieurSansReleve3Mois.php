@@ -17,7 +17,7 @@ use App\Imprimante;
         </div>
     </form>
 
-    <table id="table_imprimantes" class="table table-striped personalTable">
+    <table id="table_imprimantes" class="table table-striped table-bordered personalTable">
         <?= Imprimante::ChampsCopieur() ?>
         <tbody></tbody>
     </table>
