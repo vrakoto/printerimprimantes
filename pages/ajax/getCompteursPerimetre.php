@@ -27,7 +27,7 @@ try {
     $option = [];
     if (!empty($searchValue)) {
         $searchQuery = " AND (`Numéro_série` LIKE :num_serie) ";
-        $option = ['num_serie' => '%' . $searchValue . '%'];
+        $option = ['num_serie' => $searchValue . '%'];
     }
 
     ## Total number of records without filtering
@@ -50,7 +50,17 @@ try {
     
 
     ## Fetch records
-    $empQuery = "SELECT * FROM compteurs 
+    $empQuery = "SELECT `Numéro_série` as num_serie,
+                BDD as bdd,
+                Date as date_releve,
+                `101_Total_1` as total_101,
+                `112_Total` as total_112,
+                `113_Total` as total_113,
+                `122_Total` as total_122,
+                `123_Total` as total_123,
+                modif_par, date_maj,
+                type_relevé as type_releve
+                FROM compteurs 
                 WHERE modif_par IN
                 (SELECT responsable FROM users_copieurs
                 WHERE responsable = '$id') " . $searchQuery . " 
@@ -60,19 +70,19 @@ try {
     $data = [];
 
     while ($row = $empRecords->fetch()) {
-        $num_serie = htmlentities($row['Numéro_série']);
+        $num_serie = htmlentities($row['num_serie']);
         $data[] = [
             "num_serie" => "<a href='imprimante/$num_serie'>$num_serie</a>",
-            "bdd" => $row['BDD'],
-            "date_releve" => convertDate($row['Date']),
-            "101" => $row['101_Total_1'],
-            "112" => $row['112_Total'],
-            "113" => $row['113_Total'],
-            "122" => $row['122_Total'],
-            "123" => $row['123_Total'],
+            "bdd" => $row['bdd'],
+            "date_releve" => convertDate($row['date_releve']),
+            "total_101" => $row['total_101'],
+            "total_112" => $row['total_112'],
+            "total_113" => $row['total_113'],
+            "total_122" => $row['total_122'],
+            "total_123" => $row['total_123'],
             "modif_par" => $row['modif_par'],
             "date_maj" => convertDate($row['date_maj'], true),
-            "type_releve" => $row['type_relevé']
+            "type_releve" => $row['type_releve']
         ];
     }
 

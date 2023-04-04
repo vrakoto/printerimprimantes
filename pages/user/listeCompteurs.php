@@ -3,17 +3,20 @@ use App\Compteur;
 $title = "Liste total des compteurs";
 ?>
 
-<div class="container">
-    <h1 class="mt-5">Liste des compteurs</h1>
+<div class="container mt-5">
+    <h1>Liste des compteurs</h1>
 
-    <div class="mt-5 row g-3 align-items-center">
+    <form class="mt-5 row g-3 align-items-center" id="form_search_compteurs">
         <div class="col-auto">
-            <label for="table_search_compteurs" class="col-form-label">Rechercher un copieur :</label>
+            <label for="table_search_compteurs" class="col-form-label">Rechercher par numéro de série</label>
         </div>
         <div class="col-auto">
-            <input type="text" class="form-control" id="table_search_compteurs" name="num_serie" placeholder="Insérer son numéro de série">
+            <input type="text" class="form-control" id="table_search_compteurs" name="num_serie" placeholder="Saisir un numéro de série">
         </div>
-    </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+    </form>
 
     <div class="row g-3 align-items-center mt-3">
         <div class="col-auto">

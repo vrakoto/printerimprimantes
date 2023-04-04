@@ -8,7 +8,7 @@ $title = "Liste des machines";
     
     <hr class="mt-5 mb-0">
 
-    <form class="mt-1 row g-3 align-items-center mb-2">
+    <form class="mt-1 row g-3 align-items-center mb-2" id="form_search_copieurs">
         <div class="col-auto">
             <label for="table_search_copieurs" class="col-form-label">Rechercher un copieur</label>
         </div>

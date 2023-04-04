@@ -103,7 +103,7 @@ $_SESSION['message'] = [];
                 </li>
                 <li><a href="compte" class="link"><i class="fa-solid fa-user"></i> <span class="mx-2">Mon Compte</span></a></li>
                 <li>
-                    <form action="deconnexion" method="post">
+                    <form action="<?= $router->url('logout') ?>" method="post">
                         <button type="submit" class="link logout"><i class="fa-solid fa-right-from-bracket"></i> <span class="mx-2"> Deconnexion</button>
                     </form>
                 </li>

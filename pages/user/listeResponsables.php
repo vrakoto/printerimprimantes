@@ -18,10 +18,12 @@ use App\UsersCopieurs;
         </div>
     </form>
 
-    <table id="table_users_copieurs" class="table table-striped table-bordered personalTable">
-        <?= UsersCopieurs::ChampUsersCopieurs() ?>
-        <tbody></tbody>
-    </table>
+    <div class="mt-5">
+        <table id="table_users_copieurs" class="table table-striped table-bordered personalTable">
+            <?= UsersCopieurs::ChampUsersCopieurs() ?>
+            <tbody></tbody>
+        </table>
+    </div>
 </div>
 
 <script defer>

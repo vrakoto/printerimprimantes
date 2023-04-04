@@ -76,7 +76,7 @@ function imprimante(url) {
     });
 
     // Search Bar pour les imprimantes
-    $('form').submit(function (e) { 
+    $('#form_search_copieurs').submit(function (e) { 
         e.preventDefault();
         tableImprimante.search($('#table_search_copieurs').val()).draw();
     });
@@ -97,11 +97,11 @@ function compteurs(url) {
             { data: "num_serie" },
             { data: "bdd" },
             { data: "date_releve" },
-            { data: "101" },
-            { data: "112" },
-            { data: "113" },
-            { data: "122" },
-            { data: "123" },
+            { data: "total_101" },
+            { data: "total_112" },
+            { data: "total_113" },
+            { data: "total_122" },
+            { data: "total_123" },
             { data: "modif_par" },
             { data: "date_maj" },
             { data: "type_releve" }
