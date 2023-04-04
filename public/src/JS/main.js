@@ -1,8 +1,6 @@
-function format(d) {
-    console.log(d);
-
+function format(num_ordo) {
     return (
-        `<a class="btn btn-info" href="imprimante/">Voir les informations du copieur</a>`
+        `<a class="btn btn-primary mx-2" href="imprimante/${num_ordo}">Voir les informations du copieur</a>`
     )
     /* return (
         '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
@@ -31,7 +29,7 @@ function imprimante(url) {
     const tableImprimante = $('#table_imprimantes').DataTable({
         // dom: '<"top"i>rt<"bottom"flp><"clear">',
         dom: '<"top-left"f>i<"top-right"p>rt',
-        order: [[0, "DESC"]],
+        order: [[1, "DESC"]],
         processing: true,
         serverSide: true,
         serverMethod: 'get',
@@ -44,11 +42,25 @@ function imprimante(url) {
             infoFiltered: " (Filtré sur un total de  _MAX_ copieurs)",
         },
         columns: [
+            {
+                data: null,
+                // defaultContent: "<button>Edit</button><button>Delete</button>",
+                defaultContent: '',
+                orderable: false,
+                className: 'dt-control'
+            },
+            /* {data: "N° de Série"},
+            {data: "BDD"},
+            {data: "Modele demandé"},
+            {data: "STATUT PROJET"},
+            {data: "Site d'installation"},
+            {data: "N° ORDO"}, */
             {data: "num_serie"},
+            {data: "bdd"},
             {data: "modele"},
             {data: "statut"},
-            {data: "bdd"},
-            {data: "site_installation"}
+            {data: "site_installation"},
+            {data: "num_ordo"}
         ],
         initComplete: function () {
             var table = $('#table_imprimantes').DataTable();
@@ -63,7 +75,7 @@ function imprimante(url) {
                     tr.removeClass('shown');
                 } else {
                     // Open this row's details
-                    row.child(format(row.data())).show();
+                    row.child(format(row.data()['num_ordo'])).show();
                     tr.addClass('shown');
                 }
             });
@@ -75,7 +87,7 @@ function imprimante(url) {
         tableImprimante.page.len(newPageLength).draw();
     });
 
-    // Search Bar pour les imprimantes
+    // Recherche copieur
     $('#form_search_copieurs').submit(function (e) { 
         e.preventDefault();
         tableImprimante.search($('#table_search_copieurs').val()).draw();

@@ -5,7 +5,7 @@ use App\Imprimante;
 <div class="container mt-5">
     <h1>Liste des copieurs sans relevés depuis 3 Mois</h1>
 
-    <form class="mt-4 row g-3 align-items-center mb-2" id="form_imprimante">
+    <form class="mt-4 row g-3 align-items-center mb-2" id="form_search_copieurs">
         <div class="col-auto">
             <label for="table_search_copieurs" class="col-form-label">Rechercher un copieur</label>
         </div>

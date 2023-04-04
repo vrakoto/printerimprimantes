@@ -18,6 +18,7 @@ if (Driver::estConnecte()) {
     $router->request('/menuResponsables', '/user/menuResponsables.php', 'menu_machines_owners');
     
     $router->request('/imprimante/[*:num]', '/user/imprimante.php', 'machine_details');
+    $router->request('/imprimante/[*:num]', '/user/imprimante.php', 'edit_machine_details', 'POST');
     
     $router->request('/liste_imprimantes', '/user/listeImprimantes.php', 'list_machines');
     

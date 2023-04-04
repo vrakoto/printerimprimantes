@@ -4,10 +4,15 @@ $title = "Inscrire une machine";
 
 $lesErreurs = [];
 if (!empty($_POST)) {
+    $num_ordo = $_POST['num_ordo'];
     $num_serie = htmlentities($_POST['num_serie']);
     $modele = htmlentities($_POST['modele']);
     $bdd = Coordsic::getBDD();
     $site_insta = htmlentities($_POST['site_insta']);
+
+    if (trim($num_ordo) === '') {
+        $lesErreurs[] = "Le numéro d'ordo n'est pas renseigné";
+    }
 
     if (trim($num_serie) === '') {
         $lesErreurs[] = "Le numéro de série n'est pas renseigné";
@@ -27,7 +32,8 @@ if (!empty($_POST)) {
 
     if (empty($lesErreurs)) {
         try {
-            Coordsic::inscrireCopieur($num_serie, $modele, $bdd, $site_insta);
+            $num_ordo = (int)$num_ordo;
+            Coordsic::inscrireCopieur($num_ordo, $num_serie, $modele, $bdd, $site_insta);
             $_SESSION['message']['success'] = 'Imprimante ajoutée avec succès.';
             header('Location:/inscrireCopieur');
             exit();
@@ -37,8 +43,6 @@ if (!empty($_POST)) {
             } else {
                 $_SESSION['message']['error'] = "Une erreur interne a été rencontrée. Veuillez contacter l'administrateur du site.";
             }
-            var_dump($th);
-            
         }
     } else {
         $_SESSION['message']['error'] = $lesErreurs;
@@ -56,6 +60,11 @@ if (!empty($_POST)) {
         <i>Votre machine n'est pas répertoriée dans Sapollon ? Inscrivez-la dès maintenant.</i>
 
         <div class="mt-5 mb-3">
+            <label for="num_ordo" class="form-label">N° ORDO<span class="obligatoire">*</span></label>
+            <input type="number" class="form-control" name="num_ordo" id="num_ordo" placeholder="Saisir le numéro d'ordo" autofocus>
+        </div>
+
+        <div class="mb-3">
             <label for="num_serie" class="form-label">Numéro de Série<span class="obligatoire">*</span></label>
             <input type="text" class="form-control" name="num_serie" id="num_serie" placeholder="Saisir le numéro de série" autofocus>
         </div>

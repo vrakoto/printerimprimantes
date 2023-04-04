@@ -44,11 +44,13 @@ class Imprimante extends Driver {
         return <<<HTML
         <thead>
             <tr>
+                <th></th>
                 <th>Numéro Série</th>
+                <th>BDD</th>
                 <th>Modèle</th>
                 <th>Statut Projet</th>
-                <th>BDD</th>
                 <th>Site d'installation</th>
+                <th>N° ORDO</th>
             </tr>
         </thead>
 HTML;
@@ -75,15 +77,56 @@ HTML;
 HTML;
     }
 
+    static function editImprimante(int $num_ordo,$oracle,$config,$modele,$hostname,$reseau,$mac,$entite_beneficiaire,$credo_unite, int $cp, int $dep,$adresse,$site_installation,$localisation,$accessoires): bool
+    {
+        $req = "UPDATE `copieurs` SET
+        `N° Saisie ORACLE`= :oracle,
+        `Config`= :config,
+        `Modele demandé`= :modele,
+        `HostName`= :hostname,
+        `réseau`= :reseau,
+        `MAC@`= :mac,
+        `Entité Bénéficiaire`= :entite_beneficiaire,
+        `credo_unité`= :credo_unite,
+        `CP INSTA`= :cp,
+        `DEP INSTA`= :dep,
+        `adresse`= :adresse,
+        `Site d'installation`= :site_installation,
+        `localisation`= :localisation,
+        `last_user`= :id_profil,
+        `Accessoires`= :accessoires
+        WHERE `N° ORDO` = :num_ordo";
+        $p = self::$pdo->prepare($req);
+        
+        return $p->execute([
+            'num_ordo' => $num_ordo,
+            'oracle' => $oracle,
+            'config' => $config,
+            'modele' => $modele,
+            'hostname' => $hostname,
+            'reseau' => $reseau,
+            'mac' => $mac,
+            'entite_beneficiaire' => $entite_beneficiaire,
+            'credo_unite' => $credo_unite,
+            'cp' => $cp,
+            'dep' => $dep,
+            'adresse' => $adresse,
+            'site_installation' => $site_installation,
+            'localisation' => $localisation,
+            'accessoires' => $accessoires,
+            'id_profil' => User::getMonID()
+        ]);
+    }
+
     /**
      * Récupère une imprimante spécifique
      */
-    static function getImprimante($num_serie): array
+    static function getImprimante(int $num_ordo): array
     {
-        $champ_num_serie = self::$champ_num_serie;
-        $req = "SELECT * FROM copieurs WHERE `$champ_num_serie` LIKE :num_serie";
+        $champ_num_ordo = self::$champ_num_ordo;
+        $req = "SELECT * FROM copieurs WHERE `$champ_num_ordo` = :num_ordo";
         $p = self::$pdo->prepare($req);
-        $p->execute(['num_serie' => '%' . $num_serie . '%']);
+        $p->execute(['num_ordo' => $num_ordo]);
         if ($p->rowCount() > 0) {
             return $p->fetch();
         }
