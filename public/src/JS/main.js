@@ -2,26 +2,6 @@ function format(num_ordo) {
     return (
         `<a class="btn btn-primary mx-2" href="imprimante/${num_ordo}">Voir les informations du copieur</a>`
     )
-    /* return (
-        '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-        '<tr>' +
-        '<td>Full name:</td>' +
-        '<td>' +
-        d.num_serie +
-        '</td>' +
-        '</tr>' +
-        '<tr>' +
-        '<td>Extension number:</td>' +
-        '<td>' +
-        d.extn +
-        '</td>' +
-        '</tr>' +
-        '<tr>' +
-        '<td>Extra info:</td>' +
-        '<td>And any further details here (images etc)...</td>' +
-        '</tr>' +
-        '</table>'
-    ); */
 }
 
 
