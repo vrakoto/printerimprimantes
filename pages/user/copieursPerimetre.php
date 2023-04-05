@@ -25,7 +25,7 @@ $mesImprimantes = User::copieursPerimetre();
 
     <hr class="mt-5 mb-0">
 
-    <form class="mt-4 row g-3 align-items-center mb-2" id="form_search_copieurs">
+    <form class="mt-2 row g-3 align-items-center mb-2" id="form_search_copieurs">
         <div class="col-auto">
             <label for="table_search_copieurs" class="col-form-label">Rechercher un copieur</label>
         </div>
@@ -51,7 +51,7 @@ $mesImprimantes = User::copieursPerimetre();
         </div>
     </div>
 
-    <hr>
+    <hr class="mb-3">
 
     <table id="table_imprimantes" class="table table-striped table-bordered personalTable">
         <?= Imprimante::ChampsCopieur() ?>

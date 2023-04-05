@@ -29,7 +29,7 @@ function imprimante(url) {
     const tableImprimante = $('#table_imprimantes').DataTable({
         // dom: '<"top"i>rt<"bottom"flp><"clear">',
         dom: '<"top-left"f>i<"top-right"p>rt',
-        order: [[1, "DESC"]],
+        order: [[2, "DESC"]],
         processing: true,
         serverSide: true,
         serverMethod: 'get',
@@ -44,17 +44,10 @@ function imprimante(url) {
         columns: [
             {
                 data: null,
-                // defaultContent: "<button>Edit</button><button>Delete</button>",
                 defaultContent: '',
                 orderable: false,
                 className: 'dt-control'
             },
-            /* {data: "N° de Série"},
-            {data: "BDD"},
-            {data: "Modele demandé"},
-            {data: "STATUT PROJET"},
-            {data: "Site d'installation"},
-            {data: "N° ORDO"}, */
             {data: "num_serie"},
             {data: "bdd"},
             {data: "modele"},
@@ -204,14 +197,34 @@ function users_copieurs(url) {
         ]
     });
 
-    // Search Bar for Users_Copieurs
-    /* $('#table_search_users_copieurs').keydown(function () {
-        tableUsersCopieurs.search($(this).val()).draw();
-    }); */
-
     $('#form_search_users_copieurs').submit(function (e) {
         e.preventDefault();
         tableUsersCopieurs.search($('#input_search_users_copieurs').val()).draw();
+    });
+}
+
+function gestion_utilisateurs() {
+    const tableProfil = $('#table_users_area').DataTable({
+        dom: '<"top-left"f>i<"top-right"p>rt',
+        order: [[1, "DESC"]],
+        processing: true,
+        serverSide: true,
+        serverMethod: 'get',
+        ajax: {
+            'url': '/getGestionUtilisateurs'
+        },
+        columns: [
+            { data: "gpn" },
+            { data: "bdd"},
+            { data: "courriel"},
+            { data: "role"},
+            { data: "unite" },
+        ]
+    });
+
+    $('#form_search_users_area').submit(function (e) {
+        e.preventDefault();
+        tableProfil.search($('#input_search_users_area').val()).draw();
     });
 }
 

@@ -97,6 +97,8 @@ $hasFormMessage = !empty($_SESSION['message']);
         </div>
     </div>
 
+    <hr class="mb-3">
+
     <?php if (count(Compteur::getLesRelevesParBDD()) > 0): ?>
         <table id="table_compteurs" class="table table-striped table-bordered personalTable">
             <?= Compteur::ChampsCompteur() ?>

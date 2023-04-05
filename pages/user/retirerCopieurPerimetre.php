@@ -29,7 +29,7 @@ if (isset($_POST['num_serie'])) {
 
 ?>
 
-<div class="container">
+<div class="container mt-5">
     <form class="border p-3" id="add_releve" method="post">
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger">
@@ -40,14 +40,14 @@ if (isset($_POST['num_serie'])) {
         <?= messageForm() ?>
 
         <h1>Retirer un copieur de mon périmètre</h1>
-        <!-- <i>Remarque : cette action a pour seul effet de retirer un copieur de votre périmètre, mais ne supprime pas intégralement ce dernier de l'application Sapollon. 
+        <i>Remarque : cette action a pour seul effet de retirer un copieur de votre périmètre, mais ne supprime pas entièrement ce dernier de l'application Sapollon. 
             <br>
-            Si vous avez besoin de supprimer définitivement un copieur, veuillez contacter un Administrateur Sapollon.
-        </i> -->
+            Si vous avez besoin de supprimer définitivement un copieur, veuillez contacter un Administrateur ou un COORDSIC de votre périmètre afin qu'il puisse le mettre en RETRAIT.
+        </i>
         <div class="mt-5 mb-3">
             <label for="num_serie" class="form-label">Saisir le Numéro de Série <span class="obligatoire">*</span></label>
             <select class="selectize" name="num_serie" id="num_serie">
-                <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero['num_serie']) ?>
+                <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero['N° de Série']) ?>
                     <option value="<?= $num ?>"><?= $num ?></option>
                 <?php endforeach ?>
             </select>

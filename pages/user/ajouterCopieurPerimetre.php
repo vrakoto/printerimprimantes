@@ -40,7 +40,7 @@ if (isset($_POST['num_serie'])) {
         <h1>Ajouter un copieur dans mon périmètre (<?= User::getBDD() ?>)</h1>
         <i>Remarque : le copieur que vous souhaitez ajouter dans votre périmètre doit être préalablement enregistré dans Sapollon.
             <br>
-            Si le copieur ne figure pas dans la liste déroulante ci-dessous, veuillez contacter un COORDSIC ou un administrateur Sapollon pour qu'il puisse l'ajouter.
+            Si le copieur ne figure pas dans la liste déroulante ci-dessous, veuillez contacter un COORDSIC ou un administrateur Sapollon pour qu'il puisse l'inscrire.
         </i>
         <div class="mt-5 mb-3">
             <label for="num_serie" class="form-label">Sélectionnez ou saisir le numéro de série <span class="obligatoire">*</span></label>

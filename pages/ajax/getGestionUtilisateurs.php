@@ -27,16 +27,9 @@ $order_direction = $_GET['order'][0]['dir'];
 
 $search_value = htmlentities($_GET['search']['value']) ?? '';
 
-$queryCount = "SELECT count(*) as allcount FROM copieurs c
-        LEFT JOIN (
-            SELECT Numéro_série, MAX(date_maj) as dernier_releve
-            FROM compteurs
-            WHERE BDD = '$bdd'
-            GROUP BY Numéro_série
-        ) co ON c.`N° de Série` = co.Numéro_série
-        WHERE c.`STATUT PROJET` = '1 - LIVRE'
-        AND c.BDD = '$bdd'
-        AND (co.dernier_releve < DATE_SUB(NOW(), INTERVAL 3 MONTH) OR co.dernier_releve IS NULL)";
+$queryCount = "SELECT COUNT(*) as allcount FROM profil
+                WHERE BDD = '$bdd'";
+$querySearch = " AND `grade-prenom-nom` LIKE :search_value";
 
 ## Total number of records without filtering
 $sel = $pdo->query($queryCount);
@@ -45,28 +38,21 @@ $total_records = $records['allcount'];
 
 
 // Comptage du nombre total de résultats correspondants à la recherche
-$stmt_count = $pdo->prepare($queryCount . " AND `N° de Série` LIKE :search_value");
-$stmt_count->bindValue(':search_value', "{$search_value}%", PDO::PARAM_STR);
+$stmt_count = $pdo->prepare($queryCount . $querySearch);
+$stmt_count->bindValue(':search_value', "%{$search_value}%", PDO::PARAM_STR);
 $stmt_count->execute();
 $row_count = $stmt_count->fetch();
 $total_filtered = $row_count['allcount'];
 
 // Construction de la requête SQL avec une requête préparée
-$stmt = $pdo->prepare("SELECT c.`N° ORDO` as num_ordo, c.`N° de Série` as num_serie, c.`Modele demandé` as modele, c.`STATUT PROJET` as statut, c.`BDD` as bdd, c.`Site d'installation` as site_installation 
-                    FROM copieurs c
-                    LEFT JOIN (
-                        SELECT Numéro_série, MAX(date_maj) as dernier_releve
-                        FROM compteurs
-                        WHERE BDD = '$bdd'
-                        GROUP BY Numéro_série
-                    ) co ON c.`N° de Série` = co.Numéro_série
-                    WHERE c.`STATUT PROJET` = '1 - LIVRE'
-                    AND c.BDD = 'BSL'
-                    AND (co.dernier_releve < DATE_SUB(NOW(), INTERVAL 3 MONTH) OR co.dernier_releve IS NULL)
-                    AND c.`N° de Série` LIKE :search_value
+$stmt = $pdo->prepare("SELECT p.`grade-prenom-nom` as gpn, p.`BDD` as bdd, p.`Courriel` as courriel, ul.userlevelname as role, p.`Unité` as unite
+                    FROM profil p
+                    JOIN userlevels ul on ul.userlevelid = p.role
+                    WHERE BDD = '$bdd'
+                    $querySearch
                     ORDER BY `$order_column_name` $order_direction
                     LIMIT :start, :length");
-$stmt->bindValue(':search_value', "{$search_value}%", PDO::PARAM_STR);
+$stmt->bindValue(':search_value', "%{$search_value}%", PDO::PARAM_STR);
 $stmt->bindValue(':start', $start, PDO::PARAM_INT);
 $stmt->bindValue(':length', $length, PDO::PARAM_INT);
 $stmt->execute();

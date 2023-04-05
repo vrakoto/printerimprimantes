@@ -30,17 +30,6 @@ class Imprimante extends Driver {
 
     static function ChampsCopieur(): string
     {
-        /* <thead>
-            <tr>
-                <!-- <th></th> -->
-                <th>Numéro Série</th>
-                <th>Modèle</th>
-                <th>Statut Projet</th>
-                <th>BDD</th>
-                <th>Site d'installation</th>
-                <!-- <th>Date d'ajout</th> -->
-            </tr>
-        </thead> */
         return <<<HTML
         <thead>
             <tr>

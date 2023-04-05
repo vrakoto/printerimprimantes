@@ -6,7 +6,9 @@ $title = "Liste total des compteurs";
 <div class="container mt-5">
     <h1>Liste des compteurs</h1>
 
-    <form class="mt-5 row g-3 align-items-center" id="form_search_compteurs">
+    <hr class="mt-5">
+
+    <form class="row g-3 align-items-center" id="form_search_compteurs">
         <div class="col-auto">
             <label for="table_search_compteurs" class="col-form-label">Rechercher par numéro de série</label>
         </div>
@@ -31,6 +33,8 @@ $title = "Liste total des compteurs";
             </select>
         </div>
     </div>
+
+    <hr class="mb-3">
 
     <table id="table_compteurs" class="table table-striped table-bordered personalTable">
         <?= Compteur::ChampsCompteur() ?>

@@ -132,7 +132,20 @@ class User extends Driver {
         ]);
     }
 
-    
+    static function getChampsUser(): string
+    {
+        return <<<HTML
+        <thead>
+            <tr>
+                <th>Grade Prénom Nom</th>
+                <th>BDD</th>
+                <th>Courriel</th>
+                <th>Rôle</th>
+                <th>Unité</th>
+            </tr>
+        </thead>
+HTML;
+    }
 
 
     static function getLesRelevesMonPerimetre(): array

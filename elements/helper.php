@@ -122,8 +122,8 @@ function link_ownersInMyArea($urlRouter): string
 {
     return <<<HTML
     <a href="$urlRouter" class="home_action text-center">
-        <i class="fa-solid fa-book mx-2"></i>
-        <i class="fa-solid fa-list"></i>
+        <i class="fa-solid fa-users mx-2"></i>
+        <i class="fa-solid fa-location-dot"></i>
         <h3>Responsables de mon périmètre</h3>
     </a>
 HTML;
@@ -158,6 +158,17 @@ function link_machines_without_counter_3_months($urlRouter): string
         <i class="fa-solid fa-book mx-2"></i>
         <i class="fa-sharp fa-solid fa-circle-exclamation"></i>
         <h3>Copieurs Sans Relevé depuis 3 Mois</h3>
+    </a>
+HTML;
+}
+
+function link_users_area($urlRouter): string
+{
+    return <<<HTML
+    <a href="$urlRouter" class="home_action text-center">
+        <i class="fa-solid fa-file"></i>
+        <i class="fa-solid fa-user"></i>
+        <h3>Gestion des utilisateurs</h3>
     </a>
 HTML;
 }

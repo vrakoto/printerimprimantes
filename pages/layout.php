@@ -76,10 +76,11 @@ $_SESSION['message'] = [];
                 </li>
 
                 <li>
-                    <a href="<?= $router->url('menu_machines_owners') ?>" class="link <?= $match['name'] === "menu_machines_owners" ? " active" : "" ?>"><i class="fa-solid fa-users"></i> <span class="mx-2">Responsables</span></a>
+                    <a href="<?= $router->url('menu_machines_owners') ?>" class="link <?= $match['name'] === "menu_machines_owners" ? " active" : "" ?>"><i class="fa-solid fa-users"></i> <span class="mx-2">Administration</span></a>
                     <ul class="container_submenu">
-                        <a href="<?= $router->url('list_owners') ?>" class="submenu <?= $match['name'] === "list_owners" ? " active" : "" ?>"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
-                        <a href="<?= $router->url('owners_area') ?>" class="submenu <?= $match['name'] === "owners_area" ? " active" : "" ?>"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">De mon périmètre</span></a>
+                        <a href="<?= $router->url('list_owners') ?>" class="submenu <?= $match['name'] === "list_owners" ? " active" : "" ?>"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste des Responsables</span></a>
+                        <a href="<?= $router->url('owners_area') ?>" class="submenu <?= $match['name'] === "owners_area" ? " active" : "" ?>"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">Responsables du périmètre</span></a>
+                        <a href="<?= $router->url('view_users_area') ?>" class="submenu <?= $match['name'] === "view_users_area" ? " active" : "" ?>"><i class="fa-solid fa-user-tag"></i> <span class="mx-2">Gestion des utilisateurs</span></a>
                     </ul>
                 </li>
 

@@ -55,6 +55,9 @@ if (Driver::estConnecte()) {
 
     $router->request('/getListeResponsables', '/ajax/getListeResponsables.php', 'ajax_get_users_copieurs');
     $router->request('/getResponsablesPerimetre', '/ajax/getResponsablesPerimetre.php', 'ajax_get_responsables_perimetre');
+
+    $router->request('/gestion_utilisateurs', '/user/gestionUtilisateurs.php', 'view_users_area');
+    $router->request('/getGestionUtilisateurs', '/ajax/getGestionUtilisateurs.php', 'ajax_get_users_area');
     
     $router->request('/theme', '/user/theme.php', 'theme');
     $router->request('/compte', '/user/compte.php', 'my_account');
