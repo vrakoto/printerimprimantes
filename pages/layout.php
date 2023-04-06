@@ -38,6 +38,11 @@ $_SESSION['message'] = [];
     <script src="/src/JS/utils/selectize.js"></script>
     <script src="/src/JS/utils/datatables.js"></script>
     <script src="/src/JS/utils/sortdt.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.ui.position.js"></script>
+
     <script src="/src/JS/main.js"></script>
 
     <title><?= $title ?? 'Sapollon' ?></title>

@@ -215,6 +215,30 @@ HTML;
         ]);
     }
 
+    static function ajouterDansPerimetre($num_serie): bool
+    {
+        $query = "INSERT INTO users_copieurs
+        (" . UsersCopieurs::getChamps('champ_id_user') . "," . UsersCopieurs::getChamps('champ_num_serie') . ")
+        VALUES
+        (:id_profil, :num_serie)";
+
+        $p = self::$pdo->prepare($query);
+        return $p->execute([
+            'id_profil' => self::getMonID(),
+            'num_serie' => $num_serie
+        ]);
+    }
+
+    static function retirerDansPerimetre($num_serie): bool
+    {
+        $query = "DELETE FROM users_copieurs WHERE " . UsersCopieurs::getChamps('champ_id_user') . " = :id_user AND " . UsersCopieurs::getChamps('champ_num_serie') . " = :num_serie";
+        $p = self::$pdo->prepare($query);
+        return $p->execute([
+            'id_user' => self::getMonID(),
+            'num_serie' => $num_serie
+        ]);
+    }
+
     static function deconnexion(): void
     {
         unset($_SESSION['user']);

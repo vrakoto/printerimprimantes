@@ -9,13 +9,13 @@ $mesImprimantes = User::copieursPerimetre();
 
 <div class="container mt-5">
     <h1>Copieurs de mon périmètre</h1>
+    <div id="message"></div>
     
     <div class="mt-5 mb-0">
         <?php if (User::getRole() !== 2): ?>
-            <a href="<?= $router->url('view_add_machine_area') ?>" class="btn btn-success" title="Ajouter un copieur existant dans mon périmètre">Ajouter un copieur dans mon périmètre</a>
+            <a href="<?= $router->url('view_add_machine_area') ?>" class="btn btn-success" title="Ajouter un copieur dans mon périmètre">Ajouter un copieur dans mon périmètre</a>
 
             <?php if (count($mesImprimantes) > 0): ?>
-                <a href="<?= $router->url('remove_machine_area') ?>" class="btn btn-warning" title="Retirer un copieur de mon périmètre">Retirer un copieur de mon périmètre</a>
             <?php endif ?>
 
         <?php else: ?>

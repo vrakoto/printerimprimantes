@@ -1,3 +1,7 @@
+<!-- <form action="test" method="post">
+  <input type="submit" value="Télécharger CSV">
+</form> -->
+
 <h3 class="text-center mt-5">Copieurs</h3>
 <div class="d-flex justify-content-around flex-wrap">
     <?= link_list_machines($router->url('list_machines')) ?>

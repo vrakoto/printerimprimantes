@@ -17,7 +17,7 @@ if (isset($_POST['num_serie'])) {
 
     if (empty($error)) {
         try {
-            Corsic::ajouterDansPerimetre($num_serie);
+            User::ajouterDansPerimetre($num_serie);
             $_SESSION['message'] = ['success' => "Le copieur " . $num_serie . " a bien été ajouté dans votre périmètre"];
             header('Location:/ajouterCopieurPerimetre');
             exit();

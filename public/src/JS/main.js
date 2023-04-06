@@ -28,12 +28,12 @@ function imprimante(url) {
                 orderable: false,
                 className: 'dt-control'
             },
-            {data: "num_serie"},
-            {data: "bdd"},
-            {data: "modele"},
-            {data: "statut"},
-            {data: "site_installation"},
-            {data: "num_ordo"}
+            { data: "num_serie" },
+            { data: "bdd" },
+            { data: "modele" },
+            { data: "statut" },
+            { data: "site_installation" },
+            { data: "num_ordo" }
         ],
         initComplete: function () {
             var table = $('#table_imprimantes').DataTable();
@@ -61,9 +61,64 @@ function imprimante(url) {
     });
 
     // Recherche copieur
-    $('#form_search_copieurs').submit(function (e) { 
+    $('#form_search_copieurs').submit(function (e) {
         e.preventDefault();
         tableImprimante.search($('#table_search_copieurs').val()).draw();
+    });
+
+    $('#table_imprimantes tbody').on('contextmenu', 'tr', function (e) {
+        e.preventDefault();
+
+        
+        let tr = $(this).closest('tr');
+        let row = $('#table_imprimantes').DataTable().row(tr);
+        var {num_ordo, num_serie} = row.data();
+        
+        // Crée un menu contextuel avec des options personnalisées
+        const selector = 'tbody tr'
+        $.contextMenu('update', {
+            selector: selector,
+            items: {
+                "view": {
+                    name: "Informations de l'imprimante",
+                    callback: function () {
+                        window.location.href = `imprimante/${num_ordo}`;
+                    }
+                },
+                "view_counters": {
+                    name: "Consulter ses relevés",
+                    callback: function () {
+
+                    }
+                },
+                "remove_machine_area": {
+                    name: "Retirer ce copieur de mon périmètre",
+                    callback: function () {
+                        $.ajax({
+                            type: "post",
+                            url: "/retirerCopieurPerimetre",
+                            data: "num_serie=" + num_serie,
+                            success: function (e) {
+                                $('#message').empty();
+                                tableImprimante.ajax.reload();
+                                if (e.length <= 0) {
+                                    $(selector).trigger('contextmenu:hide')
+                                    $('#message').attr("class", "alert alert-success");
+                                    $('#message').append(`Le copieur ${num_serie} a bien été retiré de votre périmètre.`)
+                                } else {
+                                    $('#message').attr("class", "alert alert-danger");
+                                    $('#message').append(e)
+                                }
+                            },
+                            error: function() {
+                                $('#message').attr("class", "alert alert-danger");
+                                $('#message').append("Impossible de trouver la requete");
+                            }
+                        });
+                    }
+                }
+            }
+        });
     });
 }
 
@@ -104,7 +159,7 @@ function compteurs(url) {
     });
 
     // Search Bar pour les compteurs
-    $('#form_search_compteurs').submit(function (e) { 
+    $('#form_search_compteurs').submit(function (e) {
         e.preventDefault();
         tableCompteurs.search($('#table_search_compteurs').val()).draw();
     });
@@ -195,9 +250,9 @@ function gestion_utilisateurs() {
         },
         columns: [
             { data: "gpn" },
-            { data: "bdd"},
-            { data: "courriel"},
-            { data: "role"},
+            { data: "bdd" },
+            { data: "courriel" },
+            { data: "role" },
             { data: "unite" },
         ]
     });

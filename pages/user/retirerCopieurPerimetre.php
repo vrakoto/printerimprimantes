@@ -1,5 +1,5 @@
 <?php
-use App\Corsic;
+use App\User;
 
 $title = "Retirer Copieur Perimètre";
 $lesNumeros = Corsic::copieursPerimetre();
@@ -14,7 +14,7 @@ if (isset($_POST['num_serie'])) {
 
     if (empty($error)) {
         try {
-            Corsic::retirerDansPerimetre($num_serie);
+            User::retirerDansPerimetre($num_serie);
             $_SESSION['message'] = ['success' => "Le copieur " . $num_serie . " a bien été retiré de votre périmètre"];
             header('Location:/retirerCopieurPerimetre');
             exit();

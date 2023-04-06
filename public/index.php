@@ -13,6 +13,8 @@ $router = new Router($VUES);
 
 if (Driver::estConnecte()) {
     $router->request('/', '/user/accueil.php', 'home');
+    $router->request('/test', '/user/test.php', 'test', 'POST');
+
     $router->request('/menuCopieur', '/user/menuCopieur.php', 'menu_machine');
     $router->request('/menuCompteurs', '/user/menuCompteurs.php', 'menu_machine_counters');
     $router->request('/menuResponsables', '/user/menuResponsables.php', 'menu_machines_owners');
@@ -38,8 +40,9 @@ if (Driver::estConnecte()) {
     $router->request('/copieurSansResponsable', '/user/copieurSansResponsable.php', 'list_machines_without_owner');
     $router->request('/copieurSansReleve3Mois', '/user/copieurSansReleve3Mois.php', 'list_machines_without_counter_3_months');
 
-    $router->request('/retirerCopieurPerimetre', '/user/retirerCopieurPerimetre.php', 'view_remove_machine_area');
-    $router->request('/retirerCopieurPerimetre', '/user/retirerCopieurPerimetre.php', 'remove_machine_area', 'POST');
+    // $router->request('/retirerCopieurPerimetre', '/user/retirerCopieurPerimetre.php', 'view_remove_machine_area');
+    // $router->request('/retirerCopieurPerimetre', '/user/retirerCopieurPerimetre.php', 'remove_machine_area', 'POST');
+    $router->request('/retirerCopieurPerimetre', '/ajax/retirerCopieurPerimetre.php', 'ajax_remove_machine_area', 'POST');
     
     $router->request('/inscrireCopieur', '/user/inscrireCopieur.php', 'view_add_machine');
     $router->request('/inscrireCopieur', '/user/inscrireCopieur.php', 'add_machine', 'POST');

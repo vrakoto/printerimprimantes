@@ -1,6 +1,7 @@
 <?php
 namespace App;
 use PDO;
+use App\User;
 
 class AjaxController extends Driver {
     private $position;
@@ -23,6 +24,10 @@ class AjaxController extends Driver {
 
             case 3:
                 return '%' . $this->getProperty()['search_value'] . '%';
+            break;
+
+            case 4:
+                return $this->getProperty()['search_value'];
             break;
         }
     }
@@ -87,5 +92,16 @@ class AjaxController extends Driver {
         }
         
         return json_encode($output);
+    }
+
+    function removeCopieurPerimetre($num_serie): bool
+    {
+        $id_profil = User::getMonID();
+        $query = "DELETE FROM users_copieurs WHERE responsable = :id_profil AND `numéro_série` LIKE :num_serie";
+        $p = self::$pdo->prepare($query);
+        return $p->execute([
+            'id_profil' => $id_profil,
+            'num_serie' => $num_serie
+        ]);
     }
 }
