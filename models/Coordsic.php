@@ -26,4 +26,22 @@ class Coordsic extends User {
             'site_installation' => $site_insta
         ]); 
     }
+
+    static function creerUtilisateur($bdd, $gpn, $courriel, $role, $mdp, $unite): bool
+    {
+        $query = "INSERT INTO profil
+        (BDD, `grade-prenom-nom`, `Courriel`, `role`, `mdp`, `Unité`)
+        VALUES
+        (:bdd, :gpn, :courriel, :role, :mdp, :unite)";
+
+        $p = self::$pdo->prepare($query);
+        return $p->execute([
+            'bdd' => $bdd,
+            'gpn' => $gpn,
+            'courriel' => $courriel,
+            'role' => $role,
+            'mdp' => $mdp,
+            'unite' => $unite
+        ]); 
+    }
 }

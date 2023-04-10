@@ -26,7 +26,6 @@ class Compteur extends Driver {
         return <<<HTML
         <thead>
             <tr>
-                <!-- <th></th> -->
                 <th>Numéro Série</th>
                 <th>BDD</th>
                 <th>Date de relevé</th>
@@ -40,43 +39,6 @@ class Compteur extends Driver {
                 <th>Type de relevé</th>
             </tr>
         </thead>
-HTML;
-    }
-
-
-    static function ValeursCompteur(array $lesReleves): void
-    {
-        $num_serie = htmlentities($lesReleves[self::$champ_num_serie]);
-        $dateReleveNonConvert = htmlentities($lesReleves[self::$champ_date_releve]);
-        $dateReleve = convertDate($dateReleveNonConvert);
-        $bdd = htmlentities($lesReleves[self::$champ_bdd]);
-        $total_101 = (int)$lesReleves[self::$champ_total_101];
-        $total_112 = (int)$lesReleves[self::$champ_total_112];
-        $total_113 = (int)$lesReleves[self::$champ_total_113];
-        $total_122 = (int)$lesReleves[self::$champ_total_122];
-        $total_123 = (int)$lesReleves[self::$champ_total_123];
-        $date_maj = DateTime::createFromFormat('Y-m-d H:i:s', ($lesReleves[self::$champ_date_maj]))->format('d/m/Y H:i:s');
-        
-        $realNameUser = self::releveUserName($num_serie, $dateReleveNonConvert) ?? 'Un administrateur';
-        $type_releve = htmlentities($lesReleves[self::$champ_type_releve]);
-
-        echo <<<HTML
-            <tr>
-                <td class="dt-control">
-                    <!-- <a title="Consulter l'imprimante $num_serie (nouvel onglet)" href="imprimante/$num_serie" target="_blank" class="btn btn-primary "><i class="fa-solid fa-list"></i> -->
-                </td>
-                <td><a href="imprimante/$num_serie">$num_serie</a></td>
-                <td>$bdd</td>
-                <td>$dateReleve</td>
-                <td>$total_101</td>
-                <td>$total_112</td>
-                <td>$total_113</td>
-                <td>$total_122</td>
-                <td>$total_123</td>
-                <td>$realNameUser</td>
-                <td>$date_maj</td>
-                <td>$type_releve</td>
-            </tr>
 HTML;
     }
 
@@ -101,20 +63,6 @@ HTML;
         return $name;
     }
 
-    static function relevesAddedThisMonth(): array
-    {
-        $query = "SELECT * FROM compteurs WHERE " . self::$champ_bdd . " = :bdd
-                AND YEAR(" . self::$champ_date_maj . ") = YEAR(CURDATE())
-                AND MONTH(" . self::$champ_date_maj . ") = MONTH(CURDATE())
-                ORDER BY " . self::$champ_date_maj . " DESC";
-        $p = self::$pdo->prepare($query);
-        $p->execute([
-            'bdd' => User::getBDD()
-        ]); 
-
-        return $p->fetchAll();
-    }
-
     static function getLesRelevesParBDD($bdd = NULL): array
     {
         if ($bdd === NULL) {
@@ -133,7 +81,10 @@ HTML;
 
     static function searchCompteurByNumSerie($num_serie): array
     {
-        $req = "SELECT * FROM compteurs WHERE " . self::$champ_num_serie . " LIKE :num_serie";
+        $req = "SELECT c.Numéro_série, c.BDD, DATE_FORMAT(`Date`, '%d/%m/%Y') as `Date`, 101_Total_1, 112_Total, 113_Total, 122_Total, 123_Total, p.`grade-prenom-nom` as modif_par, DATE_FORMAT(date_maj, '%d/%m/%Y %H:%i:%s') as date_maj, type_relevé
+                FROM compteurs c
+                LEFT JOIN profil p on p.id_profil = c.modif_par
+                WHERE c.Numéro_série LIKE :num_serie";
         $p = self::$pdo->prepare($req);
         $p->execute(['num_serie' => '%' . $num_serie . '%']);
         return $p->fetchAll();

@@ -6,6 +6,7 @@ use App\User;
 
 $lesNumeros = User::copieursPerimetre();
 $hasFormMessage = !empty($_SESSION['message']);
+$liste = "Compteurs du périmètre";
 ?>
 
 <div class="container" id="container">
@@ -85,10 +86,10 @@ $hasFormMessage = !empty($_SESSION['message']);
 
     <div class="row g-3 align-items-center mt-1">
         <div class="col-auto">
-            <label for="table_compteurs_select_nb_elements_par_pages">Nombre de résultats par page:</label>
+            <label for="table_select_nb_elements_par_pages">Nombre de résultats par page:</label>
         </div>
         <div class="col-auto">
-            <select class="form-select" id="table_compteurs_select_nb_elements_par_pages">
+            <select class="form-select" id="table_select_nb_elements_par_pages">
                 <option value="10" selected>10</option>
                 <option value="25">25</option>
                 <option value="50">50</option>
@@ -99,8 +100,13 @@ $hasFormMessage = !empty($_SESSION['message']);
 
     <hr class="mb-3">
 
+    <span class="mt-2" id="export-csv"></span>
+    <span class="mt-2" id="export-excel"></span>
+    <span id="export-pdf"></span>
+    <button id="columns_plus">Afficher plus</button>
+
     <?php if (count(Compteur::getLesRelevesParBDD()) > 0): ?>
-        <table id="table_compteurs" class="table table-striped table-bordered personalTable">
+        <table id="table_compteurs" class="table table-striped table-bordered personalTable table_compteurs_perimetre" data-table="getCompteursPerimetre">
             <?= Compteur::ChampsCompteur() ?>
              <tbody></tbody>
         </table>
@@ -108,7 +114,3 @@ $hasFormMessage = !empty($_SESSION['message']);
         <h4 class="mt-4 text-center">Aucun relevé</h4>
     <?php endif ?>
 </div>
-
-<script>
-    compteurs('/getCompteursPerimetre')
-</script>

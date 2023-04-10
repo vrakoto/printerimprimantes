@@ -33,36 +33,29 @@ class Imprimante extends Driver {
         return <<<HTML
         <thead>
             <tr>
-                <th></th>
                 <th>Numéro Série</th>
                 <th>BDD</th>
                 <th>Modèle</th>
                 <th>Statut Projet</th>
                 <th>Site d'installation</th>
                 <th>N° ORDO</th>
+                <th>DATE CDE MINARM</th>
+                <th>Config</th>
+                <th>N° Oracle</th>
+                <th>N° OPP SFDC</th>
+                <th>HostName</th>
+                <th>Réseau</th>
+                <th>Adresse MAC@</th>
+                <th>Entité Bénéficiaire</th>
+                <th>Localisation</th>
+                <th>CP Insta</th>
+                <th>DEP Insta</th>
+                <th>Adresse</th>
+                <th>Credo Unité</th>
+                <th>ServiceUF</th>
+                <th>Accessoires</th>
             </tr>
         </thead>
-HTML;
-    }
-
-    static function ValeursCopieur(array|string $lesCopieurs): void
-    {
-        $num_serie = htmlentities($lesCopieurs[self::$champ_num_serie]);
-        $modele = htmlentities($lesCopieurs[self::$champ_modele]);
-        $statut = htmlentities($lesCopieurs[self::$champ_statut]);
-        $bdd = htmlentities($lesCopieurs[self::$champ_bdd]);
-        $site_installation = htmlentities($lesCopieurs[self::$champ_site_installation]);
-        // $date_ajout = convertDate(htmlentities($lesCopieurs[self::$champ_date_ajout]));
-
-        echo <<<HTML
-        <tr>
-            <td class="dt-control"></td>
-            <td><a href="imprimante/$num_serie">$num_serie</a></td>
-            <td>$modele</td>
-            <td>$statut</td>
-            <td>$bdd</td>
-            <td>$site_installation</td>
-        </tr>
 HTML;
     }
 

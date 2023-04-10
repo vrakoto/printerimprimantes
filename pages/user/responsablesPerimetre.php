@@ -6,7 +6,9 @@ use App\UsersCopieurs;
 
     <h1>Responsables du périmètre</h1>
 
-    <form id="form_search_users_copieurs" class="mt-5 mb-3 row g-3 align-items-center">
+    <hr class="mt-5 mb-3">
+
+    <form id="form_search_users_copieurs" class="row g-3 align-items-center">
         <div class="col-auto">
             <label for="input_search_users_copieurs" class="col-form-label">Rechercher par (numéro de série ou grade,nom,prénom) :</label>
         </div>
@@ -18,14 +20,24 @@ use App\UsersCopieurs;
         </div>
     </form>
 
-    <div class="mt-5">
-        <table id="table_users_copieurs" class="table table-striped table-bordered personalTable">
-            <?= UsersCopieurs::ChampUsersCopieurs() ?>
-            <tbody></tbody>
-        </table>
+    <div class="row g-3 align-items-center mt-1">
+        <div class="col-auto">
+            <label for="table_select_nb_elements_par_pages">Nombre de résultats par page:</label>
+        </div>
+        <div class="col-auto">
+            <select class="form-select" id="table_select_nb_elements_par_pages">
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
     </div>
-</div>
 
-<script defer>
-    users_copieurs('/getResponsablesPerimetre')
-</script>
+    <hr>
+
+    <table id="table_users_copieurs" class="table table-striped table-bordered mt-5 personalTable"  data-table="getResponsablesPerimetre">
+        <?= UsersCopieurs::ChampUsersCopieurs() ?>
+        <tbody></tbody>
+    </table>
+</div>

@@ -78,7 +78,7 @@ class AjaxController extends Driver {
         return $stmt->fetchAll();
     }
 
-    function output($total_records, $total_filtered, $results)
+    function output($total_records, $total_filtered, $results): string
     {
         $output = [
             "draw" => $this->getProperty()['draw'],

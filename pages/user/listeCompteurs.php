@@ -22,10 +22,10 @@ $title = "Liste total des compteurs";
 
     <div class="row g-3 align-items-center mt-3">
         <div class="col-auto">
-            <label for="table_compteurs_select_nb_elements_par_pages">Nombre de résultats par page:</label>
+            <label for="table_select_nb_elements_par_pages">Nombre de résultats par page:</label>
         </div>
         <div class="col-auto">
-            <select class="form-select" id="table_compteurs_select_nb_elements_par_pages">
+            <select class="form-select" id="table_select_nb_elements_par_pages">
                 <option value="10" selected>10</option>
                 <option value="25">25</option>
                 <option value="50">50</option>
@@ -36,13 +36,12 @@ $title = "Liste total des compteurs";
 
     <hr class="mb-3">
 
-    <table id="table_compteurs" class="table table-striped table-bordered personalTable">
+    <span class="mt-2" id="export-csv"></span>
+    <span class="mt-2" id="export-excel"></span>
+    <span id="export-pdf"></span>
+
+    <table id="table_compteurs" class="table table-striped table-bordered personalTable" data-table="getCompteurs">
         <?= Compteur::ChampsCompteur() ?>
         <tbody></tbody>
     </table>
 </div>
-
-
-<script>
-    compteurs('/getCompteurs')
-</script>

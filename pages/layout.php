@@ -21,29 +21,24 @@ $_SESSION['message'] = [];
     <link type="text/css" rel="stylesheet" href="/src/CSS/navbar.css">
 
     <?php if (Driver::estConnecte()) : ?>
-        <?php //if (User::getTheme() === "dark") : ?>
-            <!-- <link rel="stylesheet" href="/src/CSS/darkTheme/body.css">
+        <?php //if (User::getTheme() === "dark") : 
+        ?>
+        <!-- <link rel="stylesheet" href="/src/CSS/darkTheme/body.css">
             <link rel="stylesheet" href="/src/CSS/darkTheme/navbar.css"> -->
-        <?php //endif ?>
+        <?php //endif 
+        ?>
     <?php endif ?>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
     <link rel="stylesheet" href="/src/CSS/selectize/selectize.css">
-    <link rel="stylesheet" href="/src/CSS/datatables/datatables.css">
+    <!-- <link rel="stylesheet" href="/src/CSS/datatables/datatables.css"> -->
+    <link rel="stylesheet" href="/src/CSS/datatables/datatables.min.css">
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.4/fh-3.3.2/datatables.min.css" rel="stylesheet"/>
 
     <link type="text/css" rel="stylesheet" href="/src/CSS/responsive.css">
 
     <link rel="icon" href="/src/icon/print.png">
-
-    <script src="/src/JS/utils/jquery.js"></script>
-    <script src="/src/JS/utils/selectize.js"></script>
-    <script src="/src/JS/utils/datatables.js"></script>
-    <script src="/src/JS/utils/sortdt.js"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.ui.position.js"></script>
-
-    <script src="/src/JS/main.js"></script>
 
     <title><?= $title ?? 'Sapollon' ?></title>
 </head>
@@ -67,7 +62,6 @@ $_SESSION['message'] = [];
                         <a href="<?= $router->url('list_machines') ?>" class="submenu <?= $match['name'] === "list_machines" ? " active" : "" ?>"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
                         <a href="<?= $router->url('machines_area') ?>" class="submenu <?= $match['name'] === "machines_area" ? " active" : "" ?>"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">De mon périmètre</span></a>
                         <a href="<?= $router->url('view_add_machine') ?>" class="submenu <?= $match['name'] === "view_add_machine" ? " active" : "" ?>"><i class="fa-solid fa-pen"></i> <span class="mx-2">Inscrire</span></a>
-                        <a href="<?= $router->url('list_machines_without_owner') ?>" class="submenu <?= $match['name'] === "list_machines_without_owner" ? " active" : "" ?>"><i class="fa-solid fa-user-slash"></i> <span class="mx-2">Sans Responsable</span></a>
                         <a href="<?= $router->url('list_machines_without_counter_3_months') ?>" class="submenu <?= $match['name'] === "list_machines_without_counter_3_months" ? " active" : "" ?>"><i class="fa-solid fa-user-slash"></i> <span class="mx-2">Sans Relevé depuis 3 mois</span></a>
                     </ul>
                 </li>
@@ -92,11 +86,11 @@ $_SESSION['message'] = [];
             </ul>
 
             <hr class="text-white">
-            
+
             <ul class="bottom-links">
                 <li>
                     <?php /*
-                    <a href="<?= $router->url('theme') ?>" class="link">
+                    <a href="<?php //$router->url('theme') ?>" class="link">
                         <?php if (User::getTheme() === 'clair') : ?>
                             <i class="fa-solid fa-moon"></i>
                             <span class="mx-2">Sombre</span>
@@ -122,7 +116,32 @@ $_SESSION['message'] = [];
         <span class="text-primary mx-3"><a href="<?= $router->url('home') ?>"><i class="fa-solid fa-house"></i></a> / <?= trim($_SERVER['REQUEST_URI'], '/') ?></span>
 
         <?= $content ?? '' ?>
+
+        <div id="ex1" class="modal">
+            <p>Thanks for clicking. That felt good.</p>
+            <a href="#" rel="modal:close">Close</a>
+        </div>
     </div>
 
+    <?php if (Driver::estConnecte()) : ?>
+
+        <script src="/src/JS/utils/jquery.js"></script>
+        <script src="/src/JS/utils/selectize.js"></script>
+
+        <script src="/src/JS/utils/datatables.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.ui.position.js"></script>
+
+        <script src="/src/JS/commun.js"></script>
+        <script src="/src/JS/imprimante.js"></script>
+        <script src="/src/JS/compteur.js"></script>
+        <script src="/src/JS/gestion_utilisateurs.js"></script>
+        <script src="/src/JS/users_copieurs.js"></script>
+        <script src="/src/JS/main.js"></script>
+
+    <?php endif ?>
+
 </body>
+
 </html>

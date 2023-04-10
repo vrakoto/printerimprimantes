@@ -37,7 +37,7 @@ if (Driver::estConnecte()) {
         $router->request('/ajouterCopieurPerimetre', '/user/ajouterCopieurPerimetre.php', 'add_machine_area', 'POST');
     }
 
-    $router->request('/copieurSansResponsable', '/user/copieurSansResponsable.php', 'list_machines_without_owner');
+    // $router->request('/copieurSansResponsable', '/user/copieurSansResponsable.php', 'list_machines_without_owner');
     $router->request('/copieurSansReleve3Mois', '/user/copieurSansReleve3Mois.php', 'list_machines_without_counter_3_months');
 
     // $router->request('/retirerCopieurPerimetre', '/user/retirerCopieurPerimetre.php', 'view_remove_machine_area');
@@ -49,6 +49,9 @@ if (Driver::estConnecte()) {
 
     $router->request('/getCompteurs', '/ajax/getCompteurs.php', 'ajax_get_compteurs');
     $router->request('/getCompteursPerimetre', '/ajax/getCompteursPerimetre.php', 'ajax_get_compteurs_perimetre');
+
+    $router->request('/getLesCompteursImprimante[*:num]', '/ajax/getLesCompteursImprimante.php', 'ajax_get_compteurs_imprimante');
+
     $router->request('/ajouterReleve', '/ajax/ajouterReleve.php', 'add_counter', 'POST');
 
     $router->request('/getImprimantes', '/ajax/getImprimantes.php', 'ajax_get_imprimantes');
@@ -60,6 +63,7 @@ if (Driver::estConnecte()) {
     $router->request('/getResponsablesPerimetre', '/ajax/getResponsablesPerimetre.php', 'ajax_get_responsables_perimetre');
 
     $router->request('/gestion_utilisateurs', '/user/gestionUtilisateurs.php', 'view_users_area');
+    $router->request('/creerUtilisateur', '/ajax/creerUtilisateur.php', 'ajax_create_user', 'POST');
     $router->request('/getGestionUtilisateurs', '/ajax/getGestionUtilisateurs.php', 'ajax_get_users_area');
     
     $router->request('/theme', '/user/theme.php', 'theme');

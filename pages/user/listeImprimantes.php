@@ -8,12 +8,12 @@ $title = "Liste des machines";
     
     <hr class="mt-5 mb-0">
 
-    <form class="mt-1 row g-3 align-items-center mb-2" id="form_search_copieurs">
+    <form class="mt-1 row g-3 align-items-center mb-2" id="form_search">
         <div class="col-auto">
-            <label for="table_search_copieurs" class="col-form-label">Rechercher un copieur</label>
+            <label for="table_search" class="col-form-label">Rechercher un copieur</label>
         </div>
         <div class="col-auto">
-            <input type="text" name="num_serie" class="form-control" id="table_search_copieurs" placeholder="Insérer son numéro de série">
+            <input type="text" name="num_serie" class="form-control" id="table_search" placeholder="Insérer son numéro de série">
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass "></i></button>
@@ -36,12 +36,8 @@ $title = "Liste des machines";
 
     <hr>
 
-    <table id="table_imprimantes" class="table table-striped table-bordered personalTable">
+    <table id="table_imprimantes" class="table table-striped table-bordered personalTable" data-table="getImprimantes">
         <?= Imprimante::ChampsCopieur() ?>
         <tbody></tbody>
     </table>
 </div>
-
-<script defer>
-    imprimante('/getImprimantes');
-</script>

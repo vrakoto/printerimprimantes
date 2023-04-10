@@ -121,17 +121,6 @@ class User extends Driver {
         ]);
     }
     
-
-    function insertLogs(string $page): bool
-    {
-        $req = "INSERT INTO `actions_users`(`id_user`, `page`) VALUES (:id_user, :page)";
-        $p = self::$pdo->prepare($req);
-        return $p->execute([
-            'id_user' => self::getMonID(),
-            'page' => $page
-        ]);
-    }
-
     static function getChampsUser(): string
     {
         return <<<HTML
