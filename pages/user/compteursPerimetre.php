@@ -18,9 +18,11 @@ $liste = "Compteurs du périmètre";
     <?php if (count(User::copieursPerimetre()) > 0) : ?>
         <button class="mb-1 btn btn-primary" id="btn_add_releve" onclick="toggle_inputs_releve(this)">Ajouter un relevé</button>
     <?php elseif (count(User::copieursPerimetre()) <= 0) : ?>
-        <div class="mb-3">
-            <h5>Vous n'avez aucun copieur dans votre périmètre.</h5>
-            <a href="<?= $router->url('add_machine_area') ?>" class="mb-4 btn btn-primary">Ajouter un copieur dans mon périmètre</a>
+        <div class="row mb-3">
+            <h5>Vous n'avez aucun copieur dans votre périmètresm-2 .</h5>
+            <div class="col-sm-10">
+                <a href="<?= $router->url('add_machine_area') ?>" class="mb-4 btn btn-primary">Ajouter un copieur dans mon périmètre</a>
+            </div>
         </div>
     <?php endif ?>
 
@@ -72,12 +74,12 @@ $liste = "Compteurs du périmètre";
 
     <hr class="mt-5">
 
-    <form class="row g-3 align-items-center" id="form_search_compteurs">
+    <form class="row g-3 align-items-center" id="form_search">
         <div class="col-auto">
-            <label for="table_search_compteurs" class="col-form-label">Rechercher par numéro de série</label>
+            <label for="table_search" class="col-form-label">Rechercher par numéro de série</label>
         </div>
         <div class="col-auto">
-            <input type="text" class="form-control" id="table_search_compteurs" name="num_serie" placeholder="Saisir un numéro de série">
+            <input type="text" class="form-control" id="table_search" name="num_serie" placeholder="Saisir un numéro de série">
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -100,17 +102,78 @@ $liste = "Compteurs du périmètre";
 
     <hr class="mb-3">
 
+    <button id="columns_plus" class="btn btn-primary">Afficher + d'infos</button>
     <span class="mt-2" id="export-csv"></span>
     <span class="mt-2" id="export-excel"></span>
     <span id="export-pdf"></span>
-    <button id="columns_plus">Afficher plus</button>
+</div>
 
-    <?php if (count(Compteur::getLesRelevesParBDD()) > 0): ?>
+<?php if (count(Compteur::getLesRelevesParBDD()) > 0) : ?>
+    <div id="large_table" class="container mt-4">
         <table id="table_compteurs" class="table table-striped table-bordered personalTable table_compteurs_perimetre" data-table="getCompteursPerimetre">
-            <?= Compteur::ChampsCompteur() ?>
-             <tbody></tbody>
+            <?= Compteur::ChampsCompteur(true) ?>
+            <tbody></tbody>
         </table>
-    <?php else: ?>
-        <h4 class="mt-4 text-center">Aucun relevé</h4>
-    <?php endif ?>
+    </div>
+<?php else : ?>
+    <h4 class="mt-4 text-center">Aucun relevé</h4>
+<?php endif ?>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" id="modal-editReleve" method="POST">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de relevé de compteur</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3 alert alert-danger d-none" id="modal-message"></div>
+                <div class="row mb-3">
+                    <label for="num_serie" class="col-sm-4 label">N° de Série :</label>
+                    <div class="col">
+                        <p class="form-text" id="modal-num_serie"></p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label class="col-sm-4">Date de relevé :</label>
+                    <div class="col">
+                        <p class="form-text" id="modal-date_releve"></p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="modal-112_total" class="col-sm-3 form-label">112 Total :</label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="modal-112_total">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="modal-113_total" class="col-sm-3 form-label">113 Total :</label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="modal-113_total">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="modal-122_total" class="col-sm-3 form-label">122 Total :</label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="modal-122_total">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="modal-123_total" class="col-sm-3 form-label">123 Total :</label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="modal-123_total">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="modal-type_releve" class="col-sm-3 form-label">Type de relevé :</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id="modal-type_releve">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Modifier</button>
+            </div>
+        </form>
+    </div>
 </div>

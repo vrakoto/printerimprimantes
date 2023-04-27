@@ -36,6 +36,19 @@ $title = "Liste des machines";
 
     <hr>
 
+    <button class="btn btn-primary" id="display_menu_colonnes"></button>
+
+    <div class="mt-4 mx-5 d-none" id="lesCheckbox">
+        <?php $i = 0; foreach (colonnes(Imprimante::ChampsCopieur()) as $id => $values): $i ++; $id_protected = htmlentities($id) ?>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="<?= $id_protected ?>" id="<?= $id_protected ?>" <?= ($i <= 6) ? "checked" : "" ?>>
+                <label class="form-check-label" for="<?= $id_protected ?>"><?= htmlentities($values) ?></label>
+            </div>
+        <?php endforeach ?>
+    </div>
+
+    <div class="mt-5"></div>
+
     <table id="table_imprimantes" class="table table-striped table-bordered personalTable" data-table="getImprimantes">
         <?= Imprimante::ChampsCopieur() ?>
         <tbody></tbody>

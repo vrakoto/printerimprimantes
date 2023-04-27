@@ -53,6 +53,8 @@ if (Driver::estConnecte()) {
     $router->request('/getLesCompteursImprimante[*:num]', '/ajax/getLesCompteursImprimante.php', 'ajax_get_compteurs_imprimante');
 
     $router->request('/ajouterReleve', '/ajax/ajouterReleve.php', 'add_counter', 'POST');
+    $router->request('/editReleve', '/ajax/editReleve.php', 'edit_counter', 'POST');
+    $router->request('/supprimerReleve', '/ajax/supprimerReleve.php', 'remove_counter', 'POST');
 
     $router->request('/getImprimantes', '/ajax/getImprimantes.php', 'ajax_get_imprimantes');
     $router->request('/getImprimantesPerimetre', '/ajax/getImprimantesPerimetre.php', 'ajax_get_imprimantes_perimetre');

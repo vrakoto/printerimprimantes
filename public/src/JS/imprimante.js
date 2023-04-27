@@ -1,6 +1,7 @@
 function imprimante() {
     const tableImprimante = $('#table_imprimantes').DataTable({
         dom: '<"top-left"f>i<"top-right"p>rt',
+        responsive: true,
         /* deferRender:    true,
         scrollY:        200,
         scrollCollapse: true,
@@ -87,18 +88,11 @@ function imprimante() {
     searchBar(tableImprimante);
     btns(tableImprimante);
 
-    $('#columns_plus').click('click', function () {
+    /* $('#columns_plus').click('click', function () {
         let button_text = $(this).text();
         let new_button_text = button_text === "Afficher + d'infos sur les copieurs" ? 'Réduire les informations' : "Afficher + d'infos sur les copieurs";
         $(this).text(new_button_text);
         $('#large_table').toggleClass('container');
-
-        // Désactive la visualisation au format PDF car l'affichage est pas correct
-        if ($('#export-pdf').is(':hidden')) {
-            $('#export-pdf').show();
-        } else {
-            $('#export-pdf').hide();
-        }
 
         tableImprimante.columns().every(function() {
             let column = this;
@@ -110,6 +104,12 @@ function imprimante() {
                 }
             }
         });
+    }); */
+
+    $('input[type="checkbox"]').on('change', function() {
+        let id = $(this).attr('id');
+        let column = tableImprimante.column('#' + id);
+        column.visible(!column.visible());
     });
 
     /* const selector = '.table_imprimante_perimetre tr'

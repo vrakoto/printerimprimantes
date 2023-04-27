@@ -1,9 +1,12 @@
 <?php
+
 namespace App;
+
 use App\User;
 use DateTime;
 
-class Compteur extends Driver {
+class Compteur extends Driver
+{
     private static $champ_num_serie = 'Numéro_série';
     private static $champ_bdd = 'BDD';
     private static $champ_date_releve = 'Date';

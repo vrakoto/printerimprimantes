@@ -33,27 +33,27 @@ class Imprimante extends Driver {
         return <<<HTML
         <thead>
             <tr>
-                <th>Numéro Série</th>
-                <th>BDD</th>
-                <th>Modèle</th>
-                <th>Statut Projet</th>
-                <th>Site d'installation</th>
-                <th>N° ORDO</th>
-                <th>DATE CDE MINARM</th>
-                <th>Config</th>
-                <th>N° Oracle</th>
-                <th>N° OPP SFDC</th>
-                <th>HostName</th>
-                <th>Réseau</th>
-                <th>Adresse MAC@</th>
-                <th>Entité Bénéficiaire</th>
-                <th>Localisation</th>
-                <th>CP Insta</th>
-                <th>DEP Insta</th>
-                <th>Adresse</th>
-                <th>Credo Unité</th>
-                <th>ServiceUF</th>
-                <th>Accessoires</th>
+                <th id="num_serie">Numéro Série</th>
+                <th id="bdd">BDD</th>
+                <th id="modele">Modèle</th>
+                <th id="statut">Statut Projet</th>
+                <th id="site_installation">Site d'installation</th>
+                <th id="num_ordo">N° ORDO</th>
+                <th id="date_cde_minarm">DATE CDE MINARM</th>
+                <th id="config">Config</th>
+                <th id="num_oracle">N° Oracle</th>
+                <th id="num_sfdc">N° OPP SFDC</th>
+                <th id="hostname">HostName</th>
+                <th id="reseau">Réseau</th>
+                <th id="adresse_mac">Adresse MAC@</th>
+                <th id="entite_beneficiaire">Entité Bénéficiaire</th>
+                <th id="localisation">Localisation</th>
+                <th id="cp_insta">CP Insta</th>
+                <th id="dep_insta">DEP Insta</th>
+                <th id="adresse">Adresse</th>
+                <th id="credo_unite">Credo Unité</th>
+                <th id="service_uf">ServiceUF</th>
+                <th id="accessoires">Accessoires</th>
             </tr>
         </thead>
 HTML;

@@ -21,6 +21,13 @@ $(function () {
 
     $("[id$='_filter']").remove();
     $("[id$='_length']").remove();
+
+    $('#display_menu_colonnes').text('Affichage des colonnes');
+
+    $('#display_menu_colonnes').click(function (e) { 
+        e.preventDefault();
+        $('#lesCheckbox').toggleClass('d-none');
+    });
 });
 
 function toggle_inputs_imprimante_details(e) {

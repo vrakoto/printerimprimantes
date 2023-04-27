@@ -3,8 +3,6 @@ use App\Imprimante;
 use App\User;
 
 $title = "Copieurs Périmètre";
-
-$mesImprimantes = User::copieursPerimetre();
 ?>
 
 <div class="container mt-5">
@@ -14,13 +12,10 @@ $mesImprimantes = User::copieursPerimetre();
     <div class="mt-5 mb-0">
         <?php if (User::getRole() !== 2): ?>
             <a href="<?= $router->url('view_add_machine_area') ?>" class="btn btn-success" title="Ajouter un copieur dans mon périmètre">Ajouter un copieur dans mon périmètre</a>
-
-            <?php if (count($mesImprimantes) > 0): ?>
-            <?php endif ?>
-
-        <?php else: ?>
-            <a href="<?= $router->url('add_machine') ?>" class="btn btn-primary" title="Inscrire une nouvelle machine dans Sapollon">Inscrire un nouveau copieur</a>
         <?php endif ?>
+
+        <span id="export-csv"></span>
+        <span id="export-excel"></span>
     </div>
 
     <hr class="mt-5 mb-0">
@@ -51,14 +46,22 @@ $mesImprimantes = User::copieursPerimetre();
         </div>
     </div>
 
-    <hr class="mb-3">
+    <hr class="mt-3">
 
-    <div class="mb-3">
-        <span class="btn btn-primary" id="columns_plus">Afficher + d'infos sur les copieurs</span>
-        <span id="export-csv"></span>
-        <span id="export-excel"></span>
-        <span id="export-pdf"></span>
+    <button class="btn btn-primary" id="display_menu_colonnes"></button>
+
+    <div class="mt-4 mx-5 d-none" id="lesCheckbox">
+        <?php $i = 0; foreach (colonnes(Imprimante::ChampsCopieur()) as $id => $values): $i ++; $id_protected = htmlentities($id) ?>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="<?= $id_protected ?>" id="<?= $id_protected ?>" <?= ($i <= 6) ? "checked" : "" ?>>
+                <label class="form-check-label" for="<?= $id_protected ?>"><?= htmlentities($values) ?></label>
+            </div>
+        <?php endforeach ?>
     </div>
+
+    <div class="mb-5"></div>
+
+</label>
 </div>
 
 <div id="large_table" class="container">

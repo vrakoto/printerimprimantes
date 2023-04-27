@@ -172,3 +172,20 @@ function link_users_area($urlRouter): string
     </a>
 HTML;
 }
+
+function colonnes($html) {
+    // Extraction des valeurs des attributs "id"
+    $col_ids = [];
+    preg_match_all('/id="([^"]+)"/', $html, $matches);
+    if (isset($matches[1])) {
+        $col_ids = $matches[1];
+    }
+
+    // Extraction des valeurs des colonnes
+    $col_values = [];
+    $html_no_tags = strip_tags($html);
+    $col_values = explode("\n", $html_no_tags);
+    $col_values = array_map('trim', $col_values);
+    $col_values = array_filter($col_values);
+    return array_combine($col_ids, $col_values);
+}

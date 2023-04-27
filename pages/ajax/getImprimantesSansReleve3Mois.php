@@ -29,7 +29,28 @@ $query_total_filtered = "SELECT COUNT(DISTINCT `N° de Série`) as allcount FROM
 $total_filtered = $ajax->getNbRecordsFiltered($query_total_filtered);
 
 
-$query = "SELECT c.`N° ORDO` as num_ordo, c.`N° de Série` as num_serie, c.`Modele demandé` as modele, c.`STATUT PROJET` as statut, c.`BDD` as bdd, c.`Site d'installation` as site_installation
+$query = "SELECT
+        `N° ORDO` as num_ordo, 
+        `N° de Série` as num_serie, 
+        `Modele demandé` as modele, 
+        `STATUT PROJET` as statut, 
+        `BDD` as bdd, 
+        `Site d'installation` as site_installation,
+        `DATE CDE MINARM` as date_cde_minarm,
+        `Config` as config,
+        `N° Saisie ORACLE` as num_oracle,
+        `N° OPP SFDC` as num_sfdc,
+        `HostName` as hostname,
+        `réseau` as reseau,
+        `MAC@` as adresse_mac,
+        `Entité Bénéficiaire` as entite_beneficiaire,
+        `credo_unité` as credo_unite,
+        `CP INSTA` as cp_insta,
+        `DEP INSTA` as dep_insta,
+        `adresse` as adresse,
+        `localisation` as localisation,
+        `ServiceUF` as service_uf,
+        `Accessoires` as accessoires
         FROM copieurs c
         WHERE c.BDD = '$bdd'
         AND c.`STATUT PROJET` LIKE '1 - LIVRE'

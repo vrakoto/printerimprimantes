@@ -8,12 +8,12 @@ $title = "Liste total des compteurs";
 
     <hr class="mt-5">
 
-    <form class="row g-3 align-items-center" id="form_search_compteurs">
+    <form class="row g-3 align-items-center" id="form_search">
         <div class="col-auto">
-            <label for="table_search_compteurs" class="col-form-label">Rechercher par numéro de série</label>
+            <label for="table_search" class="col-form-label">Rechercher par numéro de série</label>
         </div>
         <div class="col-auto">
-            <input type="text" class="form-control" id="table_search_compteurs" name="num_serie" placeholder="Saisir un numéro de série">
+            <input type="text" class="form-control" id="table_search" name="num_serie" placeholder="Saisir un numéro de série">
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>

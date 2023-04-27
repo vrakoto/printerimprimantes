@@ -18,7 +18,8 @@ function btns(table) {
         buttons: [
             {
                 extend: 'excelHtml5',
-                text: 'Exporter en Excel',
+                text: 'Exporter en Excel (toutes les colonnes)',
+                className: 'btn btn-success',
                 exportOptions: {
                     // columns: ':visible'
                 }
@@ -31,33 +32,27 @@ function btns(table) {
         buttons: [
             {
                 extend: 'csvHtml5',
-                text: 'Exporter en CSV',
-                exportOptions: {
-                    modifier: {
-                        page: 'current'
-                    },
-                    pages: '1-5',
-                    // columns: ':visible'
-                }
+                text: 'Exporter en CSV (toutes les colonnes)',
+                className: 'btn btn-warning',
             }
         ]
     });
 
     // Créer un bouton pour l'export PDF
-    const buttonPdf = new $.fn.dataTable.Buttons(table, {
+    /* const buttonPdf = new $.fn.dataTable.Buttons(table, {
         buttons: [
             {
                 extend: 'pdfHtml5',
                 text: 'Visualiser en PDF',
                 exportOptions: {
-                    // columns: ':visible'
+                    columns: ':visible'
                 },
                 download: 'open'
             }
         ]
-    });
+    }); */
 
     buttonExcel.container().appendTo('#export-excel');
     buttonCsv.container().appendTo('#export-csv');
-    buttonPdf.container().appendTo('#export-pdf');
+    // buttonPdf.container().appendTo('#export-pdf');
 }

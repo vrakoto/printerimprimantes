@@ -1,7 +1,5 @@
 <?php
-
 use App\Driver;
-use App\User;
 
 $_SESSION['message'] = [];
 ?>
@@ -20,21 +18,9 @@ $_SESSION['message'] = [];
     <link type="text/css" rel="stylesheet" href="/src/CSS/accueil.css">
     <link type="text/css" rel="stylesheet" href="/src/CSS/navbar.css">
 
-    <?php if (Driver::estConnecte()) : ?>
-        <?php //if (User::getTheme() === "dark") : 
-        ?>
-        <!-- <link rel="stylesheet" href="/src/CSS/darkTheme/body.css">
-            <link rel="stylesheet" href="/src/CSS/darkTheme/navbar.css"> -->
-        <?php //endif 
-        ?>
-    <?php endif ?>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
     <link rel="stylesheet" href="/src/CSS/selectize/selectize.css">
-    <!-- <link rel="stylesheet" href="/src/CSS/datatables/datatables.css"> -->
     <link rel="stylesheet" href="/src/CSS/datatables/datatables.min.css">
-    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.4/fh-3.3.2/datatables.min.css" rel="stylesheet"/>
 
     <link type="text/css" rel="stylesheet" href="/src/CSS/responsive.css">
 
@@ -61,7 +47,6 @@ $_SESSION['message'] = [];
                     <ul class="container_submenu">
                         <a href="<?= $router->url('list_machines') ?>" class="submenu <?= $match['name'] === "list_machines" ? " active" : "" ?>"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
                         <a href="<?= $router->url('machines_area') ?>" class="submenu <?= $match['name'] === "machines_area" ? " active" : "" ?>"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">De mon périmètre</span></a>
-                        <a href="<?= $router->url('view_add_machine') ?>" class="submenu <?= $match['name'] === "view_add_machine" ? " active" : "" ?>"><i class="fa-solid fa-pen"></i> <span class="mx-2">Inscrire</span></a>
                         <a href="<?= $router->url('list_machines_without_counter_3_months') ?>" class="submenu <?= $match['name'] === "list_machines_without_counter_3_months" ? " active" : "" ?>"><i class="fa-solid fa-user-slash"></i> <span class="mx-2">Sans Relevé depuis 3 mois</span></a>
                     </ul>
                 </li>
@@ -88,19 +73,6 @@ $_SESSION['message'] = [];
             <hr class="text-white">
 
             <ul class="bottom-links">
-                <li>
-                    <?php /*
-                    <a href="<?php //$router->url('theme') ?>" class="link">
-                        <?php if (User::getTheme() === 'clair') : ?>
-                            <i class="fa-solid fa-moon"></i>
-                            <span class="mx-2">Sombre</span>
-                        <?php else : ?>
-                            <i class="fa-solid fa-lightbulb"></i>
-                            <span class="mx-2">Clair</span>
-                        <?php endif ?>
-                    </a>
-                    */ ?>
-                </li>
                 <li><a href="<?= $router->url('my_account') ?>" class="link"><i class="fa-solid fa-user"></i> <span class="mx-2">Mon Compte</span></a></li>
                 <li>
                     <form action="<?= $router->url('logout') ?>" method="post">
@@ -126,16 +98,26 @@ $_SESSION['message'] = [];
     <?php if (Driver::estConnecte()) : ?>
 
         <script src="/src/JS/utils/jquery.js"></script>
+        <script src="/src/JS/utils/popper.min.js"></script>
+        <script src="/src/JS/utils/bootstrap.min.js"></script>
         <script src="/src/JS/utils/selectize.js"></script>
-
+        
         <script src="/src/JS/utils/datatables.min.js"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.ui.position.js"></script>
-
+        <script src="/src/JS/utils/jquery_contextMenu.js"></script>
+        <script src="/src/JS/utils/jquery_ui_position.js"></script>
+        
         <script src="/src/JS/commun.js"></script>
         <script src="/src/JS/imprimante.js"></script>
         <script src="/src/JS/compteur.js"></script>
+        
+        <?php
+            $jsfile = 'src' . DIRECTORY_SEPARATOR . 'JS' . DIRECTORY_SEPARATOR . pathinfo($view)['filename'] . '.js';
+            if (file_exists($jsfile)): ?>
+
+            <script src="<?= $jsfile ?>"></script>
+        <?php endif ?>
+        
         <script src="/src/JS/gestion_utilisateurs.js"></script>
         <script src="/src/JS/users_copieurs.js"></script>
         <script src="/src/JS/main.js"></script>
@@ -143,5 +125,4 @@ $_SESSION['message'] = [];
     <?php endif ?>
 
 </body>
-
 </html>
