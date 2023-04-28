@@ -104,8 +104,6 @@ $liste = "Compteurs du périmètre";
 
     <button id="columns_plus" class="btn btn-primary">Afficher + d'infos</button>
     <span class="mt-2" id="export-csv"></span>
-    <span class="mt-2" id="export-excel"></span>
-    <span id="export-pdf"></span>
 </div>
 
 <?php if (count(Compteur::getLesRelevesParBDD()) > 0) : ?>

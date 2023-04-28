@@ -32,6 +32,27 @@ class AjaxController extends Driver {
         }
     }
 
+    function getPositionCSV($search_value): string
+    {
+        switch ($this->position) {
+            case 1:
+                return '%' . $search_value;
+            break;
+
+            case 2:
+                return $search_value . '%';
+            break;
+
+            case 3:
+                return '%' . $search_value . '%';
+            break;
+
+            case 4:
+                return $search_value;
+            break;
+        }
+    }
+
     private function getProperty(): array
     {
         $array = [
@@ -78,7 +99,29 @@ class AjaxController extends Driver {
         return $stmt->fetchAll();
     }
 
-    function output($total_records, $total_filtered, $results): string
+    function test($query, $search_value, $table): array
+    {
+        $stmt = self::$pdo->prepare($query);
+        $columns = self::$pdo->query("SHOW columns FROM $table");
+        $stmt->execute(['search_value' => $this->getPositionCSV($search_value)]);
+        $results = $stmt->fetchAll();
+
+        // ajout des entetes
+        $datas = [];
+        $lesColonnes = [];
+        foreach ($columns->fetchAll() as $column) {
+            $lesColonnes[] = $column['Field'];
+        }
+        $datas[] = $lesColonnes;
+    
+        foreach ($results as $result) {
+            $datas[] = array_values($result);
+        }
+    
+        return $datas;
+    }
+
+    function output($total_records, $total_filtered, $results)
     {
         $output = [
             "draw" => $this->getProperty()['draw'],

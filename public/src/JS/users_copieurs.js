@@ -18,7 +18,11 @@ function users_copieurs() {
         }
     });
 
-    $('#table_select_nb_elements_par_pages').on('change', function () {
+    displayRowInPage(tableUsersCopieurs);
+    searchBar(tableUsersCopieurs);
+    btns(tableUsersCopieurs);
+
+    /* $('#table_select_nb_elements_par_pages').on('change', function () {
         const newPageLength = $(this).val();
         tableUsersCopieurs.page.len(newPageLength).draw();
     });
@@ -26,5 +30,5 @@ function users_copieurs() {
     $('#form_search_users_copieurs').submit(function (e) {
         e.preventDefault();
         tableUsersCopieurs.search($('#input_search_users_copieurs').val()).draw();
-    });
+    }); */
 }

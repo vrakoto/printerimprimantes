@@ -6,6 +6,8 @@ $title = "Liste des machines";
 <div class="container mt-5">
     <h1>Liste des Copieurs</h1>
     
+    <span class="mt-5" id="export-csv"></span>
+
     <hr class="mt-5 mb-0">
 
     <form class="mt-1 row g-3 align-items-center mb-2" id="form_search">

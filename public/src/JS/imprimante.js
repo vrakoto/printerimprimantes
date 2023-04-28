@@ -88,24 +88,6 @@ function imprimante() {
     searchBar(tableImprimante);
     btns(tableImprimante);
 
-    /* $('#columns_plus').click('click', function () {
-        let button_text = $(this).text();
-        let new_button_text = button_text === "Afficher + d'infos sur les copieurs" ? 'Réduire les informations' : "Afficher + d'infos sur les copieurs";
-        $(this).text(new_button_text);
-        $('#large_table').toggleClass('container');
-
-        tableImprimante.columns().every(function() {
-            let column = this;
-            if ($(column.header()).hasClass('details')) {
-                if (!column.visible()) {
-                    column.visible(true);
-                } else {
-                    column.visible(false);
-                }
-            }
-        });
-    }); */
-
     $('input[type="checkbox"]').on('change', function() {
         let id = $(this).attr('id');
         let column = tableImprimante.column('#' + id);

@@ -40,6 +40,8 @@ $title = "Liste total des compteurs";
     <span class="mt-2" id="export-excel"></span>
     <span id="export-pdf"></span>
 
+    <div class="mb-5"></div>
+
     <table id="table_compteurs" class="table table-striped table-bordered personalTable" data-table="getCompteurs">
         <?= Compteur::ChampsCompteur() ?>
         <tbody></tbody>

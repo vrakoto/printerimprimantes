@@ -47,12 +47,12 @@ use App\UserLevels;
 
     <hr class="mt-5 mb-3">
 
-    <form id="form_search_users_area" class="row g-3 align-items-center">
+    <form id="form_search" class="row g-3 align-items-center">
         <div class="col-auto">
-            <label for="input_search_users_area" class="col-form-label">Rechercher par (grade, prénom ou nom) :</label>
+            <label for="table_search" class="col-form-label">Rechercher par (grade, prénom ou nom) :</label>
         </div>
         <div class="col-auto">
-            <input type="text" class="form-control" id="input_search_users_area" name="gpn" placeholder="Saisir un élement">
+            <input type="text" class="form-control" id="table_search" name="gpn" placeholder="Saisir un élement">
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -73,10 +73,9 @@ use App\UserLevels;
         </div>
     </div>
 
-    <hr class="">
+    <hr>
     <span class="mt-2" id="export-csv"></span>
-    <span class="mt-2" id="export-excel"></span>
-    <span id="export-pdf"></span>
+    <div class="mt-5"></div>
 
     <table id="table_users_area" class="table table-striped table-bordered personalTable" data-table="gestion_utilisateurs">
         <?= User::getChampsUser() ?>

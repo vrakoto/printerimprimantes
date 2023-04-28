@@ -1,15 +1,13 @@
 <?php
 use App\AjaxController;
+
 $ajax = new AjaxController(2);
 
-## Total number of records without filtering
-$total_records = $ajax->getNbRecordsWithoutFiltering("SELECT count(*) as allcount FROM copieurs");
+$query_total_records = "SELECT count(*) as allcount FROM copieurs";
 
-// Comptage du nombre total de résultats correspondants à la recherche
-$total_filtered = $ajax->getNbRecordsFiltered("SELECT COUNT(*) as allcount FROM copieurs WHERE `N° de Série` LIKE :search_value");
+$query_total_filtered = "SELECT COUNT(*) as allcount FROM copieurs WHERE `N° de Série` LIKE :search_value";
 
-// Construction de la requête SQL avec une requête préparée
-$query = "SELECT `N° ORDO` as num_ordo, 
+$query_results = "SELECT `N° ORDO` as num_ordo, 
         `N° de Série` as num_serie, 
         `Modele demandé` as modele, 
         `STATUT PROJET` as statut, 
@@ -32,6 +30,14 @@ $query = "SELECT `N° ORDO` as num_ordo,
         `Accessoires` as accessoires
         FROM copieurs
         WHERE `N° de Série` LIKE :search_value";
-$results = $ajax->getRecords($query);
 
-die($ajax->output($total_records, $total_filtered, $results));
+if (isset($_GET['csv'], $_GET['search_value'])) {
+    $search_value = htmlentities($_GET['search_value']);
+    $csv = $ajax->test($query_results, $search_value, 'copieurs');
+    die(json_encode($csv));
+} else {
+    $total_records = $ajax->getNbRecordsWithoutFiltering($query_total_records);
+    $total_filtered = $ajax->getNbRecordsFiltered($query_total_filtered);
+    $results = $ajax->getRecords($query_results);
+    die($ajax->output($total_records, $total_filtered, $results));
+}

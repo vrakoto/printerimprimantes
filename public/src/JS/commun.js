@@ -12,47 +12,64 @@ function searchBar(table) {
     });
 }
 
-function btns(table) {
-    // Créer un bouton pour l'export Excel
-    const buttonExcel = new $.fn.dataTable.Buttons(table, {
-        buttons: [
-            {
-                extend: 'excelHtml5',
-                text: 'Exporter en Excel (toutes les colonnes)',
-                className: 'btn btn-success',
-                exportOptions: {
-                    // columns: ':visible'
-                }
-            }
-        ]
-    });
+function convertToCSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    var str = '';
 
-    // Créer un bouton pour l'export CSV
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
+        for (var index in array[i]) {
+            if (line != '') line += ';'
+            line += array[i][index];
+        }
+        str += line + '\r\n';
+    }
+
+    return str;
+}
+
+function btns(table) {
     const buttonCsv = new $.fn.dataTable.Buttons(table, {
         buttons: [
             {
                 extend: 'csvHtml5',
                 text: 'Exporter en CSV (toutes les colonnes)',
-                className: 'btn btn-warning',
+                className: 'btn btn-success',
+                action: function (e, dt, node, config) {
+                    const query = dt.ajax.params();
+                    const filename = 'data.csv';
+                    // query.draw = 0;
+                    // query.length = -1;
+
+                    $.ajax({
+                        url: dt.ajax.url(),
+                        data: 'csv=yes' + '&search_value=' + query.search.value,
+                        type: 'GET',
+                        dataType: 'text',
+                        headers: {
+                            'Content-Type': 'text/csv'
+                        },
+                        success: function (res) {
+                            const csv = convertToCSV(res);
+                            let csvData = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+                            // Pour IE11 :
+                            if (navigator.msSaveBlob) { // IE 10+
+                                navigator.msSaveBlob(csvData, filename);
+                            } else {
+                                let link = document.createElement("a");
+                                link.href = URL.createObjectURL(csvData);
+                                link.setAttribute('download', filename);
+                                document.body.appendChild(link);    
+                                link.click();
+                                document.body.removeChild(link);    
+                            }
+                        }
+                    });
+                }
             }
         ]
     });
 
-    // Créer un bouton pour l'export PDF
-    /* const buttonPdf = new $.fn.dataTable.Buttons(table, {
-        buttons: [
-            {
-                extend: 'pdfHtml5',
-                text: 'Visualiser en PDF',
-                exportOptions: {
-                    columns: ':visible'
-                },
-                download: 'open'
-            }
-        ]
-    }); */
-
-    buttonExcel.container().appendTo('#export-excel');
     buttonCsv.container().appendTo('#export-csv');
-    // buttonPdf.container().appendTo('#export-pdf');
 }

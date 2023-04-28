@@ -1,6 +1,7 @@
 <?php
 use App\User;
 use App\AjaxController;
+
 $ajax = new AjaxController(2);
 
 $bdd = User::getBDD();
@@ -14,7 +15,6 @@ $query_total_records = "SELECT COUNT(DISTINCT `N° de Série`) as allcount FROM 
                                 WHERE BDD = '$bdd'
                                 GROUP BY ct.Numéro_série
                         )";
-$total_records = $ajax->getNbRecordsWithoutFiltering($query_total_records);
 
 $query_total_filtered = "SELECT COUNT(DISTINCT `N° de Série`) as allcount FROM copieurs c
                         WHERE c.BDD = '$bdd'
@@ -26,10 +26,8 @@ $query_total_filtered = "SELECT COUNT(DISTINCT `N° de Série`) as allcount FROM
                                 GROUP BY ct.Numéro_série
                         )
                         AND c.`N° de Série` LIKE :search_value";
-$total_filtered = $ajax->getNbRecordsFiltered($query_total_filtered);
 
-
-$query = "SELECT
+$query_results = "SELECT
         `N° ORDO` as num_ordo, 
         `N° de Série` as num_serie, 
         `Modele demandé` as modele, 
@@ -61,6 +59,14 @@ $query = "SELECT
                 GROUP BY ct.Numéro_série
         )
         AND c.`N° de Série` LIKE :search_value";
-$results = $ajax->getRecords($query);
 
-die($ajax->output($total_records, $total_filtered, $results));
+if (isset($_GET['csv'], $_GET['search_value'])) {
+    $search_value = htmlentities($_GET['search_value']);
+    $csv = $ajax->test($query_results, $search_value, 'copieurs');
+    die(json_encode($csv));
+} else {
+    $total_records = $ajax->getNbRecordsWithoutFiltering($query_total_records);
+    $total_filtered = $ajax->getNbRecordsFiltered($query_total_filtered);
+    $results = $ajax->getRecords($query_results);
+    die($ajax->output($total_records, $total_filtered, $results));
+}

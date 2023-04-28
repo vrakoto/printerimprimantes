@@ -1,7 +1,6 @@
 <?php
 use App\User;
 use App\AjaxController;
-
 $ajax = new AjaxController(2);
 
 $id_profil = User::getMonID();
@@ -61,9 +60,14 @@ if ($role === 2) { // Si COORDSIC
                     AND `Numéro_série` LIKE :search_value";
 }
 
-$total_records = $ajax->getNbRecordsWithoutFiltering($query_total_records);
-$total_filtered = $ajax->getNbRecordsFiltered($query_total_filtered);
 
-$results = $ajax->getRecords($query_results);
-
-die($ajax->output($total_records, $total_filtered, $results));
+if (isset($_GET['csv'], $_GET['search_value'])) {
+    $search_value = htmlentities($_GET['search_value']);
+    $csv = $ajax->test($query_results, $search_value, 'compteurs');
+    die(json_encode($csv));
+} else {
+    $total_records = $ajax->getNbRecordsWithoutFiltering($query_total_records);
+    $total_filtered = $ajax->getNbRecordsFiltered($query_total_filtered);
+    $results = $ajax->getRecords($query_results);
+    die($ajax->output($total_records, $total_filtered, $results));
+}
