@@ -6,28 +6,8 @@ $(function () {
     $("input[required], select[required]").attr("oninvalid", "this.setCustomValidity('Veuillez remplir ce champ.')");
     $("input[required], select[required]").attr("oninput", "setCustomValidity('')");
 
-    if ($('#table_imprimantes').length) {
-        imprimante();
-    }
-    if ($('#table_compteurs').length) {
-        compteurs();
-    }
-    if ($('#table_users_area').length) {
-        gestion_utilisateurs();
-    }
-    if ($('#table_users_copieurs').length) {
-        users_copieurs();
-    }
-
     $("[id$='_filter']").remove();
     $("[id$='_length']").remove();
-
-    $('#display_menu_colonnes').text('Affichage des colonnes');
-
-    $('#display_menu_colonnes').click(function (e) { 
-        e.preventDefault();
-        $('#lesCheckbox').toggleClass('d-none');
-    });
 });
 
 function toggle_inputs_imprimante_details(e) {
@@ -36,17 +16,17 @@ function toggle_inputs_imprimante_details(e) {
 }
 
 
-function toggle_inputs_releve(e) {
+function toggle_inputs_releve(e, input) {
     $(e).css('display', 'none');
-    $('#form_add_counter').attr('class', '');
+    $('#' + input).attr('class', '');
     $('#num_serie').focus();
     // $('#container').attr('class', '');
 }
 
 
-function cancelReleve(e) {
-    $('#btn_add_releve').css('display', 'block');
-    $('#form_add_counter').attr('class', 'd-none');
+function cancelReleve(e, input) {
+    $('button').css('display', 'inline-block');
+    $('#' + input).attr('class', 'd-none');
     // $('#container').attr('class', 'container');
 }
 

@@ -1,6 +1,8 @@
 <?php
 use App\User;
 use App\UserLevels;
+$jsfile = 'gestionUtilisateurs';
+$title = "Gestion des Utilisateurs";
 ?>
 
 <div class="container mt-5">

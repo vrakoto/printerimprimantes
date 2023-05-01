@@ -41,3 +41,11 @@ thead th {
 .highlightFirstRow {
     background-color: green;
 }
+
+#header {
+    max-height: 500px !important;
+}
+
+#lesCheckbox {
+    overflow-x: scroll;
+}

@@ -1,3 +1,6 @@
+<?php
+$title = "Menu Compteurs";
+?>
 <div class="container mt-5">
     <h1 class="mb-5 text-center">Menu Compteurs</h1>
     <div class="d-flex justify-content-evenly flex-wrap">

@@ -1,6 +1,8 @@
 <?php
-
 use App\Compteur;
+
+$num_serie = htmlentities($params['num']);
+$num_serie = str_replace('/', '', $num_serie);
 
 $num_serie = htmlentities($params['num']);
 $num_serie = str_replace('/', '', $num_serie);
@@ -11,9 +13,8 @@ try {
     $msg = "Une erreur interne a été rencontrée. Veuillez contacter un administrateur";
 }
 $output = [
-    "draw" => 10,
-    "recordsTotal" => 50,
-    "recordsFiltered" => 50,
+    "recordsTotal" => count($results),
+    "recordsFiltered" => count($results),
     "data" => []
 ];
 

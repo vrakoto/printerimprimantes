@@ -1,5 +1,7 @@
 <?php
 use App\UsersCopieurs;
+$jsfile = 'listeResponsables';
+$title = "Liste des Responsables"
 ?>
 
 <div class="container mt-5">

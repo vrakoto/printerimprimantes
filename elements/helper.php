@@ -1,5 +1,6 @@
 <?php
 
+use App\Imprimante;
 use App\User;
 
 function nav_link(string $form_fieldsien, string $icon, string $titre): string
@@ -188,4 +189,30 @@ function colonnes($html) {
     $col_values = array_map('trim', $col_values);
     $col_values = array_filter($col_values);
     return array_combine($col_ids, $col_values);
+}
+
+function checkboxColumns() {
+    $i = 0;
+    $html = <<<HTML
+    <div class="border" id="lesCheckbox">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="all" id="all">
+        <label class="form-check-label" for="all">Tout Cocher</label>
+    </div>
+HTML;
+    foreach (colonnes(Imprimante::ChampsCopieur()) as $id => $values) {
+        $i++;
+        $id_protected = htmlentities($id);
+        $checked = ($i <= 6) ? "checked" : "";
+        $html .= <<<HTML
+            <div class="form-check mx-3">
+                <input class="form-check-input leChamp" type="checkbox" name="{$id_protected}" id="{$id_protected}" {$checked}>
+                <label class="form-check-label" for="{$id_protected}">{$values}</label>
+            </div>
+HTML;
+    }
+    $html .= <<<HTML
+    </div>
+HTML;
+    return $html;
 }

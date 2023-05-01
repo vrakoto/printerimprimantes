@@ -88,11 +88,6 @@ $_SESSION['message'] = [];
         <span class="text-primary mx-3"><a href="<?= $router->url('home') ?>"><i class="fa-solid fa-house"></i></a> / <?= trim($_SERVER['REQUEST_URI'], '/') ?></span>
 
         <?= $content ?? '' ?>
-
-        <div id="ex1" class="modal">
-            <p>Thanks for clicking. That felt good.</p>
-            <a href="#" rel="modal:close">Close</a>
-        </div>
     </div>
 
     <?php if (Driver::estConnecte()) : ?>
@@ -108,21 +103,14 @@ $_SESSION['message'] = [];
         <script src="/src/JS/utils/jquery_ui_position.js"></script>
         
         <script src="/src/JS/commun.js"></script>
-        <script src="/src/JS/imprimante.js"></script>
-        <script src="/src/JS/compteur.js"></script>
-        
-        <?php
-            $jsfile = 'src' . DIRECTORY_SEPARATOR . 'JS' . DIRECTORY_SEPARATOR . pathinfo($view)['filename'] . '.js';
-            if (file_exists($jsfile)): ?>
 
-            <script src="<?= $jsfile ?>"></script>
+        <?php if (isset($jsfile)): ?>
+            <script src="/src/JS/<?= $jsfile ?>.js"></script>
         <?php endif ?>
         
-        <script src="/src/JS/gestion_utilisateurs.js"></script>
-        <script src="/src/JS/users_copieurs.js"></script>
-        <script src="/src/JS/main.js"></script>
-
     <?php endif ?>
+        
+        <script src="/src/JS/main.js"></script>
 
 </body>
 </html>

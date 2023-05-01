@@ -5,8 +5,11 @@ use App\Imprimante;
 use App\User;
 
 $lesNumeros = User::copieursPerimetre();
+$role = User::getRole();
 $hasFormMessage = !empty($_SESSION['message']);
+$jsfile = 'compteursPerimetre';
 $liste = "Compteurs du périmètre";
+$title = "Compteurs du périmètre"
 ?>
 
 <div class="container" id="container">
@@ -16,10 +19,10 @@ $liste = "Compteurs du périmètre";
     <br>
 
     <?php if (count(User::copieursPerimetre()) > 0) : ?>
-        <button class="mb-1 btn btn-primary" id="btn_add_releve" onclick="toggle_inputs_releve(this)">Ajouter un relevé</button>
+        <button class="mb-1 btn btn-primary" id="btn_add_releve" onclick="toggle_inputs_releve(this, 'form_add_counter')">Ajouter un relevé</button>
     <?php elseif (count(User::copieursPerimetre()) <= 0) : ?>
         <div class="row mb-3">
-            <h5>Vous n'avez aucun copieur dans votre périmètresm-2 .</h5>
+            <h5>Vous n'avez aucun copieur dans votre périmètres.</h5>
             <div class="col-sm-10">
                 <a href="<?= $router->url('add_machine_area') ?>" class="mb-4 btn btn-primary">Ajouter un copieur dans mon périmètre</a>
             </div>
@@ -47,7 +50,7 @@ $liste = "Compteurs du périmètre";
                     <td>
                         <button type="submit" title="Valider la saisie" class="btn btn-primary"><i class="fa-solid fa-check"></i></button>
                     </td>
-                    <td><a title="Annuler la saisie" class="btn btn-danger" onclick="cancelReleve(this)"><i class="fa-solid fa-xmark"></i></a></td>
+                    <td><a title="Annuler la saisie" class="btn btn-danger" onclick="cancelReleve(this, 'form_add_counter')"><i class="fa-solid fa-xmark"></i></a></td>
                     <td>
                         <select class="selectize w-100" name="num_serie" id="num_serie" required>
                             <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero[Imprimante::getChamps('champ_num_serie')]) ?>

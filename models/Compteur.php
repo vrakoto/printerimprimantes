@@ -29,17 +29,17 @@ class Compteur extends Driver
         return <<<HTML
         <thead>
             <tr>
-                <th>Numéro Série</th>
-                <th>BDD</th>
-                <th>Date de relevé</th>
-                <th>101 Total</th>
-                <th>112 Total</th>
-                <th>113 Total</th>
-                <th>122 Total</th>
-                <th>123 Total</th>
-                <th>Ajouté par</th>
-                <th>Mise à jour le</th>
-                <th>Type de relevé</th>
+                <th id="num_serie">Numéro Série</th>
+                <th id="bdd">BDD</th>
+                <th id="date_releve">Date de relevé</th>
+                <th id="101_total">101 Total</th>
+                <th id="112_total">112 Total</th>
+                <th id="113_total">113 Total</th>
+                <th id="122_total">122 Total</th>
+                <th id="123_total">123 Total</th>
+                <th id="modif_par">Ajouté par</th>
+                <th id="date_maj">Mise à jour le</th>
+                <th id="type_releve">Type de relevé</th>
             </tr>
         </thead>
 HTML;
@@ -84,10 +84,21 @@ HTML;
 
     static function searchCompteurByNumSerie($num_serie): array
     {
-        $req = "SELECT c.Numéro_série, c.BDD, DATE_FORMAT(`Date`, '%d/%m/%Y') as `Date`, 101_Total_1, 112_Total, 113_Total, 122_Total, 123_Total, p.`grade-prenom-nom` as modif_par, DATE_FORMAT(date_maj, '%d/%m/%Y %H:%i:%s') as date_maj, type_relevé
+        $req = "SELECT Numéro_série as num_serie,
+                c.BDD as bdd,
+                Date as date_releve,
+                `101_Total_1` as total_101,
+                `112_Total` as total_112,
+                `113_Total` as total_113,
+                `122_Total` as total_122,
+                `123_Total` as total_123,
+                `grade-prenom-nom` as modif_par,
+                date_maj,
+                type_relevé as type_releve
                 FROM compteurs c
                 LEFT JOIN profil p on p.id_profil = c.modif_par
-                WHERE c.Numéro_série LIKE :num_serie";
+                WHERE c.Numéro_série LIKE :num_serie
+                ORDER BY date_maj DESC";
         $p = self::$pdo->prepare($req);
         $p->execute(['num_serie' => '%' . $num_serie . '%']);
         return $p->fetchAll();

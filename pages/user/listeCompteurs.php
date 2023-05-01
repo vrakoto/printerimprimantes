@@ -1,5 +1,6 @@
 <?php
 use App\Compteur;
+$jsfile = 'listeCompteurs';
 $title = "Liste total des compteurs";
 ?>
 

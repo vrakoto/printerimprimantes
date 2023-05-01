@@ -1,12 +1,12 @@
 <?php
 use App\Imprimante;
-$jsfile = 'copieurSansReleve3Mois';
-$title = "Liste Copieurs sans relevé";
+$jsfile = 'listeCopieurs';
+$title = "Liste des machines";
 ?>
 
 <div class="d-flex justify-content-between container mt-5" id="header">
     <div>
-        <h1>Liste des copieurs sans relevé pour ce <?= 'T' . $current_quarter = ceil(date('n') / 3) ?> 2023</h1>
+        <h1>Liste des copieurs</h1>
         <div id="message"></div>
 
         <div class="mt-5 mb-0">
@@ -43,11 +43,12 @@ $title = "Liste Copieurs sans relevé";
 
         <div class="mb-5"></div>
     </div>
+    <!-- <div class="bg-secondary d-inline-block mx-5" style="width: 1px;"></div> -->
     <?= checkboxColumns() ?>
 </div>
 
 <div class="container mt-5">
-    <table id="table_imprimantes" class="table table-striped table-bordered personalTable" data-table="getImprimantesSansReleve3Mois">
+    <table id="table_imprimantes" class="table table-striped table-bordered personalTable" data-table="getImprimantes">
         <?= Imprimante::ChampsCopieur() ?>
         <tbody></tbody>
     </table>

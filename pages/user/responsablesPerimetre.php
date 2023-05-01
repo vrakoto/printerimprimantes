@@ -1,5 +1,7 @@
 <?php
 use App\UsersCopieurs;
+$jsfile = 'responsablesPerimetre';
+$title = "Les Responsables du périmètre";
 ?>
 
 <div class="container mt-5">

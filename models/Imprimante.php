@@ -59,7 +59,7 @@ class Imprimante extends Driver {
 HTML;
     }
 
-    static function editImprimante(int $num_ordo,$oracle,$config,$modele,$hostname,$reseau,$mac,$entite_beneficiaire,$credo_unite, int $cp, int $dep,$adresse,$site_installation,$localisation,$accessoires): bool
+    static function editImprimante($num,$oracle,$config,$modele,$hostname,$reseau,$mac,$entite_beneficiaire,$credo_unite, int $cp, int $dep,$adresse,$site_installation,$localisation,$accessoires): bool
     {
         $req = "UPDATE `copieurs` SET
         `N° Saisie ORACLE`= :oracle,
@@ -77,11 +77,11 @@ HTML;
         `localisation`= :localisation,
         `last_user`= :id_profil,
         `Accessoires`= :accessoires
-        WHERE `N° ORDO` = :num_ordo";
+        WHERE `N° de Série` = :num_serie";
         $p = self::$pdo->prepare($req);
         
         return $p->execute([
-            'num_ordo' => $num_ordo,
+            'num_serie' => $num,
             'oracle' => $oracle,
             'config' => $config,
             'modele' => $modele,
@@ -90,8 +90,8 @@ HTML;
             'mac' => $mac,
             'entite_beneficiaire' => $entite_beneficiaire,
             'credo_unite' => $credo_unite,
-            'cp' => $cp,
-            'dep' => $dep,
+            'cp' => (int)$cp,
+            'dep' => (int)$dep,
             'adresse' => $adresse,
             'site_installation' => $site_installation,
             'localisation' => $localisation,
@@ -103,12 +103,12 @@ HTML;
     /**
      * Récupère une imprimante spécifique
      */
-    static function getImprimante(int $num_ordo): array
+    static function getImprimante($num_serie): array
     {
-        $champ_num_ordo = self::$champ_num_ordo;
-        $req = "SELECT * FROM copieurs WHERE `$champ_num_ordo` = :num_ordo";
+        $champ_num_serie = self::$champ_num_serie;
+        $req = "SELECT * FROM copieurs WHERE `$champ_num_serie` = :num_serie";
         $p = self::$pdo->prepare($req);
-        $p->execute(['num_ordo' => $num_ordo]);
+        $p->execute(['num_serie' => $num_serie]);
         if ($p->rowCount() > 0) {
             return $p->fetch();
         }
@@ -139,6 +139,17 @@ HTML;
         $req = "SELECT * FROM copieurs WHERE " . self::$champ_bdd . " = :bdd";
         $p = self::$pdo->prepare($req);
         $p->execute(['bdd' => $bdd]);
+        return $p->fetchAll();
+    }
+
+    static function getSesResponsables($num_serie): array
+    {
+        $req = "SELECT `grade-prenom-nom` as responsable, `numéro_série` as num_serie
+                FROM users_copieurs
+                LEFT JOIN profil on id_profil = `responsable`
+                WHERE `numéro_série` = :num_serie";
+        $p = self::$pdo->prepare($req);
+        $p->execute(['num_serie' => $num_serie]);
         return $p->fetchAll();
     }
 
