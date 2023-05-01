@@ -21,12 +21,8 @@ $title = "Compteurs du périmètre"
     <?php if (count(User::copieursPerimetre()) > 0) : ?>
         <button class="mb-1 btn btn-primary" id="btn_add_releve" onclick="toggle_inputs_releve(this, 'form_add_counter')">Ajouter un relevé</button>
     <?php elseif (count(User::copieursPerimetre()) <= 0) : ?>
-        <div class="row mb-3">
-            <h5>Vous n'avez aucun copieur dans votre périmètres.</h5>
-            <div class="col-sm-10">
-                <a href="<?= $router->url('add_machine_area') ?>" class="mb-4 btn btn-primary">Ajouter un copieur dans mon périmètre</a>
-            </div>
-        </div>
+        <h5>Vous n'avez aucun copieur dans votre périmètre.</h5>
+        <a href="<?= $router->url('machines_area') ?>" class="mb-4 btn btn-primary">Ajouter un copieur dans mon périmètre</a>
     <?php endif ?>
 
 

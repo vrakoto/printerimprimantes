@@ -23,7 +23,7 @@ $('#form_add_counter').submit(function (e) {
 
             if (e.length <= 0) {
                 $('#message').attr("class", "alert alert-success");
-                $('#message').append(`Relevé de compteur ajouté pour le copieur ${num_serie}.`)
+                $('#message').append(`Relevé de compteur ajouté pour la : ${num_serie}`)
                 tableCompteurs_obj.DataTable().ajax.reload();
             } else {
                 $('#message').attr("class", "alert alert-danger");

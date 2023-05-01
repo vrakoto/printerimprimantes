@@ -17,9 +17,8 @@ $('#form_add_machine_area').submit(function (e) {
                 $('#message').append(`Le copieur ${num_serie} a bien été ajouté dans votre périmètre.`)
                 tableImprimante.ajax.reload();
             } else {
-                // $('#message').attr("class", "alert alert-danger");
-                // $('#message').append(e)
-                console.log(e);
+                $('#message').attr("class", "alert alert-danger");
+                $('#message').append(e)
             }
         },
         error: function (e, r) {

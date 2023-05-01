@@ -36,7 +36,7 @@ if (!empty($_POST)) {
         } catch (Throwable $th) {
             if ($th->getCode() === "23000") {
                 $msg = "L'imprimante : " . $num_serie . " possède déjà un relevé de compteur à la date : " . $date_input_user . "
-                <br>Veuillez modifier ou supprimer son compteur déjà existant.";
+                <br>Veuillez modifier ou supprimer son compteur déjà existant à la date : " . $date_input_user;
             } else {
                 $msg = "Une erreur interne a été rencontrée. Veuillez contacter l'administrateur du site.";
             }

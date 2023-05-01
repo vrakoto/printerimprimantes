@@ -73,6 +73,7 @@ $_SESSION['message'] = [];
             <hr class="text-white">
 
             <ul class="bottom-links">
+                <li><a href="<?= $router->url('faq') ?>" class="link"><i class="fa-solid fa-question"></i> <span class="mx-2">Foire Aux Questions</span></a></li>
                 <li><a href="<?= $router->url('my_account') ?>" class="link"><i class="fa-solid fa-user"></i> <span class="mx-2">Mon Compte</span></a></li>
                 <li>
                     <form action="<?= $router->url('logout') ?>" method="post">

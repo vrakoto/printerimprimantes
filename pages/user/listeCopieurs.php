@@ -43,7 +43,6 @@ $title = "Liste des machines";
 
         <div class="mb-5"></div>
     </div>
-    <!-- <div class="bg-secondary d-inline-block mx-5" style="width: 1px;"></div> -->
     <?= checkboxColumns() ?>
 </div>
 

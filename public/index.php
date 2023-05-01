@@ -64,7 +64,8 @@ if (Driver::estConnecte()) {
     $router->request('/creerUtilisateur', '/ajax/creerUtilisateur.php', 'ajax_create_user', 'POST');
     $router->request('/getGestionUtilisateurs', '/ajax/getGestionUtilisateurs.php', 'ajax_get_users_area');
     
-    $router->request('/theme', '/user/theme.php', 'theme');
+    // $router->request('/theme', '/user/theme.php', 'theme');
+    $router->request('/faq', '/user/faq.php', 'faq');
     $router->request('/compte', '/user/compte.php', 'my_account');
     $router->request('/compte', '/user/compte.php', 'edit_my_account', 'POST');
     $router->request('/deconnexion', '/user/deconnexion.php', 'logout', 'POST');
