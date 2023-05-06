@@ -75,12 +75,13 @@
     <div class="accordion-item">
         <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                J'aimerai avoir des détails en plus concernant l'onglet "Sans relevé depuis 3 Mois"
+                En savoir plus concernant la page "Sans relevé depuis 3 Mois"
             </button>
         </h2>
         <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
             <div class="accordion-body">
-                Cette page affiche les machines qui n'ont pas eu de relevé  enregistrée dans le système de suivi pendant la période considérée. Cela peut également indiquer qu'il y a eu un problème technique ou administratif qui a empêché la collecte des données de relevé pour ces imprimantes.
+                Cette page affiche les machines qui n'ont pas eu de relevé enregistrée dans notre système de suivi pendant ce trimestre.
+                Cela peut également indiquer qu'il y a eu un problème technique ou administratif qui a empêché la collecte des données de relevé pour ces machines.
             </div>
         </div>
     </div>

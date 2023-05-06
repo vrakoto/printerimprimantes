@@ -24,43 +24,6 @@ function convertDate(string $date, bool $heure = FALSE): string
     return $date->format('d/m/Y' . $heure);
 }
 
-function mandatoryFieldMessage(): string
-{
-    return <<<HTML
-    <div class="mt-3">
-        <span class="obligatoire">*</span><i> Champ à remplir obligatoirement</i>
-    </div>
-HTML;
-}
-
-function messageForm(array $fields = []): string
-{
-    if (!empty($_SESSION['message'])) {
-        if (!empty($fields)) {
-            $form_fields = "<div class='alert alert-danger'>";
-            $form_fields .= "Formulaire invalide :";
-            $form_fields .= "<ul>";
-            foreach ($fields as $field) {
-                $form_fields .= '<li>' . $field . '</li>';
-            }
-            $form_fields .= "</ul>";
-            $form_fields .= "</div>";
-            return $form_fields;
-        }
-        
-        // Message normal
-        $sm = $_SESSION['message'];
-        $typeMessage = (array_key_first($sm) === "error") ? "danger" : "success";
-        $message = ($sm['error']) ?? $sm['success'];
-
-        $simpleMessageForm = "<div class='alert alert-$typeMessage'>";
-        $simpleMessageForm .= $message;
-        $simpleMessageForm .= "</div>";
-        return $simpleMessageForm;
-    }
-    return '';
-}
-
 function link_machinesInMyArea($urlRouter): string
 {
     return <<<HTML

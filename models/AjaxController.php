@@ -136,15 +136,4 @@ class AjaxController extends Driver {
         
         return json_encode($output);
     }
-
-    function removeCopieurPerimetre($num_serie): bool
-    {
-        $id_profil = User::getMonID();
-        $query = "DELETE FROM users_copieurs WHERE responsable = :id_profil AND `numéro_série` LIKE :num_serie";
-        $p = self::$pdo->prepare($query);
-        return $p->execute([
-            'id_profil' => $id_profil,
-            'num_serie' => $num_serie
-        ]);
-    }
 }

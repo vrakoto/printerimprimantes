@@ -1,4 +1,6 @@
 <?php
+
+use App\BdD;
 use App\Imprimante;
 $jsfile = 'listeCopieurs';
 $title = "Liste des machines";
@@ -24,6 +26,19 @@ $title = "Liste des machines";
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary" title="Rechercher le copieur saisie"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </form>
+
+        <form class="mt-2 row g-3 align-items-center mb-2" id="form_search_bdd">
+            <div class="col-auto">
+                <label for="table_search_bdd" class="col-form-label">Filtrer par BdD</label>
+            </div>
+            <div class="col-sm-3">
+                <select class="selectize" name="table_search_bdd" id="table_search_bdd">
+                    <?php foreach (BdD::getTousLesBDD() as $bdd): $bdd = htmlentities($bdd['BDD']); ?>
+                        <option value="<?= $bdd ?>"><?= $bdd ?></option>
+                    <?php endforeach ?>
+                </select>
             </div>
         </form>
 

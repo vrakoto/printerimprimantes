@@ -9,6 +9,7 @@ use App\User;
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'elements' . DIRECTORY_SEPARATOR . 'helper.php';
 
 $VUES = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR;
+$AJAX = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ajax' . DIRECTORY_SEPARATOR;
 $router = new Router($VUES);
 
 if (Driver::estConnecte()) {
@@ -33,15 +34,13 @@ if (Driver::estConnecte()) {
 
     if (User::getRole() !== 2) {
         $router->request('/ajouterCopieurPerimetre', '/ajax/ajouterCopieurPerimetre.php', 'add_machine_area', 'POST');
+        $router->request('/retirerCopieurPerimetre', '/ajax/retirerCopieurPerimetre.php', 'ajax_remove_machine_area', 'POST');
     }
 
-    // $router->request('/copieurSansResponsable', '/user/copieurSansResponsable.php', 'list_machines_without_owner');
     $router->request('/copieurSansReleve3Mois', '/user/copieurSansReleve3Mois.php', 'list_machines_without_counter_3_months');
 
-    $router->request('/retirerCopieurPerimetre', '/ajax/retirerCopieurPerimetre.php', 'ajax_remove_machine_area', 'POST');
-    
-    $router->request('/inscrireCopieur', '/user/inscrireCopieur.php', 'view_add_machine');
-    $router->request('/inscrireCopieur', '/user/inscrireCopieur.php', 'add_machine', 'POST');
+    // $router->request('/inscrireCopieur', '/user/inscrireCopieur.php', 'view_add_machine');
+    // $router->request('/inscrireCopieur', '/user/inscrireCopieur.php', 'add_machine', 'POST');
 
     $router->request('/getCompteurs', '/ajax/getCompteurs.php', 'ajax_get_compteurs');
     $router->request('/getCompteursPerimetre', '/ajax/getCompteursPerimetre.php', 'ajax_get_compteurs_perimetre');
@@ -64,13 +63,14 @@ if (Driver::estConnecte()) {
     $router->request('/creerUtilisateur', '/ajax/creerUtilisateur.php', 'ajax_create_user', 'POST');
     $router->request('/getGestionUtilisateurs', '/ajax/getGestionUtilisateurs.php', 'ajax_get_users_area');
     
-    // $router->request('/theme', '/user/theme.php', 'theme');
     $router->request('/faq', '/user/faq.php', 'faq');
     $router->request('/compte', '/user/compte.php', 'my_account');
     $router->request('/compte', '/user/compte.php', 'edit_my_account', 'POST');
     $router->request('/deconnexion', '/user/deconnexion.php', 'logout', 'POST');
 
     $router->request('/toCSV[*:num]', '/toCSV.php', 'csv', 'GET');
+    $router->request('/importCompteurs', '/ajax/importCompteurs.php', 'ic', 'POST');
+    $router->request('/importCompteurs', '/ajax/importCompteurs.php', 'get_ic');
 } else {
     $router->request('/', 'connexion.php', 'home');
     $router->request('/', 'connexion.php', 'login_post', 'POST');

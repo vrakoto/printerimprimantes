@@ -3,7 +3,6 @@
 namespace App;
 
 use App\User;
-use DateTime;
 
 class Compteur extends Driver
 {

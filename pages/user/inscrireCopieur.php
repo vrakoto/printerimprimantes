@@ -53,8 +53,6 @@ if (!empty($_POST)) {
 <div class="container">
     <form class="border p-3" action="/inscrireCopieur" method="post">
         
-        <?= messageForm($lesErreurs) ?>
-
         <h1>Inscrire une machine</h1>
         
         <i>Votre machine n'est pas répertoriée dans Sapollon ? Inscrivez-la dès maintenant.</i>
@@ -80,7 +78,5 @@ if (!empty($_POST)) {
         </div>
 
         <button class="btn btn-primary" id="add_copieur">Ajouter</button>
-
-        <?= mandatoryFieldMessage() ?>
     </form>
 </div>

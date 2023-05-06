@@ -31,11 +31,15 @@ $query_results = "SELECT `N° ORDO` as num_ordo,
         FROM copieurs
         WHERE `N° de Série` LIKE :search_value";
 
-if (isset($_GET['csv'], $_GET['search_value'])) {
+if (isset($_GET['csv'])) {
     $search_value = htmlentities($_GET['search_value']);
     $csv = $ajax->test($query_results, $search_value, 'copieurs');
     die(json_encode($csv));
 } else {
+    /* if (isset($_GET['bdd'])) {
+        $bdd = htmlentities($_GET['bdd']);
+        $query_results .= " AND BDD = :bdd";
+    } */
     $total_records = $ajax->getNbRecordsWithoutFiltering($query_total_records);
     $total_filtered = $ajax->getNbRecordsFiltered($query_total_filtered);
     $results = $ajax->getRecords($query_results);

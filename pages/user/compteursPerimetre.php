@@ -6,7 +6,6 @@ use App\User;
 
 $lesNumeros = User::copieursPerimetre();
 $role = User::getRole();
-$hasFormMessage = !empty($_SESSION['message']);
 $jsfile = 'compteursPerimetre';
 $liste = "Compteurs du périmètre";
 $title = "Compteurs du périmètre"
@@ -26,7 +25,7 @@ $title = "Compteurs du périmètre"
     <?php endif ?>
 
 
-    <form method="post" id="form_add_counter" class="<?= $hasFormMessage ? "" : "d-none" ?>">
+    <form method="post" id="form_add_counter" class="d-none">
         <table class="table">
             <thead>
                 <tr>
@@ -63,6 +62,15 @@ $title = "Compteurs du périmètre"
                 </tr>
             </tbody>
         </table>
+    </form>
+
+    <form action="importCompteurs" method="POST" enctype="multipart/form-data">
+        <input type="file" class="form-control" name="csv_file" accept=".csv">
+        <input class="form-check" type="checkbox" name="csv_file_header" id="">
+        <label class="form-check" for="">
+            Mon fichier contient des entêtes
+        </label>
+        <input type="submit" value="Upload">
     </form>
 
     <style>

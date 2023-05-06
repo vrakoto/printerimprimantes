@@ -1,4 +1,17 @@
 copieurs();
+$('#form_search_bdd').change(function (e) {
+    e.preventDefault();
+    /* $.ajax({
+        type: "get",
+        url: "/getImprimantes&num_serie=" + $('#table_search').val() + '&bdd=' + $('#table_search_bdd').val(),
+        success: function (response) {
+            console.log(response);
+        },
+        error: function () {
+            alert('erreur interne');
+        }
+    }); */
+});
 const selector = '#table_imprimantes tr';
 $.contextMenu({
     selector: selector,
