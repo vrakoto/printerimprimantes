@@ -1,5 +1,19 @@
 compteurs();
 
+const toggleBtn = $('#toggle_inputs_releve');
+const container = $('#form_add_counter');
+
+toggleBtn.click(function () {
+    toggleBtn.hide();
+    container.toggleClass('d-none');
+    $('#num_serie').focus();
+});
+
+$('#cancel_input_releve').click(function () {
+    toggleBtn.show();
+    container.toggleClass('d-none');
+});
+
 // Masquer les colonnes par leur classe.
 tableCompteurs.columns('.details').visible(false);
 
@@ -46,7 +60,7 @@ $.contextMenu({
     items: {
         "view_copieur": {
             name: "Informations de l'imprimante",
-            callback: function(key, options) {
+            callback: function (key, options) {
                 const row = tableCompteurs.row(options.$trigger)
                 const {
                     num_serie
@@ -57,7 +71,7 @@ $.contextMenu({
         },
         "edit": {
             name: "Modifier ce relevé",
-            callback: function(key, options) {
+            callback: function (key, options) {
                 // Récupération de la ligne de données correspondante à la ligne cliquée
                 const row = tableCompteurs.row(options.$trigger);
                 const {
@@ -86,7 +100,7 @@ $.contextMenu({
         },
         "delete": {
             name: "Supprimer ce relevé",
-            callback: function(key, options) {
+            callback: function (key, options) {
                 const row = tableCompteurs.row(options.$trigger)
                 const {
                     num_serie,
@@ -97,12 +111,12 @@ $.contextMenu({
                     type: "post",
                     url: "supprimerReleve",
                     data: "num_serie=" + num_serie + '&date_releve=' + date_releve,
-                    success: function(response) {
+                    success: function (response) {
                         if (response === '') {
                             tableCompteurs.ajax.reload();
                         }
                     },
-                    error: function(response) {
+                    error: function (response) {
                         alert('erreur interne');
                     }
                 });

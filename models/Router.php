@@ -4,17 +4,25 @@ use AltoRouter;
 
 class Router {
     private $viewPath;
+    private $isAjax;
     private $router;
 
-    function __construct(string $viewPath)
+    function __construct(string $viewPath, bool $isAjax = FALSE)
     {
         $this->viewPath = $viewPath;
+        $this->isAjax = $isAjax;
         $this->router = new AltoRouter();
     }
 
     function request(string $url, string $view, ?string $name = null, string $method = 'GET')
     {
         $this->router->map($method, $url, $view, $name);
+        return $this;
+    }
+
+    function requestAjax(string $url, string $name, string $method = 'GET')
+    {
+        $this->router->map($method, $url, '/ajax/controller.php', $name);
         return $this;
     }
     

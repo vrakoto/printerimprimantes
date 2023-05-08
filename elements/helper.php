@@ -3,16 +3,34 @@
 use App\Imprimante;
 use App\User;
 
-function nav_link(string $form_fieldsien, string $icon, string $titre): string
+function addLink(string $title, string $var, string $icon, $router, $match, array $sublinks = [])
 {
-    $active = '';
-    $currentLinkController = str_replace('p=', '', $_SERVER['QUERY_STRING']);
-    if (str_contains($currentLinkController, $form_fieldsien)) {
-        $active = " linkHover";
+    $matchName = $match['name'];
+    $submenu = '';
+    if (!empty($sublinks)) {
+        foreach ($sublinks as $linkvar => $link) {
+            $submenu .= '
+            <li>
+                <a href="' . $router->url($linkvar) . '" class="submenu' . ($matchName === $linkvar ? ' linkActive' : '') . '">
+                    <i class="' . $link['icon'] . '"></i>
+                    <span class="mx-2">' . $link['title'] . '</span>
+                </a>
+            </li>';
+        }
     }
-    return <<<HTML
-    <a href="$form_fieldsien" class="link $active"><i class="$icon"></i> <span class="mx-2">$titre</span></a>
-HTML;
+    return '<li>
+                <a href="' . $router->url($var) . '" class="link' . ($matchName === $var ? ' linkActive' : '') . '">
+                    <i class="' . $icon . '"></i>
+                    <span class="mx-2">' . $title . '</span>
+                </a>
+                <ul class="container_submenu">' . $submenu . '</ul>
+            </li>';
+}
+
+function validateDate($date, $format = 'd-m-Y'): bool
+{
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) == $date;
 }
 
 function convertDate(string $date, bool $heure = FALSE): string
@@ -24,115 +42,23 @@ function convertDate(string $date, bool $heure = FALSE): string
     return $date->format('d/m/Y' . $heure);
 }
 
-function link_machinesInMyArea($urlRouter): string
+function toAmericanDate(string $date): string
 {
-    return <<<HTML
-    <a href="$urlRouter" class="home_action text-center">
-        <i class="fa-solid fa-print mx-2"></i>
-        <i class="fa-solid fa-location-dot"></i>
-        <h3>Copieurs de mon périmètre</h3>
-    </a>
-HTML;
+    $date = new DateTime($date);
+    return $date->format('Y-m-d');
 }
 
-function link_list_machines($urlRouter): string
-{
-    return <<<HTML
-    <a href="$urlRouter" class="home_action text-center">
-        <i class="fa-solid fa-print mx-2"></i>
-        <i class="fa-solid fa-list"></i>
-        <h3>Liste des copieurs</h3>
-    </a>
-HTML;
-}
 
-function link_add_machine($urlRouter): string
+function menu(string $urlRouter, array $icons, string $title, bool $requiredRole = false): string
 {
-    if (User::getRole() === 2 || User::getRole() === 4) {
-        return <<<HTML
-        <a href="$urlRouter" class="home_action text-center">
-            <i class="fa-solid fa-print mx-2"></i>
-            <i class="fa-solid fa-pen"></i>
-            <h3>Inscrire une machine inexistante</h3>
-        </a>
-HTML;
+    $lesIcones = '';
+    foreach ($icons as $icon) {
+        $lesIcones .= "<i class='$icon'></i>";
     }
-    return '';
-}
-
-function link_counters_area($urlRouter): string
-{
     return <<<HTML
     <a href="$urlRouter" class="home_action text-center">
-        <i class="fa-solid fa-book mx-2"></i>
-        <i class="fa-solid fa-location-dot"></i>
-        <h3>Compteurs de mon périmètre</h3>
-    </a>
-HTML;
-}
-
-function link_list_counters($urlRouter): string
-{
-    return <<<HTML
-    <a href="$urlRouter" class="home_action text-center">
-        <i class="fa-solid fa-book mx-2"></i>
-        <i class="fa-solid fa-list"></i>
-        <h3>Liste des compteurs</h3>
-    </a>
-HTML;
-}
-
-function link_ownersInMyArea($urlRouter): string
-{
-    return <<<HTML
-    <a href="$urlRouter" class="home_action text-center">
-        <i class="fa-solid fa-users mx-2"></i>
-        <i class="fa-solid fa-location-dot"></i>
-        <h3>Responsables de mon périmètre</h3>
-    </a>
-HTML;
-}
-
-function link_list_owners($urlRouter): string
-{
-    return <<<HTML
-    <a href="$urlRouter" class="home_action text-center">
-        <i class="fa-solid fa-list mx-2"></i>
-        <i class="fa-solid fa-users"></i>
-        <h3>Liste des responsables</h3>
-    </a>
-HTML;
-}
-
-function link_machines_without_owner($urlRouter): string
-{
-    return <<<HTML
-    <a href="$urlRouter" class="home_action text-center">
-        <i class="fa-solid fa-print mx-2"></i>
-        <i class="fa-solid fa-user-slash"></i>
-        <h3>Copieurs Sans Responsable</h3>
-    </a>
-HTML;
-}
-
-function link_machines_without_counter_3_months($urlRouter): string
-{
-    return <<<HTML
-    <a href="$urlRouter" class="home_action text-center">
-        <i class="fa-solid fa-book mx-2"></i>
-        <i class="fa-sharp fa-solid fa-circle-exclamation"></i>
-        <h3>Copieurs Sans Relevé depuis 3 Mois</h3>
-    </a>
-HTML;
-}
-
-function link_users_area($urlRouter): string
-{
-    return <<<HTML
-    <a href="$urlRouter" class="home_action text-center">
-        <i class="fa-solid fa-file"></i>
-        <i class="fa-solid fa-user"></i>
-        <h3>Gestion des utilisateurs</h3>
+        $lesIcones
+        <h3>$title</h3>
     </a>
 HTML;
 }

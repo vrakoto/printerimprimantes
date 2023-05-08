@@ -7,7 +7,6 @@ use App\User;
 $lesNumeros = User::copieursPerimetre();
 $role = User::getRole();
 $jsfile = 'compteursPerimetre';
-$liste = "Compteurs du périmètre";
 $title = "Compteurs du périmètre"
 ?>
 
@@ -18,7 +17,7 @@ $title = "Compteurs du périmètre"
     <br>
 
     <?php if (count(User::copieursPerimetre()) > 0) : ?>
-        <button class="mb-1 btn btn-primary" id="btn_add_releve" onclick="toggle_inputs_releve(this, 'form_add_counter')">Ajouter un relevé</button>
+        <button class="mb-1 btn btn-primary" id="toggle_inputs_releve">Ajouter un relevé</button>
     <?php elseif (count(User::copieursPerimetre()) <= 0) : ?>
         <h5>Vous n'avez aucun copieur dans votre périmètre.</h5>
         <a href="<?= $router->url('machines_area') ?>" class="mb-4 btn btn-primary">Ajouter un copieur dans mon périmètre</a>
@@ -45,7 +44,7 @@ $title = "Compteurs du périmètre"
                     <td>
                         <button type="submit" title="Valider la saisie" class="btn btn-primary"><i class="fa-solid fa-check"></i></button>
                     </td>
-                    <td><a title="Annuler la saisie" class="btn btn-danger" onclick="cancelReleve(this, 'form_add_counter')"><i class="fa-solid fa-xmark"></i></a></td>
+                    <td><a title="Annuler la saisie" class="btn btn-danger" id="cancel_input_releve"><i class="fa-solid fa-xmark"></i></a></td>
                     <td>
                         <select class="selectize w-100" name="num_serie" id="num_serie" required>
                             <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero[Imprimante::getChamps('champ_num_serie')]) ?>
@@ -62,15 +61,8 @@ $title = "Compteurs du périmètre"
                 </tr>
             </tbody>
         </table>
-    </form>
 
-    <form action="importCompteurs" method="POST" enctype="multipart/form-data">
-        <input type="file" class="form-control" name="csv_file" accept=".csv">
-        <input class="form-check" type="checkbox" name="csv_file_header" id="">
-        <label class="form-check" for="">
-            Mon fichier contient des entêtes
-        </label>
-        <input type="submit" value="Upload">
+        <a class="btn btn-secondary" href="<?= $router->url('importCompteurs') ?>">Importer des relevés via un fichier CSV</a>
     </form>
 
     <style>

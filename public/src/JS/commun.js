@@ -125,9 +125,11 @@ function compteurs() {
                 className: 'details ligne',
                 data: "date_releve",
                 render: function (data, type, row) {
-                    let date = new Date(data);
-                    let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                    return new Intl.DateTimeFormat('fr-FR', options).format(date);
+                    try {
+                        let date = new Date(data);
+                        let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                        return new Intl.DateTimeFormat('fr-FR', options).format(date); 
+                    } catch (error) {}
                 }
             },
             { className: 'ligne', data: "total_101" },
@@ -140,9 +142,11 @@ function compteurs() {
                 className: 'ligne',
                 data: "date_maj",
                 render: function (data, type, row) {
-                    let date = new Date(data);
-                    let options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-                    return new Intl.DateTimeFormat('fr-FR', options).format(date);
+                    try {
+                        let date = new Date(data);
+                        let options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+                        return new Intl.DateTimeFormat('fr-FR', options).format(date);
+                    } catch (error) {}
                 }
             },
             { className: 'ligne', data: "type_releve" }
@@ -227,8 +231,6 @@ function btns(table) {
                 action: function (e, dt, node, config) {
                     const query = dt.ajax.params();
                     const filename = 'data.csv';
-                    // query.draw = 0;
-                    // query.length = -1;
 
                     $.ajax({
                         url: dt.ajax.url(),

@@ -1,7 +1,5 @@
 <?php
 use App\Driver;
-
-$_SESSION['message'] = [];
 ?>
 
 <!DOCTYPE html>
@@ -42,39 +40,51 @@ $_SESSION['message'] = [];
             <ul class="middle-links">
                 <a href="<?= $router->url('home') ?>" class="link <?= $match['name'] === "home" ? " active" : "" ?>"><i class="fa-solid fa-house"></i> <span class="mx-2">Accueil</span></a>
 
-                <li class="mt-3">
-                    <a href="<?= $router->url('menu_machine') ?>" class="link <?= $match['name'] === "menu_machine" ? " active" : "" ?>"><i class="fa-solid fa-print"></i> <span class="mx-2">Suivi des Copieurs</span></a>
-                    <ul class="container_submenu">
-                        <a href="<?= $router->url('list_machines') ?>" class="submenu <?= $match['name'] === "list_machines" ? " active" : "" ?>"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
-                        <a href="<?= $router->url('machines_area') ?>" class="submenu <?= $match['name'] === "machines_area" ? " active" : "" ?>"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">De mon périmètre</span></a>
-                        <a href="<?= $router->url('list_machines_without_counter_3_months') ?>" class="submenu <?= $match['name'] === "list_machines_without_counter_3_months" ? " active" : "" ?>"><i class="fa-solid fa-user-slash"></i> <span class="mx-2">Sans Relevé depuis 3 mois</span></a>
-                    </ul>
-                </li>
+                <div class="mt-3"></div>
 
-                <li class="mt-3 mb-3">
-                    <a href="<?= $router->url('menu_machine_counters') ?>" class="link <?= $match['name'] === "menu_machine_counters" ? " active" : "" ?>"><i class="fa-solid fa-file"></i> <span class="mx-2">Suivi des Compteurs</span></a>
-                    <ul class="container_submenu">
-                        <a href="<?= $router->url('list_counters') ?>" class="submenu <?= $match['name'] === "list_counters" ? " active" : "" ?>"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste</span></a>
-                        <a href="<?= $router->url('counters_area') ?>" class="submenu <?= $match['name'] === "counters_area" ? " active" : "" ?>"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">De mon périmètre</span></a>
-                    </ul>
-                </li>
+                <?= addLink('Suivi des copieurs', 'menu_machine', 'fa-solid fa-print', $router, $match,
+                    [
+                        'list_machines' => ['icon' => 'fa-solid fa-list', 'title' => 'Liste'],
+                        'machines_area' => ['icon' => 'fa-solid fa-location-dot', 'title' => 'De mon périmètre'],
+                        'list_machines_without_counter_3_months' => ['icon' => 'fa-solid fa-user-slash', 'title' => 'Sans relevé ce trimestre']
+                    ], $router, $match)
+                ?>
 
-                <li>
-                    <a href="<?= $router->url('menu_machines_owners') ?>" class="link <?= $match['name'] === "menu_machines_owners" ? " active" : "" ?>"><i class="fa-solid fa-users"></i> <span class="mx-2">Administration</span></a>
-                    <ul class="container_submenu">
-                        <a href="<?= $router->url('list_owners') ?>" class="submenu <?= $match['name'] === "list_owners" ? " active" : "" ?>"><i class="fa-solid fa-list"></i> <span class="mx-2">Liste des Responsables</span></a>
-                        <a href="<?= $router->url('owners_area') ?>" class="submenu <?= $match['name'] === "owners_area" ? " active" : "" ?>"><i class="fa-solid fa-location-dot"></i> <span class="mx-2">Responsables du périmètre</span></a>
-                        <a href="<?= $router->url('view_users_area') ?>" class="submenu <?= $match['name'] === "view_users_area" ? " active" : "" ?>"><i class="fa-solid fa-user-tag"></i> <span class="mx-2">Gestion des utilisateurs</span></a>
-                    </ul>
-                </li>
+                <div class="mt-3"></div>
+                
+                <?= addLink('Suivi des compteurs', 'menu_machine_counters', 'fa-solid fa-file', $router, $match,
+                    [
+                        'list_counters' => ['icon' => 'fa-solid fa-list', 'title' => 'Liste'],
+                        'counters_area' => ['icon' => 'fa-solid fa-location-dot', 'title' => 'De mon périmètre'],
+                    ], $router, $match)
+                ?>
+
+                <div class="mt-3"></div>
+
+                <?= addLink('Suivi des pannes', 'menu_pannes', 'fa-solid fa-virus', $router, $match,
+                    [
+                        'list_pannes' => ['icon' => 'fa-solid fa-list', 'title' => 'Liste'],
+                        'pannes_area' => ['icon' => 'fa-solid fa-location-dot', 'title' => 'Mes pannes'],
+                    ], $router, $match)
+                ?>
+
+                <div class="mt-3"></div>
+
+                <?= addLink('Administration', 'menu_administration', 'fa-solid fa-users', $router, $match,
+                    [
+                        'list_owners' => ['icon' => 'fa-solid fa-list', 'title' => 'Liste'],
+                        'owners_area' => ['icon' => 'fa-solid fa-location-dot', 'title' => 'De mon périmètre'],
+                        'view_users_area' => ['icon' => 'fa-solid fa-user-tag', 'title' => 'Gestion des utilisateurs'],
+                    ])
+                ?>
 
             </ul>
 
             <hr class="text-white">
 
             <ul class="bottom-links">
-                <li><a href="<?= $router->url('faq') ?>" class="link"><i class="fa-solid fa-question"></i> <span class="mx-2">Foire Aux Questions</span></a></li>
-                <li><a href="<?= $router->url('my_account') ?>" class="link"><i class="fa-solid fa-user"></i> <span class="mx-2">Mon Compte</span></a></li>
+                <?= addLink('Foire Aux Questions', 'faq', 'fa-solid fa-question', $router, $match) ?>
+                <?= addLink('Mon Compte', 'my_account', 'fa-solid fa-user', $router, $match) ?>
                 <li>
                     <form action="<?= $router->url('logout') ?>" method="post">
                         <button type="submit" class="link logout"><i class="fa-solid fa-right-from-bracket"></i> <span class="mx-2"> Deconnexion</button>

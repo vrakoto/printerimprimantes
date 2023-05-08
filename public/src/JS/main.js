@@ -16,21 +16,6 @@ function toggle_inputs_imprimante_details(e) {
 }
 
 
-function toggle_inputs_releve(e, input) {
-    $(e).css('display', 'none');
-    $('#' + input).attr('class', '');
-    $('#num_serie').focus();
-    // $('#container').attr('class', '');
-}
-
-
-function cancelReleve(e, input) {
-    $('button').css('display', 'inline-block');
-    $('#' + input).attr('class', 'd-none');
-    // $('#container').attr('class', 'container');
-}
-
-
 function toggle_input_create_user(e) {
     $(e).css('display', 'none');
     $('#form_create_user').attr('class', '');
@@ -40,5 +25,4 @@ function toggle_input_create_user(e) {
 function cancelCreateUser(e) {
     $('#btn_toggle_input_create_user').css('display', 'block');
     $('#form_create_user').attr('class', 'd-none');
-    // $('#container').attr('class', 'container');
 }

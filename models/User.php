@@ -90,17 +90,13 @@ class User extends Driver {
 
     static function verifierMDP($proposed_password): bool
     {
-        $champ_mdp = self::getChamp('champ_mdp');
-        $champ_id = self::getChamp('champ_id');
-        $champ_messagerie = self::getChamp('champ_messagerie');
-
-        $req = "SELECT $champ_mdp FROM profil WHERE $champ_id = :id AND $champ_messagerie = :messagerie";
+        $req = "SELECT mdp FROM profil WHERE `id_profil` = :id AND `Courriel` = :courriel";
         $p = self::$pdo->prepare($req);
         $p->execute([
             'id' => self::getMonID(),
-            'messagerie' => self::getMessagerie()
+            'courriel' => self::getMessagerie()
         ]);
-        return !empty($p->fetch());
+        return ($proposed_password === $p->fetch()['mdp']);
         // $mdp_actuel = $p->fetch()[$champ_mdp];
         // return password_verify($proposed_password, $mdp_actuel);
     }
