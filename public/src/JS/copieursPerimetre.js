@@ -1,5 +1,18 @@
 copieurs();
 
+const toggleBtn = $('#btn_add_machines_area');
+const container = $('#form_add_machine_area');
+
+toggleBtn.click(function () {
+    toggleBtn.hide();
+    container.toggleClass('d-none');
+});
+
+$('#cancel_input').click(function () {
+    toggleBtn.show();
+    container.toggleClass('d-none');
+});
+
 // Form ajouter un copieur dans le périmètre dynamiquement dans la page
 $('#form_add_machine_area').submit(function (e) {
     e.preventDefault();
@@ -28,10 +41,10 @@ $('#form_add_machine_area').submit(function (e) {
     });
 });
 
-const selector = '#table_imprimantes tr';
+const selector = '#table_imprimantes tbody tr';
 $.contextMenu({
     selector: selector,
-    trigger: 'right',
+    trigger: 'left',
     items: {
         "view": {
             name: "Informations de l'imprimante",

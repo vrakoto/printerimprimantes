@@ -24,19 +24,6 @@ class UsersCopieurs extends Driver {
 HTML;
     }
 
-    static function ValuesUsersCopieurs($responsable): void
-    {
-        $gpn = htmlentities($responsable['gpn']);
-        $num_serie = htmlentities($responsable['num_serie']);
-
-        echo <<<HTML
-        <tr>
-            <td>$gpn</td>
-            <td><a href="/imprimante/$num_serie">$num_serie</a></td>
-        </tr>
-HTML;
-    }
-
     static function getResponsables($bdd = NULL): array
     {
         $champ_id_user_users_copieurs = self::$champ_id_user;

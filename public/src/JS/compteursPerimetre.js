@@ -56,7 +56,7 @@ let selected_num_serie = '';
 let selected_date_releve = '';
 $.contextMenu({
     selector: selector,
-    trigger: 'right',
+    trigger: 'left',
     items: {
         "view_copieur": {
             name: "Informations de l'imprimante",

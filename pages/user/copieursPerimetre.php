@@ -30,7 +30,7 @@ $title = "Copieurs Périmètre";
                         <td>
                             <button type="submit" title="Valider la saisie" class="btn btn-primary"><i class="fa-solid fa-check"></i></button>
                         </td>
-                        <td><a title="Annuler la saisie" class="btn btn-danger" onclick="cancelReleve(this, 'form_add_machine_area')"><i class="fa-solid fa-xmark"></i></a></td>
+                        <td><a title="Annuler la saisie" class="btn btn-danger" id="cancel_input"><i class="fa-solid fa-xmark"></i></a></td>
                         <td>
                             <select class="selectize w-100" name="num_serie" id="num_serie" required>
                             <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero['num_serie']) ?>
@@ -45,7 +45,7 @@ $title = "Copieurs Périmètre";
 
         <div class="mt-5 mb-0">
             <?php if (User::getRole() !== 2) : ?>
-                <button class="mb-1 btn btn-primary" id="btn_add_releve" onclick="toggle_inputs_releve(this, 'form_add_machine_area')" title="Ajouter un copieur dans mon périmètre">Ajouter un copieur dans mon périmètre</button>
+                <button class="mb-1 btn btn-primary" id="btn_add_machines_area" title="Ajouter un copieur dans mon périmètre">Ajouter un copieur dans mon périmètre</button>
             <?php endif ?>
 
             <span id="export-csv"></span>

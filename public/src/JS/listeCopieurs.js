@@ -1,8 +1,8 @@
 copieurs();
-const selector = '#table_imprimantes tr';
+const selector = '#table_imprimantes tbody tr';
 $.contextMenu({
     selector: selector,
-    trigger: 'right',
+    trigger: 'left',
     items: {
         "view": {
             name: "Informations de l'imprimante",

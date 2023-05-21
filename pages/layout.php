@@ -96,7 +96,7 @@ use App\Driver;
     </nav>
 
     <div class="body_content">
-        <span class="text-primary mx-3"><a href="<?= $router->url('home') ?>"><i class="fa-solid fa-house"></i></a> / <?= trim($_SERVER['REQUEST_URI'], '/') ?></span>
+        <!-- <span class="text-primary mx-3"><a href="<?= $router->url('home') ?>"><i class="fa-solid fa-house"></i></a> / <?= trim($_SERVER['REQUEST_URI'], '/') ?></span> -->
 
         <?= $content ?? '' ?>
     </div>

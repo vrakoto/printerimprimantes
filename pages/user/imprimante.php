@@ -5,27 +5,14 @@ use App\User;
 
 $num = htmlentities($params['num']);
 
-if (isset($_POST['export_csv'])) {
+if (isset($_POST['csv'])) {
     $compteurs = Compteur::searchCompteurByNumSerie($num);
-    $filename = $num . "_compteurs.csv";
-
-    header('Content-Type: application/csv');
-    header('Content-Disposition: attachment; filename="' . $filename . '";');
-
-    ob_end_clean();
-    
-    $handle = fopen('php://output', 'w');
-
-    // use keys as column titles
-    fputcsv($handle, array_keys($compteurs['0'] ), ",");
-
-    foreach ($compteurs as $value) {
-        fputcsv($handle, $value, ",");
+    $filename = $num . "_compteurs";
+    $champs = '';
+    foreach (colonnes(Compteur::ChampsCompteur()) as $id => $nom) {
+        $champs .= $nom . ";";
     }
-
-    fclose($handle);
-
-    ob_flush();
+    Compteur::downloadCSV($champs, $filename, $compteurs);
     exit();
 }
 
@@ -128,7 +115,7 @@ $jsfile = 'imprimante';
     <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
         <div class="mt-3">
             <form method="post" class="mt-3 mb-3">
-                <input type="submit" class="btn btn-primary" name="export_csv" value="Exporter en CSV">
+                <input type="submit" class="btn btn-primary" name="csv" value="Exporter en CSV">
             </form>
             <?php if (count($releves) > 0) : ?>
                 <table class="table table-striped table-bordered personalTable">

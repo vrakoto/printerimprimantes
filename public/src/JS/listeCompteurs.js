@@ -3,7 +3,7 @@ compteurs();
 const selector = '#table_compteurs tbody tr'
 $.contextMenu({
     selector: selector,
-    trigger: 'right',
+    trigger: 'left',
     items: {
         "view": {
             name: "Informations de l'imprimante",
