@@ -12,19 +12,25 @@ $title = "Compteurs du périmètre"
 
 <div class="container" id="container">
 
-    <h1 class="mt-5">Compteurs de mon périmètre</h1>
+    <h1 class="mt-5 mb-4">Compteurs de mon périmètre</h1>
     <div id="message"></div>
     <br>
 
-    <?php if (count(User::copieursPerimetre()) > 0) : ?>
-        <button class="mb-1 btn btn-primary" id="toggle_inputs_releve">Ajouter un relevé</button>
-    <?php elseif (count(User::copieursPerimetre()) <= 0) : ?>
-        <h5>Vous n'avez aucun copieur dans votre périmètre.</h5>
-        <a href="<?= $router->url('machines_area') ?>" class="mb-4 btn btn-primary">Ajouter un copieur dans mon périmètre</a>
+    <?php if (count(User::copieursPerimetre()) > 0): ?>
+        <button class="btn btn-primary" id="toggle_inputs_releve">Ajouter un relevé</button>
+        <a href="<?= $router->url('machines_area') ?>" class="btn btn-secondary">Ajouter un copieur dans mon périmètre</a>
+    <?php else: ?>
+        <?php if (User::getRole() === 2): ?>
+            <h5>Aucune machine de votre BdD n'a été enregistrée.</h5>
+        <?php else: ?>
+            <h5><i class="fa-solid fa-triangle-exclamation"></i> Aucune machine n'est attribuée à votre compte.</h5>
+            <a href="<?= $router->url('machines_area') ?>" class="mb-4 btn btn-secondary">Ajouter un copieur dans mon périmètre</a>
+        <?php endif ?>
     <?php endif ?>
 
-
-    <form method="post" id="form_add_counter" class="d-none">
+    
+<?php if (count(User::copieursPerimetre()) > 0) : ?>
+    <form method="post" id="form_add_counter" class="d-none mt-3">
         <table class="table">
             <thead>
                 <tr>
@@ -105,16 +111,12 @@ $title = "Compteurs du périmètre"
     <span class="mt-2" id="export-csv"></span>
 </div>
 
-<?php if (count(Compteur::getLesRelevesParBDD()) > 0) : ?>
-    <div id="large_table" class="container mt-4">
-        <table id="table_compteurs" class="table table-striped table-bordered personalTable table_compteurs_perimetre" data-table="getCompteursPerimetre">
-            <?= Compteur::ChampsCompteur(true) ?>
-            <tbody></tbody>
-        </table>
-    </div>
-<?php else : ?>
-    <h4 class="mt-4 text-center">Aucun relevé</h4>
-<?php endif ?>
+<div id="large_table" class="container mt-4">
+    <table id="table_compteurs" class="table table-striped table-bordered personalTable table_compteurs_perimetre" data-table="getCompteursPerimetre">
+        <?= Compteur::ChampsCompteur(true) ?>
+        <tbody></tbody>
+    </table>
+</div>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -174,3 +176,4 @@ $title = "Compteurs du périmètre"
         </form>
     </div>
 </div>
+<?php endif ?>

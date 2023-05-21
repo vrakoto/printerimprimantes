@@ -26,6 +26,7 @@ if (Driver::estConnecte()) {
     
     $router->request('/liste_copieurs', '/user/listeCopieurs.php', 'list_machines');
     $router->request('/copieurs_perimetre', '/user/copieursPerimetre.php', 'machines_area');
+    $router->request('/machines_transfert', '/user/copieursTransfert.php', 'machines_transfert');
     $router->request('/copieurSansReleve3Mois', '/user/copieurSansReleve3Mois.php', 'list_machines_without_counter_3_months');
     
     $router->request('/liste_compteurs', '/user/listeCompteurs.php', 'list_counters');
@@ -33,6 +34,7 @@ if (Driver::estConnecte()) {
 
     $router->request('/liste_pannes', '/user/listePannes.php', 'list_pannes');
     $router->request('/pannes_perimetre', '/user/pannesPerimetre.php', 'pannes_area');
+    $router->request('/ajout_panne', '/user/ajoutPanne.php', 'add_panne');
     
     $router->request('/liste_responsables', '/user/listeResponsables.php', 'list_owners');
     $router->request('/responsablesPerimetre', '/user/responsablesPerimetre.php', 'owners_area');
@@ -65,13 +67,15 @@ if (Driver::estConnecte()) {
 
     $router->requestAjax('/creerUtilisateur', 'creer_utilisateur', 'POST');
     $router->requestAjax('/getGestionUtilisateurs', 'get_utilisateurs_perimetre');
+
+    $router->request('/test', '/user/test.php', 'test');
     
     $router->request('/faq', '/user/faq.php', 'faq');
     $router->request('/compte', '/user/compte.php', 'my_account');
     $router->request('/compte', '/user/compte.php', 'edit_account', 'POST'); // changer mdp
     $router->request('/deconnexion', '/user/deconnexion.php', 'logout', 'POST');
 
-    $router->request('/toCSV[*:num]', '/toCSV.php', 'csv', 'GET');
+
 } else {
     $router->request('/', 'connexion.php', 'home');
     $router->request('/', 'connexion.php', 'login_post', 'POST');

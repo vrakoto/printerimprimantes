@@ -42,7 +42,7 @@ class User extends Driver {
     }
     static function getBDD(): string
     {
-        return $_SESSION['user'][self::$champ_bdd];
+        return htmlentities($_SESSION['user'][self::$champ_bdd]);
     }
     static function getMessagerie(): string
     {

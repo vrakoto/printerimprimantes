@@ -2,6 +2,41 @@ var table = $('table');
 var ths = table.find('thead th');
 var trs = table.find('tbody tr');
 
+/* function loadPage(page, nbResultsPage) {
+    $.ajax({
+        type: "get",
+        url: "/test",
+        data: 'page=' + page + '&nbResultsPage=' + nbResultsPage,
+        success: function (response) {
+            $('table tbody').empty();
+            $('table tbody').append(response);
+        }
+    });
+}
+
+$('#btnSearch').click(function (e) {
+    e.preventDefault();
+    const formData = $('form').serializeArray();
+
+    const values = formData.reduce(function(obj, item) {
+        obj[item.name] = item.value;
+        return obj;
+    }, {});
+
+    $.ajax({
+        type: "get",
+        url: "/testSearch",
+        data: 'searchs=' + values,
+        success: function (response) {
+            $('table tbody').empty();
+            $('table tbody').append(response);
+        }
+    });
+})
+
+loadPage(1, 5); */
+
+
 /* function sortTable(column, direction) {
     var tbody = table.find('tbody');
     var rows = tbody.find('tr').get();
@@ -44,7 +79,7 @@ ths.click(function () {
     }
 }); */
 
-$('table').DataTable({
+/* $('table').DataTable({
     dom: 't',
     responsive: true,
-});
+}); */

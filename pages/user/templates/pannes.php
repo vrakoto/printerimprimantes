@@ -59,7 +59,7 @@ HTML;
     <form class="mt-5 mb-2">
         <?= formSearch('num_ticket', 'Rechercher par N° de Ticket', 'Saisir un N° de Série', $num_ticket) ?>
         <?= formSearch('num_serie', 'Rechercher par N° de Série', 'Saisir un N° de Ticket', $num_serie) ?>
-        <button type="submit" class="btn btn-primary" title="Effectuer la recherche">Rechercher <i class="fa-solid fa-magnifying-glass"></i></button>
+        <button type="submit" id="btnSearch" class="btn btn-primary" title="Effectuer la recherche">Rechercher <i class="fa-solid fa-magnifying-glass"></i></button>
     </form>
 
     <button class="btn btn-primary" id="downloadCSV">Exporter en CSV</button>
@@ -67,6 +67,7 @@ HTML;
     <div id="pagination" class="mt-4">
         <?php for ($i = 1; $i < $nb_pages + 1; $i++) : ?>
             <a class="<?= $page !== $i ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=<?= $i ?><?= $searching ? '&num_serie=' . $num_serie . '&num_ticket=' . $num_ticket : '' ?>"><?= $i ?></a>
+            <!-- <a onclick="loadPage(<?= $i ?>, <?= $nb_results_par_page ?>)" class="<?= $page !== $i ? 'btn' : 'btn btn-primary text-white' ?>"><?= $i ?></a> -->
         <?php endfor ?>
     </div>
 

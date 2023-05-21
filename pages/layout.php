@@ -46,6 +46,7 @@ use App\Driver;
                     [
                         'list_machines' => ['icon' => 'fa-solid fa-list', 'title' => 'Liste'],
                         'machines_area' => ['icon' => 'fa-solid fa-location-dot', 'title' => 'De mon périmètre'],
+                        'machines_transfert' => ['icon' => 'fa-solid fa-arrow-right', 'title' => 'Transfert des Copieurs'],
                         'list_machines_without_counter_3_months' => ['icon' => 'fa-solid fa-user-slash', 'title' => 'Sans relevé ce trimestre']
                     ], $router, $match)
                 ?>
@@ -65,6 +66,7 @@ use App\Driver;
                     [
                         'list_pannes' => ['icon' => 'fa-solid fa-list', 'title' => 'Liste'],
                         'pannes_area' => ['icon' => 'fa-solid fa-location-dot', 'title' => 'Mes pannes'],
+                        'add_panne' => ['icon' => 'fa-solid fa-plus', 'title' => 'Ajout Panne'],
                     ], $router, $match)
                 ?>
 
