@@ -14,7 +14,8 @@ $router = new Router($VUES);
 $ajaxRouter = new Router($AJAX, true);
 
 if (Driver::estConnecte()) {
-    $router->request('/', '/user/accueil.php', 'home');
+    $router->request('/', '/user/compte.php', 'home');
+    $router->request('/', '/user/compte.php', 'edit_account', 'POST'); // changer mdp
 
     $router->request('/menuCopieur', '/user/menuCopieur.php', 'menu_machine');
     $router->request('/menuCompteurs', '/user/menuCompteurs.php', 'menu_machine_counters');
@@ -26,8 +27,9 @@ if (Driver::estConnecte()) {
     
     $router->request('/liste_copieurs', '/user/listeCopieurs.php', 'list_machines');
     $router->request('/copieurs_perimetre', '/user/copieursPerimetre.php', 'machines_area');
+    $router->request('/copieurs_perimetre', '/user/copieursPerimetre.php', 'add_machine_area', 'POST');
     $router->request('/machines_transfert', '/user/copieursTransfert.php', 'machines_transfert');
-    $router->request('/copieurSansReleve3Mois', '/user/copieurSansReleve3Mois.php', 'list_machines_without_counter_3_months');
+    $router->request('/copieurs-sans-releve-trimestre', '/user/copieurSansReleveTrimestre.php', 'list_machines_without_counter_3_months');
     
     $router->request('/liste_compteurs', '/user/listeCompteurs.php', 'list_counters');
     $router->request('/compteurs_perimetre', '/user/compteursPerimetre.php', 'counters_area');
@@ -36,9 +38,9 @@ if (Driver::estConnecte()) {
     $router->request('/pannes_perimetre', '/user/pannesPerimetre.php', 'pannes_area');
     $router->request('/ajout_panne', '/user/ajoutPanne.php', 'add_panne');
     
-    $router->request('/liste_responsables', '/user/listeResponsables.php', 'list_owners');
-    $router->request('/responsablesPerimetre', '/user/responsablesPerimetre.php', 'owners_area');
-    $router->request('/gestion_utilisateurs', '/user/gestionUtilisateurs.php', 'view_users_area');
+    $router->request('/liste-responsables', '/user/listeResponsables.php', 'list_owners');
+    $router->request('/responsables-perimetre', '/user/responsablesPerimetre.php', 'owners_area');
+    $router->request('/gestion-utilisateurs', '/user/gestionUtilisateurs.php', 'view_users_area');
 
     $router->request('/importCompteurs', '/user/importerCompteurs.php', 'importCompteurs');
     $router->request('/importCompteurs', '/user/importerCompteurs.php', 'importerCompteurs', 'POST');
@@ -68,11 +70,9 @@ if (Driver::estConnecte()) {
     $router->requestAjax('/creerUtilisateur', 'creer_utilisateur', 'POST');
     $router->requestAjax('/getGestionUtilisateurs', 'get_utilisateurs_perimetre');
 
-    $router->request('/test', '/user/test.php', 'test');
+    // $router->request('/test', '/user/test.php', 'test');
     
     $router->request('/faq', '/user/faq.php', 'faq');
-    $router->request('/compte', '/user/compte.php', 'my_account');
-    $router->request('/compte', '/user/compte.php', 'edit_account', 'POST'); // changer mdp
     $router->request('/deconnexion', '/user/deconnexion.php', 'logout', 'POST');
 
 

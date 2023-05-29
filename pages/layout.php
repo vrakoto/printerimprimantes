@@ -1,4 +1,5 @@
 <?php
+
 use App\Driver;
 ?>
 
@@ -16,7 +17,7 @@ use App\Driver;
     <link type="text/css" rel="stylesheet" href="/src/CSS/accueil.css">
     <link type="text/css" rel="stylesheet" href="/src/CSS/navbar.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css">
+    <link rel="stylesheet" href="/src/CSS/contextmenu/main.css">
     <link rel="stylesheet" href="/src/CSS/selectize/selectize.css">
     <link rel="stylesheet" href="/src/CSS/datatables/datatables.min.css">
 
@@ -28,102 +29,93 @@ use App\Driver;
 </head>
 
 <body>
-    <nav>
-        <div class="nav_header text-center">
-            <i class="fa-solid fa-print"></i>
-            <h3>Sapollon</h3>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-success navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand">Sapollon</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <?php if (Driver::estConnecte()): ?>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?= $router->url('home') ?>">Mon Compte</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Suivi des copieurs
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="<?= $router->url('list_machines') ?>"><i class="fa-solid fa-list"></i> Liste des Copieurs</a></li>
+                            <li><a class="dropdown-item" href="<?= $router->url('machines_area') ?>"><i class="fa-solid fa-location-dot"></i> Copieurs de mon périmètre</a></li>
+                            <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_counter_3_months') ?>"><i class="fa-solid fa-user-slash"></i> Sans relevé ce Trimestre</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Suivi des compteurs
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="<?= $router->url('list_counters') ?>"><i class="fa-solid fa-list"></i> Liste des Compteurs</a></li>
+                            <li><a class="dropdown-item" href="<?= $router->url('counters_area') ?>"><i class="fa-solid fa-location-dot"></i> Compteurs de mon périmètre</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Suivi des pannes
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="<?= $router->url('list_pannes') ?>"><i class="fa-solid fa-list"></i> Liste des Pannes</a></li>
+                            <li><a class="dropdown-item" href="<?= $router->url('pannes_area') ?>"><i class="fa-solid fa-location-dot"></i> Mes Pannes</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Administration
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="<?= $router->url('view_users_area') ?>"><i class="fa-solid fa-list"></i> Gestion des utilisateurs</a></li>
+                            <li><a class="dropdown-item" href="<?= $router->url('list_owners') ?>"><i class="fa-solid fa-user-tag"></i> Liste des Responsables</a></li>
+                            <li><a class="dropdown-item" href="<?= $router->url('owners_area') ?>"><i class="fa-solid fa-location-dot"></i> Responsables du périmtre</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="d-flex" action="<?= $router->url('logout') ?>" method="post">
+                    <button class="btn btn-danger" type="submit">Déconnexion</button>
+                </form>
+            </div>
+            <?php endif ?>
         </div>
-
-        <?php if (Driver::estConnecte()) : ?>
-            <hr class="text-white">
-
-            <ul class="middle-links">
-                <a href="<?= $router->url('home') ?>" class="link <?= $match['name'] === "home" ? " active" : "" ?>"><i class="fa-solid fa-house"></i> <span class="mx-2">Accueil</span></a>
-
-                <div class="mt-3"></div>
-
-                <?= addLink('Suivi des copieurs', 'menu_machine', 'fa-solid fa-print', $router, $match,
-                    [
-                        'list_machines' => ['icon' => 'fa-solid fa-list', 'title' => 'Liste'],
-                        'machines_area' => ['icon' => 'fa-solid fa-location-dot', 'title' => 'De mon périmètre'],
-                        'machines_transfert' => ['icon' => 'fa-solid fa-arrow-right', 'title' => 'Transfert des Copieurs'],
-                        'list_machines_without_counter_3_months' => ['icon' => 'fa-solid fa-user-slash', 'title' => 'Sans relevé ce trimestre']
-                    ], $router, $match)
-                ?>
-
-                <div class="mt-3"></div>
-                
-                <?= addLink('Suivi des compteurs', 'menu_machine_counters', 'fa-solid fa-file', $router, $match,
-                    [
-                        'list_counters' => ['icon' => 'fa-solid fa-list', 'title' => 'Liste'],
-                        'counters_area' => ['icon' => 'fa-solid fa-location-dot', 'title' => 'De mon périmètre'],
-                    ], $router, $match)
-                ?>
-
-                <div class="mt-3"></div>
-
-                <?= addLink('Suivi des pannes', 'menu_pannes', 'fa-solid fa-virus', $router, $match,
-                    [
-                        'list_pannes' => ['icon' => 'fa-solid fa-list', 'title' => 'Liste'],
-                        'pannes_area' => ['icon' => 'fa-solid fa-location-dot', 'title' => 'Mes pannes'],
-                        'add_panne' => ['icon' => 'fa-solid fa-plus', 'title' => 'Ajout Panne'],
-                    ], $router, $match)
-                ?>
-
-                <div class="mt-3"></div>
-
-                <?= addLink('Administration', 'menu_administration', 'fa-solid fa-users', $router, $match,
-                    [
-                        'list_owners' => ['icon' => 'fa-solid fa-list', 'title' => 'Liste'],
-                        'owners_area' => ['icon' => 'fa-solid fa-location-dot', 'title' => 'De mon périmètre'],
-                        'view_users_area' => ['icon' => 'fa-solid fa-user-tag', 'title' => 'Gestion des utilisateurs'],
-                    ])
-                ?>
-
-            </ul>
-
-            <hr class="text-white">
-
-            <ul class="bottom-links">
-                <?= addLink('Foire Aux Questions', 'faq', 'fa-solid fa-question', $router, $match) ?>
-                <?= addLink('Mon Compte', 'my_account', 'fa-solid fa-user', $router, $match) ?>
-                <li>
-                    <form action="<?= $router->url('logout') ?>" method="post">
-                        <button type="submit" class="link logout"><i class="fa-solid fa-right-from-bracket"></i> <span class="mx-2"> Deconnexion</button>
-                    </form>
-                </li>
-            </ul>
-
-        <?php endif ?>
     </nav>
 
     <div class="body_content">
-        <!-- <span class="text-primary mx-3"><a href="<?= $router->url('home') ?>"><i class="fa-solid fa-house"></i></a> / <?= trim($_SERVER['REQUEST_URI'], '/') ?></span> -->
-
         <?= $content ?? '' ?>
     </div>
 
     <?php if (Driver::estConnecte()) : ?>
 
         <script src="/src/JS/utils/jquery.js"></script>
+        <script src="/src/JS/utils/jquery_contextMenu.js"></script>
+        <script src="/src/JS/utils/jquery_ui_position.js"></script>
         <script src="/src/JS/utils/popper.min.js"></script>
         <script src="/src/JS/utils/bootstrap.min.js"></script>
         <script src="/src/JS/utils/selectize.js"></script>
-        
-        <script src="/src/JS/utils/datatables.min.js"></script>
 
-        <script src="/src/JS/utils/jquery_contextMenu.js"></script>
-        <script src="/src/JS/utils/jquery_ui_position.js"></script>
+        <script src="/src/JS/utils/datatables.min.js"></script>
         
+        
+
         <script src="/src/JS/commun.js"></script>
 
-        <?php if (isset($jsfile)): ?>
+        <?php if (isset($jsfile)) : ?>
             <script src="/src/JS/<?= $jsfile ?>.js"></script>
         <?php endif ?>
-        
+
     <?php endif ?>
-        
-        <script src="/src/JS/main.js"></script>
+
+    <script src="/src/JS/main.js"></script>
 
 </body>
+
 </html>

@@ -80,6 +80,57 @@ HTML;
         return $p->fetchAll();
     }
 
+    static function getLesReleves(array $params, bool $perimetre, array $limits = []): array
+    {
+        $where = '';
+        $options = [];
+        $ordering = '';
+        foreach ($params as $nom_input => $props) {
+            $value = $props['value'];
+            if (trim($value) !== '') {
+                $nom_db = $props['nom_db'];
+                
+                if ($nom_input !== 'order') {
+                    $where .= " AND c.`$nom_db` LIKE :$nom_input";
+                    $options[$nom_input] = $props['valuePosition'];
+                } else {
+                    // order
+                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
+                }
+            }
+        }
+
+        if ($perimetre) {
+            $where .= " AND c.`BDD` = :bdd";
+            $options['bdd'] = User::getBDD();
+        }
+
+
+        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
+        $sql = "SELECT
+                `Numéro_série` as num_serie,
+                c.`BDD` as bdd,
+                `Date`,
+                `101_Total_1` as total_101,
+                `112_Total` as total_112,
+                `113_Total` as total_113,
+                `122_Total` as total_122,
+                `123_Total` as total_123,
+                p.`grade-prenom-nom` as gpn,
+                `date_maj`,
+                `type_relevé` as type_releve
+                FROM compteurs c
+                LEFT JOIN profil p on p.id_profil = c.modif_par
+                WHERE 1
+                $where
+                $ordering
+                $limit";
+
+        $p = self::$pdo->prepare($sql);
+        $p->execute($options);
+        return $p->fetchAll();
+    }
+
 
     static function searchCompteurByNumSerie($num_serie): array
     {

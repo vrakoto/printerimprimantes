@@ -226,7 +226,7 @@ function btns(table) {
         buttons: [
             {
                 extend: 'csvHtml5',
-                text: 'Exporter en CSV (toutes les colonnes)',
+                text: '<i class="fa-solid fa-download"></i>',
                 className: 'btn btn-success',
                 action: function (e, dt, node, config) {
                     const query = dt.ajax.params();

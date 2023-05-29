@@ -1,4 +1,20 @@
 $(function () {
+    const navbar = document.querySelector('nav');
+
+    const navbarOffsetTop = navbar.offsetTop; // Obtenir la position de la navbar
+
+    window.onscroll = function() {
+        // Vérifiez si l'utilisateur a scrollé en bas de la navbar
+        if (window.pageYOffset >= navbarOffsetTop) {
+            navbar.classList.add('fixed');
+        }
+        
+        // Vérifiez si l'utilisateur est revenu tout en haut de la page
+        if (window.pageYOffset <= navbarOffsetTop) {
+            navbar.classList.remove('fixed');
+        }
+    };
+
     $(".selectize").selectize({
         sortField: 'text'
     });
@@ -25,6 +41,16 @@ $(function () {
             csvAdded = true;
         }
     });
+
+    /* $.ajax({
+        type: "get",
+        url: "url",
+        data: "data",
+        dataType: "dataType",
+        success: function (response) {
+            
+        }
+    }); */
 });
 
 function toggle_inputs_imprimante_details(e) {
@@ -42,4 +68,9 @@ function toggle_input_create_user(e) {
 function cancelCreateUser(e) {
     $('#btn_toggle_input_create_user').css('display', 'block');
     $('#form_create_user').attr('class', 'd-none');
+}
+
+function triggerDiv(e) {
+    $(e).css('display', 'none');
+    $('#triggerDiv').attr('style', 'display: block !important');
 }

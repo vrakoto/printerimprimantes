@@ -1,4 +1,5 @@
 <?php
+// Test pour implémenter un ajax manuellement sans utiliser DataTable
 
 use App\Panne;
 

@@ -17,32 +17,48 @@ class UsersCopieurs extends Driver {
         return <<<HTML
         <thead>
             <tr>
-                <th>Grade Nom Prénom</th>
-                <th>Numéro de Série</th>
+                <th id="gpn">Grade Nom Prénom</th>
+                <th id="num_serie">N° de Série</th>
             </tr>
         </thead>
 HTML;
     }
 
-    static function getResponsables($bdd = NULL): array
-    {
-        $champ_id_user_users_copieurs = self::$champ_id_user;
-        $champ_num_serie_users_copieurs = self::$champ_num_serie;
-        $champ_gpn_user = User::getChamp('champ_gpn');
-        $champ_id_user = User::getChamp('champ_id');
-        $champ_bdd_user = User::getChamp('champ_bdd');
-
-        $option = [];
-        $req = "SELECT p.`$champ_gpn_user` as gpn, `$champ_num_serie_users_copieurs` as num_serie FROM users_copieurs uc
-                JOIN profil p on uc.`$champ_id_user_users_copieurs` = p.`$champ_id_user`";
-
-        if ($bdd !== NULL) {
-            $req .= "WHERE `$champ_bdd_user` = :bdd";
-            $option['bdd'] = User::getBDD();
+    static function getResponsables(array $params, bool $perimetre, array $limits = []): array
+    {        
+        $where = '';
+        $options = [];
+        $ordering = '';
+        foreach ($params as $nom_input => $props) {
+            $value = $props['value'];
+            if (trim($value) !== '') {
+                $nom_db = $props['nom_db'];
+                
+                if ($nom_input !== 'order') {
+                    $where .= " AND `$nom_db` LIKE :$nom_input";
+                    $options[$nom_input] = $props['valuePosition'];
+                } else {
+                    // order
+                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
+                }
+            }
         }
-        $p = self::$pdo->prepare($req);
-        $p->execute($option);
 
+        if ($perimetre) {
+            $where .= " AND p.BDD = :bdd";
+            $options['bdd'] = User::getBDD();
+        }
+
+        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
+        $sql = "SELECT p.`grade-prenom-nom` as gpn, `numéro_série` as num_serie
+                FROM users_copieurs uc
+                JOIN profil p on uc.`responsable` = p.`id_profil`
+                WHERE 1 $where
+                $ordering
+                $limit";
+
+        $p = self::$pdo->prepare($sql);
+        $p->execute($options);
         return $p->fetchAll();
     }
 }

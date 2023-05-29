@@ -50,13 +50,17 @@ if (!empty($_POST)) {
     <div class="alert alert-success text-center"><?= $success ?></div>
 <?php endif ?>
 
-<form action="" method="post" class="border mt-5 p-3">
-    <?= addInformationForm(false, 'gpn', 'Grade Nom Prénom', User::getGPN()) ?>
-    <?= addInformationForm(false, 'messagerie', 'Messagerie', User::getMessagerie()) ?>
-    <?= addInformationForm(false, 'bdd', 'Base de Défense', User::getBDD()) ?>
-    <?= addInformationForm(false, 'role', 'Rôle', User::getLibelleRole()) ?>
-    <?= addInformationForm(true, 'mdp_actuel', 'Votre Mot de passe actuel', '', 'password') ?>
-    <?= addInformationForm(true, 'new_mdp', 'Nouveau Mot de passe', '', 'password') ?>
-    <?= addInformationForm(true, 'confirm_new_mdp', 'Confirmez le nouveau Mot de passe', '', 'password') ?>
-    <button type="submit" class="btn btn-success">Sauvegarder</button>
-</form>
+<div class="p-4">
+    <h1>Mon Compte</h1>
+
+    <form action="" method="post" class="border mt-5 p-3">
+        <?= addInformationForm(false, 'gpn', 'Grade Nom Prénom', User::getGPN()) ?>
+        <?= addInformationForm(false, 'messagerie', 'Messagerie', User::getMessagerie()) ?>
+        <?= addInformationForm(false, 'bdd', 'Base de Défense', User::getBDD()) ?>
+        <?= addInformationForm(false, 'role', 'Rôle', User::getLibelleRole()) ?>
+        <?= addInformationForm(true, 'mdp_actuel', 'Votre Mot de passe actuel', '', 'password') ?>
+        <?= addInformationForm(true, 'new_mdp', 'Nouveau Mot de passe', '', 'password') ?>
+        <?= addInformationForm(true, 'confirm_new_mdp', 'Confirmez le nouveau Mot de passe', '', 'password') ?>
+        <button type="submit" class="btn btn-success">Sauvegarder</button>
+    </form>
+</div>

@@ -2,16 +2,17 @@
 
 use App\Imprimante;
 use App\Panne;
+use App\UsersCopieurs;
 
 $total = count($lesResultatsSansPagination);
 $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     $champs = '';
-    foreach (colonnes(Panne::ChampPannes()) as $id => $nom) {
+    foreach (colonnes(UsersCopieurs::ChampUsersCopieurs()) as $id => $nom) {
         $champs .= $nom . ";";
     }
-    Imprimante::downloadCSV($champs, 'liste_pannes', $lesResultatsSansPagination);
+    Imprimante::downloadCSV($champs, 'liste_responsables', $lesResultatsSansPagination);
 }
 
 function addInformationForm($var, $titre, $value, array $size): string
@@ -67,47 +68,25 @@ HTML;
                 <a <?php if ($page >= $nb_pages) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page + 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-right"></i></a>
                 <a class="<?= $page != $nb_pages ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=<?= $nb_pages ?>&<?= $fullURL ?>"><?= $nb_pages ?></a>
             </div>
-            <h3 class="mt-5">Nombre total de pannes : <?= $total ?></h3>
+            <h3 class="mt-5">Nombre total de responsabilités : <?= $total ?></h3>
         </div>
 
         <table id="table_imprimantes" class="table table-striped table-bordered personalTable">
-            <?= Panne::ChampPannes() ?>
+            <?= UsersCopieurs::ChampUsersCopieurs() ?>
             <tbody>
-                <?php foreach ($lesResultats as $panne) :
-                    $id_event = htmlentities($panne['id_event']);
-                    $num_serie = htmlentities($panne['num_serie']);
-                    $contexte = htmlentities($panne['contexte']);
-                    $type_panne = htmlentities($panne['type_panne']);
-                    $statut_intervention = htmlentities($panne['statut_intervention']);
-                    $commentaires = htmlentities($panne['commentaires']);
-                    $date_evolution = htmlentities(convertDate($panne['date_evolution']));
-                    $heure_evolution = htmlentities($panne['heure_evolution']);
-                    $modif_par = htmlentities($panne['maj_par']);
-                    $modif_date = htmlentities($panne['maj_date']);
-                    $fichier = htmlentities($panne['fichier']);
-                    $ouverture = convertDate(htmlentities($panne['ouverture']));
-                    $fermeture = (htmlentities($panne['fermeture']));
+                <?php foreach ($lesResultats as $resultat) :
+                    $gpn = htmlentities($resultat['gpn']);
+                    $num_serie = htmlentities($resultat['num_serie']);
                 ?>
                     <tr>
+                        <td><?= $gpn ?></td>
                         <td><a href="imprimante/<?= $num_serie ?>"><?= $num_serie ?></a></td>
-                        <td><?= $id_event ?></td>
-                        <td><?= $contexte ?></td>
-                        <td><?= $type_panne ?></td>
-                        <td><?= $statut_intervention ?></td>
-                        <td><?= $commentaires ?></td>
-                        <td><?= $date_evolution ?></td>
-                        <td><?= $heure_evolution ?></td>
-                        <td><?= $modif_par ?></td>
-                        <td><?= $modif_date ?></td>
-                        <td><?= $fichier ?></td>
-                        <td><?= $ouverture ?></td>
-                        <td><?= $fermeture ?></td>
                     </tr>
                 <?php endforeach ?>
             </tbody>
         </table>
     <?php else : ?>
-        <h3 class="mt-5">Aucune panne trouvée</h3>
+        <h3 class="mt-5">Aucune responsabilitée trouvée</h3>
     <?php endif ?>
 </div>
 
@@ -125,7 +104,7 @@ HTML;
                     <div class="row mb-3">
                         <label for="order" class="col-sm-4">Trier par</label>
                         <select class="selectize col-sm-4" id="order" name="order">
-                            <?php foreach (colonnes(Imprimante::ChampsCopieur()) as $key => $s) : ?>
+                            <?php foreach (colonnes(UsersCopieurs::ChampUsersCopieurs()) as $key => $s) : ?>
                                 <option value="<?= $key ?>" <?php if ($order === $key) : ?>selected<?php endif ?>><?= $s ?></option>
                             <?php endforeach ?>
                         </select>

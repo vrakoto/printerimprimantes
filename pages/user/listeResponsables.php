@@ -1,45 +1,46 @@
 <?php
+
 use App\UsersCopieurs;
-$jsfile = 'listeResponsables';
-$title = "Liste des Responsables"
-?>
 
-<div class="container mt-5">
+$title = "Liste des Responsables";
+$url = "liste-responsables";
 
-    <h1>Liste des Responsables de toutes les BdD</h1>
+$order = getValeurInput('order', 'gpn');
 
-    <hr class="mt-5 mb-3">
+$searching_gpn = getValeurInput('gpn');
+$searching_num_serie = getValeurInput('num_serie');
 
-    <form id="form_search" class="row g-3 align-items-center">
-        <div class="col-auto">
-            <label for="table_search" class="col-form-label">Rechercher par (numéro de série ou grade,nom,prénom) :</label>
-        </div>
-        <div class="col-auto">
-            <input type="text" class="form-control" id="table_search" name="num_serie" placeholder="Saisir un élement">
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
-        </div>
-    </form>
+$params = [
+    'gpn' => ['nom_db' => "grade-prenom-nom", 'value' => $searching_gpn, 'valuePosition' => '%' . $searching_gpn . '%'],
+    'num_serie' => ['nom_db' => "numéro_série", 'value' => $searching_num_serie, 'valuePosition' => $searching_num_serie . '%'],
+    'order' => ['nom_db' => $order, 'value' => 'ASC']
+];
 
-    <div class="row g-3 align-items-center mt-1">
-        <div class="col-auto">
-            <label for="table_select_nb_elements_par_pages">Nombre de résultats par page:</label>
-        </div>
-        <div class="col-auto">
-            <select class="form-select" id="table_select_nb_elements_par_pages">
-                <option value="10" selected>10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
-        </div>
-    </div>
 
-    <hr>
+// l'utilisateur a fait une recherche
+$params_query = [];
+foreach ($params as $nom_input => $props) {
+    if ($nom_input === 'order') {
+        $params_query['order'] = $props['nom_db'];
+    } else {
+        $params_query[$nom_input] = $props['value'];
+    }
+}
+$fullURL = http_build_query($params_query);
 
-    <table id="table_users_copieurs" class="table table-striped table-bordered mt-5 personalTable" data-table="getListeResponsables">
-        <?= UsersCopieurs::ChampUsersCopieurs() ?>
-        <tbody></tbody>
-    </table>
-</div>
+$nb_results_par_page = 10;
+$page = 1;
+if (isset($_GET['page'])) {
+    $page = (int)$_GET['page'];
+}
+if ($page <= 0) {
+    header('Location:/' . $url);
+    exit();
+}
+
+$debut = ($page - 1) * $nb_results_par_page;
+
+$lesResultats = UsersCopieurs::getResponsables($params, false, [$debut, $nb_results_par_page]);
+$lesResultatsSansPagination = UsersCopieurs::getResponsables($params, false);
+
+require_once 'templates' . DIRECTORY_SEPARATOR . 'responsables.php';

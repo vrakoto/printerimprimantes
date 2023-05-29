@@ -10,8 +10,9 @@
     }
 } */
 
-@media screen and (max-height: 880px) {
+/* Navbar Vertical */
+/* @media screen and (max-height: 880px) {
     nav {
         overflow-y: scroll;
     }
-}
+} */

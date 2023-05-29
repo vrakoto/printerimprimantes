@@ -1,4 +1,12 @@
-nav {
+nav.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* nav {
     min-width: 300px;
     height: 100%;
     display: flex;
@@ -38,7 +46,6 @@ nav {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    /* margin-top: auto; */
 }
 
 nav a, .logout {
@@ -77,3 +84,5 @@ nav .footer {
     border: none;
     background-color: transparent;
 }
+
+*/

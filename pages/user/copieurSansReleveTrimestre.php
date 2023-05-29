@@ -2,11 +2,9 @@
 
 use App\Imprimante;
 
-$title = "Liste des Copieurs";
+$title = "Copieurs sans relevé ce Trimestre";
 $jsfile = 'listeCopieurs';
-$url = 'liste_copieurs';
-
-$order = getValeurInput('order', 'num_serie');
+$url = 'copieurs-sans-releve-trimestre'; // url actuel de la vue
 
 $searching_num_serie = getValeurInput('num_serie');
 $searching_bdd = getValeurInput('bdd');
@@ -22,18 +20,12 @@ $params = [
     'statut_projet' => ['nom_db' => "STATUT PROJET", 'value' => $searching_statut, 'valuePosition' => $searching_statut . '%'],
     'site_installation' => ['nom_db' => "Site d'installation", 'value' => $searching_site_installation, 'valuePosition' => '%' . $searching_site_installation . '%'],
     'num_ordo' => ['nom_db' => "N° ORDO", 'value' => $searching_num_ordo, 'valuePosition' => $searching_num_ordo . '%'],
-    'order' => ['nom_db' => $order, 'value' => 'ASC']
 ];
-
 
 // l'utilisateur a fait une recherche
 $params_query = [];
 foreach ($params as $nom_input => $props) {
-    if ($nom_input === 'order') {
-        $params_query['order'] = $props['nom_db'];
-    } else {
-        $params_query[$nom_input] = $props['value'];
-    }
+    $params_query[$nom_input] = $props['value'];
 }
 $fullURL = http_build_query($params_query);
 
@@ -43,13 +35,13 @@ if (isset($_GET['page'])) {
     $page = (int)$_GET['page'];
 }
 if ($page <= 0) {
-    header('Location:/' . $url);
+    header('Location:/' . $match['name']);
     exit();
 }
 
 $debut = ($page - 1) * $nb_results_par_page;
 
-$lesResultats = Imprimante::getImprimantes($params, [$debut, $nb_results_par_page]);
-$lesResultatsSansPagination = Imprimante::getImprimantes($params);
+$lesResultats = Imprimante::sansReleves3Mois($params, [$debut, $nb_results_par_page]);
+$lesResultatsSansPagination = Imprimante::sansReleves3Mois($params);
 
 require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';

@@ -162,15 +162,98 @@ HTML;
         $champ_id_user_users_copieurs = UsersCopieurs::getChamps('champ_id_user');
         $champ_num_serie_imprimante = Imprimante::getChamps('champ_num_serie');
 
-        $query = "SELECT * FROM copieurs c
-            JOIN users_copieurs uc on uc.`$champ_num_serie_users_copieurs` = c.`$champ_num_serie_imprimante`
-            WHERE $champ_id_user_users_copieurs = :id_profil";
+        $query = "SELECT 
+                `N° ORDO` as num_ordo, 
+                `N° de Série` as num_serie, 
+                `Modele demandé` as modele, 
+                `STATUT PROJET` as statut, 
+                `BDD` as bdd, 
+                `Site d'installation` as site_installation,
+                `DATE CDE MINARM` as date_cde_minarm,
+                `Config` as config,
+                `N° Saisie ORACLE` as num_oracle,
+                `N° OPP SFDC` as num_sfdc,
+                `HostName` as hostname,
+                `réseau` as reseau,
+                `MAC@` as adresse_mac,
+                `Entité Bénéficiaire` as entite_beneficiaire,
+                `credo_unité` as credo_unite,
+                `CP INSTA` as cp_insta,
+                `DEP INSTA` as dep_insta,
+                `adresse` as adresse,
+                `localisation` as localisation,
+                `ServiceUF` as service_uf,
+                `Accessoires` as accessoires
+                FROM copieurs c
+                JOIN users_copieurs uc on uc.`$champ_num_serie_users_copieurs` = c.`$champ_num_serie_imprimante`
+                WHERE $champ_id_user_users_copieurs = :id_profil";
         
         $p = self::$pdo->prepare($query);
         $p->execute([
             'id_profil' => self::getMonID()
         ]);
 
+        return $p->fetchAll();
+    }
+
+    static function copieursPerimetre2(array $params, array $limits = []): array
+    {
+        $where = '';
+        $options = [];
+        $ordering = '';
+        foreach ($params as $nom_input => $props) {
+            $value = $props['value'];
+            if (trim($value) !== '') {
+                $nom_db = $props['nom_db'];
+                
+                if ($nom_input !== 'order') {
+                    $where .= " AND `$nom_db` LIKE :$nom_input";
+                    $options[$nom_input] = $props['valuePosition'];
+                } else {
+                    // order
+                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
+                }
+            }
+        }
+
+        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
+        $sql = "SELECT `N° ORDO` as num_ordo, 
+                `N° de Série` as num_serie, 
+                `Modele demandé` as modele, 
+                `STATUT PROJET` as statut, 
+                `BDD` as bdd, 
+                `Site d'installation` as site_installation,
+                `DATE CDE MINARM` as date_cde_minarm,
+                `Config` as config,
+                `N° Saisie ORACLE` as num_oracle,
+                `N° OPP SFDC` as num_sfdc,
+                `HostName` as hostname,
+                `réseau` as reseau,
+                `MAC@` as adresse_mac,
+                `Entité Bénéficiaire` as entite_beneficiaire,
+                `credo_unité` as credo_unite,
+                `CP INSTA` as cp_insta,
+                `DEP INSTA` as dep_insta,
+                `adresse` as adresse,
+                `localisation` as localisation,
+                `ServiceUF` as service_uf,
+                `Accessoires` as accessoires
+                FROM copieurs c";
+        if (self::getRole() === 2) {
+            $where .= " AND BDD = :bdd";
+            $options['bdd'] = self::getBDD();
+        } else {
+            $where .= " AND responsable = :responsable";
+            $sql .= " JOIN users_copieurs uc on uc.`numéro_série` = c.`N° de Série`";
+            $options['responsable'] = self::getMonID();
+        }
+        $sql .= " WHERE `STATUT PROJET` LIKE '1 - LIVRE'
+                $where
+                $ordering
+                $limit";
+
+        $p = self::$pdo->prepare($sql);
+        $p->execute($options);
         return $p->fetchAll();
     }
 
@@ -255,6 +338,54 @@ HTML;
             'id_user' => self::getMonID(),
             'num_serie' => $num_serie
         ]);
+    }
+
+    static function getUtilisateursPerimetre(array $params, array $limits = []): array
+    {
+        $where = '';
+        $options = [];
+        $ordering = '';
+        foreach ($params as $nom_input => $props) {
+            $value = $props['value'];
+            if (trim($value) !== '') {
+                $nom_db = $props['nom_db'];
+                
+                if ($nom_input !== 'order') {
+                    $where .= " AND `$nom_db` LIKE :$nom_input";
+                    $options[$nom_input] = $props['valuePosition'];
+                } else {
+                    // order
+                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
+                }
+            }
+        }
+
+        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
+        $sql = "SELECT p.`grade-prenom-nom` as gpn, p.`Courriel` as courriel, ul.userlevelname as role
+                FROM profil p
+                JOIN userlevels ul on ul.userlevelid = p.role
+                WHERE BDD = :bdd
+                $where
+                $ordering
+                $limit";
+
+        $options['bdd'] = User::getBDD();
+        $p = self::$pdo->prepare($sql);
+        $p->execute($options);
+        return $p->fetchAll();
+    }
+
+    static function ChampsGestionUtilisateurs(): string
+    {
+        return <<<HTML
+        <thead>
+            <tr>
+                <th id="gpn">Grade Prénom Nom</th>
+                <th id="courriel">Courriel</th>
+                <th id="role">Role</th>
+            </tr>
+        </thead>
+HTML;
     }
 
     static function deconnexion(): void

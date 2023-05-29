@@ -83,7 +83,7 @@ function colonnes($html) {
 function checkboxColumns() {
     $i = 0;
     $html = <<<HTML
-    <div class="border" id="lesCheckbox">
+    <div id="lesCheckbox">
     <div class="form-check">
         <input class="form-check-input" type="checkbox" name="all" id="all">
         <label class="form-check-label" for="all">Tout Cocher</label>
@@ -104,4 +104,17 @@ HTML;
     </div>
 HTML;
     return $html;
+}
+
+
+function debug($render)
+{
+    echo '<pre>';
+    print_r($render);
+    echo '</pre>';
+}
+
+function getValeurInput($variable_input, string|array|int $defaultValue = ''): string|array|int
+{
+    return isset($_GET[$variable_input]) ? htmlentities($_GET[$variable_input]) : $defaultValue;
 }

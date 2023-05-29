@@ -33,7 +33,7 @@ class Imprimante extends Driver {
         return <<<HTML
         <thead>
             <tr>
-                <th id="num_serie">Numéro Série</th>
+                <th id="num_serie">N° de Série</th>
                 <th id="bdd">BDD</th>
                 <th id="modele">Modèle</th>
                 <th id="statut">Statut Projet</th>
@@ -127,10 +127,53 @@ HTML;
         return $p->fetchAll();
     }
 
-    static function getImprimantes(): array
-    {
-        $req = "SELECT * FROM copieurs";
-        $p = self::$pdo->query($req);
+    static function getImprimantes(array $params, array $limits = []): array
+    {        
+        $where = '';
+        $options = [];
+        $ordering = '';
+        foreach ($params as $nom_input => $props) {
+            $value = $props['value'];
+            if (trim($value) !== '') {
+                $nom_db = $props['nom_db'];
+                
+                if ($nom_input !== 'order') {
+                    $where .= " AND `$nom_db` LIKE :$nom_input";
+                    $options[$nom_input] = $props['valuePosition'];
+                } else {
+                    // order
+                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
+                }
+            }
+        }
+        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
+        $sql = "SELECT `N° ORDO` as num_ordo, 
+                `N° de Série` as num_serie, 
+                `Modele demandé` as modele, 
+                `STATUT PROJET` as statut, 
+                `BDD` as bdd, 
+                `Site d'installation` as site_installation,
+                `DATE CDE MINARM` as date_cde_minarm,
+                `Config` as config,
+                `N° Saisie ORACLE` as num_oracle,
+                `N° OPP SFDC` as num_sfdc,
+                `HostName` as hostname,
+                `réseau` as reseau,
+                `MAC@` as adresse_mac,
+                `Entité Bénéficiaire` as entite_beneficiaire,
+                `credo_unité` as credo_unite,
+                `CP INSTA` as cp_insta,
+                `DEP INSTA` as dep_insta,
+                `adresse` as adresse,
+                `localisation` as localisation,
+                `ServiceUF` as service_uf,
+                `Accessoires` as accessoires
+                FROM copieurs
+                WHERE 1 $where
+                $ordering
+                $limit";
+        $p = self::$pdo->prepare($sql);
+        $p->execute($options);
         return $p->fetchAll();
     }
 
@@ -169,19 +212,56 @@ HTML;
         return $p->fetchAll();
     }
 
-    static function sansReleves3Mois($bdd = ''): array
+    static function sansReleves3Mois(array $params, array $limits = []): array
     {
-        $champ_num_serie = self::$champ_num_serie;
-        $champ_statut = self::$champ_statut;
-        $query = "SELECT * FROM copieurs WHERE `$champ_statut` = 'LIVRE' AND `$champ_num_serie` NOT IN ( SELECT `$champ_num_serie` FROM compteurs WHERE date_maj >= DATE_SUB(NOW(), INTERVAL 3 MONTH) )"; 
+        $where = '';
         $options = [];
-        if ($bdd !== '') {
-            $query = "SELECT * FROM copieurs WHERE `$champ_statut` = 'LIVRE' AND " . self::$champ_bdd . " = :bdd" . " AND `$champ_num_serie` NOT IN ( SELECT `$champ_num_serie` FROM compteurs WHERE date_maj >= DATE_SUB(NOW(), INTERVAL 3 MONTH) )"; 
-            $options = ['bdd' => $bdd];
+        foreach ($params as $nom_input => $props) {
+            $value = $props['value'];
+            if (trim($value) !== '') {
+                $nom_db = $props['nom_db'];
+                
+                $where .= " AND `$nom_db` LIKE :$nom_input";
+                $options[$nom_input] = $props['valuePosition'];
+            }
         }
-        $p = self::$pdo->prepare($query);
-        $p->execute($options);
+        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
+        $sql = "SELECT `N° ORDO` as num_ordo, 
+                `N° de Série` as num_serie, 
+                `Modele demandé` as modele, 
+                `STATUT PROJET` as statut, 
+                `BDD` as bdd, 
+                `Site d'installation` as site_installation,
+                `DATE CDE MINARM` as date_cde_minarm,
+                `Config` as config,
+                `N° Saisie ORACLE` as num_oracle,
+                `N° OPP SFDC` as num_sfdc,
+                `HostName` as hostname,
+                `réseau` as reseau,
+                `MAC@` as adresse_mac,
+                `Entité Bénéficiaire` as entite_beneficiaire,
+                `credo_unité` as credo_unite,
+                `CP INSTA` as cp_insta,
+                `DEP INSTA` as dep_insta,
+                `adresse` as adresse,
+                `localisation` as localisation,
+                `ServiceUF` as service_uf,
+                `Accessoires` as accessoires
+                FROM copieurs
+                WHERE `STATUT PROJET` LIKE '1 - LIVRE' AND BDD = :bdd AND `N° de Série` NOT IN (SELECT `Numéro_série` FROM compteurs_trimestre)
+                $where
+                $limit";
 
+        $options['bdd'] = User::getBDD();
+        $p = self::$pdo->prepare($sql);
+        $p->execute($options);
+        return $p->fetchAll();
+    }
+
+    static function getLesStatuts(): array
+    {
+        $query = "SELECT * FROM statut_projet"; 
+        $p = self::$pdo->query($query);
         return $p->fetchAll();
     }
 }

@@ -297,6 +297,7 @@ switch ($match['name']) {
             $results = $ajax->getRecords($query_results);
             die($ajax->output($total_records, $total_filtered, $results));
         }
+        
     break;
 
     case 'get_imprimantes_perimetre':

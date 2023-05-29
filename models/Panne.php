@@ -15,8 +15,8 @@ class Panne extends Driver {
                 <th id="commentaires">Commentaires</th>
                 <th id="date_evolution">Date de changement de situation</th>
                 <th id="heure_evolution">Heure de changement de situation</th>
-                <th id="modif_par">Déclaré/Modifié par</th>
-                <th id="modif_date">Ticket modifié le</th>
+                <th id="maj_par">Déclaré/Modifié par</th>
+                <th id="maj_date">Ticket modifié le</th>
                 <th id="fichier">Fichier(s) complémentaire(s)</th>
                 <th id="ouverture">Ouverture du ticket</th>
                 <th id="fermeture">Fermeture du ticket</th>
@@ -29,24 +29,51 @@ HTML;
     {
         $where = '';
         $options = [];
-        $sqlPerimetre = '';
-        if ($perimetre) {
-            $sqlPerimetre = " LEFT JOIN copieurs c on c.`N° de Série` = panne.`num_série` ";
-        }
-        foreach ($params as $column => $value) {
+        $ordering = '';
+        foreach ($params as $nom_input => $props) {
+            $value = $props['value'];
             if (trim($value) !== '') {
-                $prefix = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 20);
-                $where .= " AND $column LIKE :$prefix";
-                $options[$prefix] = $value;
+                $nom_db = $props['nom_db'];
+                
+                if ($nom_input !== 'order') {
+                    $where .= " AND `$nom_db` LIKE :$nom_input";
+                    $options[$nom_input] = $props['valuePosition'];
+                } else {
+                    // order
+                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
+                }
             }
         }
+
+        if ($perimetre) {
+            $where .= " AND c.BDD = :bdd";
+            $options['bdd'] = User::getBDD();
+        }
+
         $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
-        $sql = "SELECT *, p.`grade-prenom-nom` as maj_par FROM panne
-                LEFT JOIN profil p on p.id_profil = panne.maj_par
-                $sqlPerimetre
+        $sql = "SELECT
+                id_event,
+                num_série as num_serie,
+                contexte,
+                type_panne,
+                statut_intervention,
+                commentaires,
+                date_évolution as date_evolution,
+                heure_évolution as heure_evolution,
+                maj_date,
+                fichier,
+                ouverture,
+                fermeture,
+                p.`grade-prenom-nom` as maj_par,
+                tap.action as contexte
+                FROM panne
+                JOIN profil p on p.id_profil = panne.maj_par
+                JOIN copieurs c on c.`N° de Série` = panne.`num_série` 
+                JOIN type_action_panne tap on tap.id_action = panne.contexte
                 WHERE 1 $where
-                ORDER BY ouverture DESC
+                $ordering
                 $limit";
+
         $p = self::$pdo->prepare($sql);
         $p->execute($options);
         return $p->fetchAll();

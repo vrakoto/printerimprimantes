@@ -1,125 +1,133 @@
 <?php
 
 use App\Corsic;
-use App\Imprimante;
 use App\User;
 
-$role = User::getRole();
+$title = "Copieurs du périmètre";
+$jsfile = 'listeCopieurs';
+$url = 'copieurs_perimetre';
 
-$lesNumeros = Corsic::copieursPerimetrePasDansMaListe();
-$jsfile = 'copieursPerimetre';
-$title = "Copieurs Périmètre";
+if (isset($_POST['add_num_serie'])) {
+    $num_serie_to_add = htmlentities($_POST['add_num_serie']);
+
+    try {
+        User::ajouterDansPerimetre($num_serie_to_add);
+        header('Location:' . $url);
+        exit();
+    } catch (PDOException $th) {
+        die("Une erreur interne a été rencontrée.");
+    }
+}
+
+if (isset($_POST['remove_num_serie'])) {
+    $num_serie_to_remove = htmlentities($_POST['remove_num_serie']);
+
+    try {
+        User::retirerDansPerimetre($num_serie_to_remove);
+        header('Location:' . $url);
+        exit();
+    } catch (PDOException $th) {
+        die("Une erreur interne a été rencontrée.");
+    }
+}
+
+$order = getValeurInput('order', 'num_serie');
+
+$searching_num_serie = getValeurInput('num_serie');
+$searching_bdd = getValeurInput('bdd');
+$searching_modele = getValeurInput('modele');
+$searching_statut = getValeurInput('statut_projet');
+$searching_site_installation = getValeurInput('site_installation');
+$searching_num_ordo = getValeurInput('num_ordo');
+
+$params = [
+    'num_serie' => ['nom_db' => "N° de Série", 'value' => $searching_num_serie, 'valuePosition' => $searching_num_serie . '%'],
+    'modele' => ['nom_db' => "Modele demandé", 'value' => $searching_modele, 'valuePosition' => $searching_modele . '%'],
+    'statut_projet' => ['nom_db' => "STATUT PROJET", 'value' => $searching_statut, 'valuePosition' => $searching_statut . '%'],
+    'site_installation' => ['nom_db' => "Site d'installation", 'value' => $searching_site_installation, 'valuePosition' => '%' . $searching_site_installation . '%'],
+    'num_ordo' => ['nom_db' => "N° ORDO", 'value' => $searching_num_ordo, 'valuePosition' => $searching_num_ordo . '%'],
+    'order' => ['nom_db' => $order, 'value' => 'ASC']
+];
+
+
+// l'utilisateur a fait une recherche
+$params_query = [];
+foreach ($params as $nom_input => $props) {
+    if ($nom_input === 'order') {
+        $params_query['order'] = $props['nom_db'];
+    } else {
+        $params_query[$nom_input] = $props['value'];
+    }
+}
+$fullURL = http_build_query($params_query);
+
+$nb_results_par_page = 10;
+$page = 1;
+if (isset($_GET['page'])) {
+    $page = (int)$_GET['page'];
+}
+if ($page <= 0) {
+    header('Location:/' . $url);
+    exit();
+}
+
+$debut = ($page - 1) * $nb_results_par_page;
+
+$lesResultats = User::copieursPerimetre2($params, [$debut, $nb_results_par_page]);
+$lesResultatsSansPagination = User::copieursPerimetre2($params);
+
+require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';
 ?>
 
-<div class="d-flex justify-content-between container mt-5" id="header">
-    <div>
-        <h1>Copieurs de mon périmètre</h1>
-        <div id="message"></div>
-
-        <form method="post" id="form_add_machine_area" class="d-none">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th>Sélectionnez N° Série</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <button type="submit" title="Valider la saisie" class="btn btn-primary"><i class="fa-solid fa-check"></i></button>
-                        </td>
-                        <td><a title="Annuler la saisie" class="btn btn-danger" id="cancel_input"><i class="fa-solid fa-xmark"></i></a></td>
-                        <td>
-                            <select class="selectize w-100" name="num_serie" id="num_serie" required>
-                            <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero['num_serie']) ?>
-                                <option value="<?= $num ?>"><?= $num ?></option>
-                            <?php endforeach ?>
-                            </select>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </form>
-
-        <div class="mt-5 mb-0">
-            <?php if (User::getRole() !== 2) : ?>
-                <button class="mb-1 btn btn-primary" id="btn_add_machines_area" title="Ajouter un copieur dans mon périmètre">Ajouter un copieur dans mon périmètre</button>
-            <?php endif ?>
-
-            <span id="export-csv"></span>
-        </div>
-
-        <hr class="mt-5 mb-0">
-
-        <form class="mt-2 row g-3 align-items-center mb-2" id="form_search">
-            <div class="col-auto">
-                <label for="table_search" class="col-form-label">Rechercher un copieur</label>
+<div class="modal fade" id="modal_add_machine_area" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="post">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Ajouter un copieur dans mon périmètre</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="col-auto">
-                <input type="text" name="num_serie" class="form-control" id="table_search" placeholder="Insérer son numéro de série">
+            <div class="modal-body">
+
+                <div class="row mb-3">
+                    <label for="add_num_serie" class="col-auto">Sélectionnez un N° de Série</label>
+                    <select class="selectize w-100" name="add_num_serie" id="add_num_serie">
+                        <?php foreach (Corsic::copieursPerimetrePasDansMaListe() as $numero) : $num = htmlentities($numero['num_serie']) ?>
+                            <option value="<?= $num ?>"><?= $num ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary" title="Rechercher le copieur saisie"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Ajouter</button>
             </div>
         </form>
-
-        <div class="row g-3 align-items-center mt-1">
-            <div class="col-auto">
-                <label for="table_select_nb_elements_par_pages">Nombre de résultats par page:</label>
-            </div>
-            <div class="col-auto">
-                <select class="form-select" id="table_select_nb_elements_par_pages">
-                    <option value="10" selected>10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
-            </div>
-        </div>
     </div>
-    <?= checkboxColumns() ?>
 </div>
 
 
-<div id="large_table" class="container mt-5">
-    <table id="table_imprimantes" class="table table-striped table-bordered personalTable table-responsive table_imprimantes_perimetre" data-table="getImprimantesPerimetre">
-        <?= Imprimante::ChampsCopieur() ?>
-        <tbody></tbody>
-    </table>
-</div>
+<div class="modal fade" id="modal_remove_machine_area" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="post">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Retirer un copieur de mon périmètre</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
 
-<script defer>
-    let allow_delete_machine_area = {}
-    <?php if ($role !== 2): ?>
-        allow_delete_machine_area = {
-            name: "Retirer ce copieur de mon périmètre",
-            callback: function (key, options) {
-                const row = tableImprimante.row(options.$trigger)
-                const { num_serie } = row.data()
-                $.ajax({
-                    type: "post",
-                    url: "/retirerCopieurPerimetre",
-                    data: "num_serie=" + num_serie,
-                    success: function (e) {
-                        $('#message').empty();
-                        tableImprimante.ajax.reload();
-                        if (e.length <= 0) {
-                            $(selector).trigger('contextmenu:hide')
-                            $('#message').attr("class", "alert alert-success");
-                            $('#message').append(`Le copieur ${num_serie} a bien été retiré de votre périmètre.`)
-                        } else {
-                            $('#message').attr("class", "alert alert-danger");
-                            $('#message').append(e)
-                        }
-                    },
-                    error: function () {
-                        $('#message').attr("class", "alert alert-danger");
-                        $('#message').append("Impossible de trouver la requete");
-                    }
-                });
-            }
-        }
-    <?php endif ?>
-</script>
+                <div class="row mb-3">
+                    <label for="remove_num_serie" class="col-auto">Sélectionnez un N° de Série</label>
+                    <select class="selectize w-100" name="remove_num_serie" id="remove_num_serie">
+                        <?php foreach (Corsic::copieursPerimetre() as $numero) : $num = htmlentities($numero['num_serie']) ?>
+                            <option value="<?= $num ?>"><?= $num ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Ajouter</button>
+            </div>
+        </form>
+    </div>
+</div>

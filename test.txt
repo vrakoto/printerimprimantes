@@ -1,0 +1,3 @@
+"N° ORDO","N° de Série","Modele demandé","STATUT PROJET","BDD","Site d'installation","DATE CDE MINARM","Config","N° Saisie ORACLE","N° OPP SFDC","HostName","réseau","MAC@","Entité Bénéficiaire","credo_unité","CP INSTA","DEP INSTA","adresse","localisation","ServiceUF","Accessoires"
+
+num_serie,modele, statut, bdd, site_installation,date_cde_minarm,config,num_oracle,num_sfdc,hostname,reseau,adresse_mac,entite_beneficiaire,credo_unite,cp_insta,dep_insta,adresse,localisation,service_uf,accessoires

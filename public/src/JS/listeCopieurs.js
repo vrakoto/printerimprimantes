@@ -1,15 +1,25 @@
-copieurs();
+// copieurs();
+$('.triggerDT').DataTable({
+    dom: '<t>',
+    responsive: true,
+    order: []
+});
+
 const selector = '#table_imprimantes tbody tr';
 $.contextMenu({
     selector: selector,
-    trigger: 'left',
+    trigger: 'right',
     items: {
         "view": {
             name: "Informations de l'imprimante",
             callback: function (key, options) {
-                const row = tableImprimante.row(options.$trigger)
-                const { num_serie } = row.data()
+                // const row = tableImprimante.row(options.$trigger)
+                // const { num_serie } = row.data()
 
+                // window.location.href = `imprimante/${num_serie}`;
+
+                const $trigger = options.$trigger;
+                const num_serie = $trigger.find('.num_serie').text();
                 window.location.href = `imprimante/${num_serie}`;
             }
         }
