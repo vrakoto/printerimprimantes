@@ -28,6 +28,19 @@ function addInformationForm($var, $titre, $value, array $size): string
     </div>
 HTML;
 }
+
+function checkboxColonnes($var, $titre): string
+{
+    return <<<HTML
+    <div class="row mb-3">
+        <div class="col-sm-1">
+            <input class="form-check-input" type="checkbox" id="checked_$var" name="checked_$var">
+        </div>
+        <label for="checked_$var" class="col-sm-4 label">$titre</label>
+    </div>
+HTML;
+}
+
 ?>
 
 <style>
@@ -53,14 +66,15 @@ HTML;
         <h1><?= $title ?></h1>
 
         <button class="btn btn-success" id="downloadCSV" title="Télécharger les données en CSV"><i class="fa-solid fa-download"></i> Télécharger les données</button>
-        <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-filter"></i> Rechercher</button>
+        <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-filter"></i> Trier / Rechercher</button>
         <a class="mx-1 btn btn-secondary" href="/<?= $url ?>"><i class="fa-solid fa-arrow-rotate-left"></i> Réinitialiser la recherche</a>
+        <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_colonnes"><i class="fa-solid fa-filter"></i> Affichage des colonnes</button>
     </div>
 
     <?php if ($url === 'copieurs_perimetre' && User::getRole() !== 2) : ?>
         <div class="mt-5">
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_add_machine_area">Ajouter un copieur dans mon périmètre</button>
-            <?php if ($total > 0): ?>
+            <?php if ($total > 0) : ?>
                 <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal_remove_machine_area">Retirer un copieur de mon périmètre</button>
             <?php endif ?>
         </div>
@@ -82,57 +96,32 @@ HTML;
         </div>
 
         <table id="table_imprimantes" class="table table-striped table-bordered personalTable triggerDT">
-            <?= Imprimante::ChampsCopieur() ?>
+            <?php //Imprimante::ChampsCopieur() 
+            ?>
+            <thead>
+                <tr>
+                    <?php
+                    foreach (Imprimante::testChamps() as $nom_input => $nom_bdd) : ?>
+                        <?php if (isset($_GET["checked_$nom_input"])) : ?>
+                            <th id="<?= $nom_input ?>"><?= $nom_bdd ?></th>
+                        <?php endif ?>
+                    <?php endforeach ?>
+                </tr>
+            </thead>
+
             <tbody>
-                <?php foreach ($lesResultats as $data) :
-                    $num_serie = htmlentities($data['num_serie']);
-                    $bdd = htmlentities($data['bdd']);
-                    $modele = htmlentities($data['modele']);
-                    $statut = htmlentities($data['statut']);
-                    $site_installation = htmlentities($data['site_installation']);
-                    $num_ordo = htmlentities($data['num_ordo']);
-                    $date_cde_minarm = htmlentities($data['date_cde_minarm']);
-                    $config = htmlentities($data['config']);
-                    $num_oracle = htmlentities($data['num_oracle']);
-                    $num_sfdc = htmlentities($data['num_sfdc']);
-                    $hostname = htmlentities($data['hostname']);
-                    $reseau = htmlentities($data['reseau']);
-                    $adresse_mac = htmlentities($data['adresse_mac']);
-                    $entite_beneficiaire = htmlentities($data['entite_beneficiaire']);
-                    $localisation = htmlentities($data['localisation']);
-                    $cp_insta = htmlentities($data['cp_insta']);
-                    $dep_insta = htmlentities($data['dep_insta']);
-                    $adresse = htmlentities($data['adresse']);
-                    $credo_unite = htmlentities($data['credo_unite']);
-                    $service_uf = htmlentities($data['service_uf']);
-                    $accessoires = htmlentities($data['accessoires']);
-                ?>
+                <?php foreach ($lesResultats as $data) : ?>
                     <tr>
-                        <td class="num_serie"><?= $num_serie ?></td>
-                        <td class="bdd"><?= $bdd ?></td>
-                        <td class="modele"><?= $modele ?></td>
-                        <td class="statut"><?= $statut ?></td>
-                        <td class="site_installation"><?= $site_installation ?></td>
-                        <td class="num_ordo"><?= $num_ordo ?></td>
-                        <td class="date_cde_minarm"><?= $date_cde_minarm ?></td>
-                        <td class="config"><?= $config ?></td>
-                        <td class="num_oracle"><?= $num_oracle ?></td>
-                        <td class="num_sfdc"><?= $num_sfdc ?></td>
-                        <td class="hostname"><?= $hostname ?></td>
-                        <td class="reseau"><?= $reseau ?></td>
-                        <td class="adresse_mac"><?= $adresse_mac ?></td>
-                        <td class="entite_beneficiaire"><?= $entite_beneficiaire ?></td>
-                        <td class="localisation"><?= $localisation ?></td>
-                        <td class="cp_insta"><?= $cp_insta ?></td>
-                        <td class="dep_insta"><?= $dep_insta ?></td>
-                        <td class="adresse"><?= $adresse ?></td>
-                        <td class="credo_unite"><?= $credo_unite ?></td>
-                        <td class="service_uf"><?= $service_uf ?></td>
-                        <td class="accessoires"><?= $accessoires ?></td>
+                    <?php foreach ($data as $t => $value): ?>
+                        <?php if (isset($_GET["checked_$t"])) : ?>
+                            <td class="<?= $t ?>"><?= $value ?></td>
+                        <?php endif ?>
+                    <?php endforeach ?>
                     </tr>
                 <?php endforeach ?>
             </tbody>
         </table>
+
     <?php else : ?>
         <h3 class="mt-4">Aucune machine trouvée</h3>
     <?php endif ?>
@@ -143,7 +132,7 @@ HTML;
     <div class="modal-dialog">
         <form class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5">Effectuer une recherche</h1>
+                <h1 class="modal-title fs-5">Effectuer une recherche et/ou un tri</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -155,6 +144,10 @@ HTML;
                             <?php foreach (colonnes(Imprimante::ChampsCopieur()) as $key => $s) : ?>
                                 <option value="<?= $key ?>" <?php if ($order === $key) : ?>selected<?php endif ?>><?= $s ?></option>
                             <?php endforeach ?>
+                        </select>
+                        <select class="selectize col-sm-4" id="ordertype" name="ordertype">
+                            <option value="ASC" <?php if ($ordertype === 'ASC') : ?>selected<?php endif ?>>Croissant</option>
+                            <option value="DESC" <?php if ($ordertype === 'DESC') : ?>selected<?php endif ?>>Décroissant</option>
                         </select>
                     </div>
                 <?php endif ?>
@@ -174,6 +167,29 @@ HTML;
                 <?php foreach ($params as $nom_input => $props) {
                     if ($nom_input !== 'statut_projet' && $nom_input !== 'order') { // statut_projet doit être personnalisé pour les select
                         echo addInformationForm($nom_input, $props['nom_db'], getValeurInput($nom_input), [4, 3]);
+                    }
+                } ?>
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_colonnes" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Affichage des colonnes</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <?php foreach (colonnes(Imprimante::ChampsCopieur()) as $nom_input => $props) {
+                    if ($nom_input !== 'order') {
+                        echo checkboxColonnes($nom_input, $props);
                     }
                 } ?>
 

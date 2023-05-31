@@ -33,30 +33,59 @@ class Imprimante extends Driver {
         return <<<HTML
         <thead>
             <tr>
-                <th id="num_serie">N° de Série</th>
-                <th id="bdd">BDD</th>
-                <th id="modele">Modèle</th>
-                <th id="statut">Statut Projet</th>
-                <th id="site_installation">Site d'installation</th>
                 <th id="num_ordo">N° ORDO</th>
                 <th id="date_cde_minarm">DATE CDE MINARM</th>
-                <th id="config">Config</th>
-                <th id="num_oracle">N° Oracle</th>
+                <th id="statut">Statut Projet</th>
                 <th id="num_sfdc">N° OPP SFDC</th>
+                <th id="num_oracle">N° Oracle</th>
+                <th id="num_serie">N° de Série</th>
+                <th id="config">Config</th>
+                <th id="modele">Modèle</th>
                 <th id="hostname">HostName</th>
                 <th id="reseau">Réseau</th>
                 <th id="adresse_mac">Adresse MAC@</th>
+                <th id="bdd">BDD</th>
                 <th id="entite_beneficiaire">Entité Bénéficiaire</th>
-                <th id="localisation">Localisation</th>
+                <th id="credo_unite">Credo Unité</th>
                 <th id="cp_insta">CP Insta</th>
                 <th id="dep_insta">DEP Insta</th>
                 <th id="adresse">Adresse</th>
-                <th id="credo_unite">Credo Unité</th>
+                <th id="site_installation">Site d'installation</th>
+                <th id="localisation">Localisation</th>
                 <th id="service_uf">ServiceUF</th>
                 <th id="accessoires">Accessoires</th>
             </tr>
         </thead>
 HTML;
+    }
+
+    static function testChamps(): array
+    {
+        $headers = [
+            "num_ordo" => "N° ORDO",
+            "date_cde_minarm" => "DATE CDE MINARM",
+            "statut" => "Statut Projet",
+            "num_sfdc" => "N° OPP SFDC",
+            "num_oracle" => "N° Oracle",
+            "num_serie" => "N° de Série",
+            "config" => "Config",
+            "modele" => "Modèle",
+            "hostname" => "HostName",
+            "reseau" => "Réseau",
+            "adresse_mac" => "Adresse MAC@",
+            "bdd" => "BDD",
+            "entite_beneficiaire" => "Entité Bénéficiaire",
+            "credo_unite" => "Credo Unité",
+            "cp_insta" => "CP Insta",
+            "dep_insta" => "DEP Insta",
+            "adresse" => "Adresse",
+            "site_installation" => "Site d'installation",
+            "localisation" => "Localisation",
+            "service_uf" => "ServiceUF",
+            "accessoires" => "Accessoires"
+        ];
+        
+        return $headers;
     }
 
     static function editImprimante($num,$oracle,$config,$modele,$hostname,$reseau,$mac,$entite_beneficiaire,$credo_unite, int $cp, int $dep,$adresse,$site_installation,$localisation,$accessoires): bool

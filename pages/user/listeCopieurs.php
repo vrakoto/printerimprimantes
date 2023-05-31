@@ -7,6 +7,7 @@ $jsfile = 'listeCopieurs';
 $url = 'liste_copieurs';
 
 $order = getValeurInput('order', 'num_serie');
+$ordertype = getValeurInput('ordertype', 'ASC');
 
 $searching_num_serie = getValeurInput('num_serie');
 $searching_bdd = getValeurInput('bdd');
@@ -22,7 +23,7 @@ $params = [
     'statut_projet' => ['nom_db' => "STATUT PROJET", 'value' => $searching_statut, 'valuePosition' => $searching_statut . '%'],
     'site_installation' => ['nom_db' => "Site d'installation", 'value' => $searching_site_installation, 'valuePosition' => '%' . $searching_site_installation . '%'],
     'num_ordo' => ['nom_db' => "N° ORDO", 'value' => $searching_num_ordo, 'valuePosition' => $searching_num_ordo . '%'],
-    'order' => ['nom_db' => $order, 'value' => 'ASC']
+    'order' => ['nom_db' => $order, 'value' => $ordertype]
 ];
 
 
@@ -31,6 +32,7 @@ $params_query = [];
 foreach ($params as $nom_input => $props) {
     if ($nom_input === 'order') {
         $params_query['order'] = $props['nom_db'];
+        $params_query['ordertype'] = $ordertype;
     } else {
         $params_query[$nom_input] = $props['value'];
     }
@@ -49,7 +51,11 @@ if ($page <= 0) {
 
 $debut = ($page - 1) * $nb_results_par_page;
 
-$lesResultats = Imprimante::getImprimantes($params, [$debut, $nb_results_par_page]);
-$lesResultatsSansPagination = Imprimante::getImprimantes($params);
-
-require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';
+try {
+    $lesResultats = Imprimante::getImprimantes($params, [$debut, $nb_results_par_page]);
+    $lesResultatsSansPagination = Imprimante::getImprimantes($params);
+    require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';
+} catch (\Throwable $th) {
+    $msg = "Lien incorrect";
+    require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . '404.php';
+}

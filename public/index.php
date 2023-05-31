@@ -16,11 +16,6 @@ $ajaxRouter = new Router($AJAX, true);
 if (Driver::estConnecte()) {
     $router->request('/', '/user/compte.php', 'home');
     $router->request('/', '/user/compte.php', 'edit_account', 'POST'); // changer mdp
-
-    $router->request('/menuCopieur', '/user/menuCopieur.php', 'menu_machine');
-    $router->request('/menuCompteurs', '/user/menuCompteurs.php', 'menu_machine_counters');
-    $router->request('/menuPannes', '/user/menuPannes.php', 'menu_pannes');
-    $router->request('/menuAdministration', '/user/menuAdministration.php', 'menu_administration');
     
     $router->request('/imprimante/[*:num]', '/user/imprimante.php', 'machine_details');
     $router->request('/imprimante/[*:num]', '/user/imprimante.php', 'edit_machine_details', 'POST');

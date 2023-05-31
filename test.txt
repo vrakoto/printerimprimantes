@@ -1,3 +1,54 @@
 "N° ORDO","N° de Série","Modele demandé","STATUT PROJET","BDD","Site d'installation","DATE CDE MINARM","Config","N° Saisie ORACLE","N° OPP SFDC","HostName","réseau","MAC@","Entité Bénéficiaire","credo_unité","CP INSTA","DEP INSTA","adresse","localisation","ServiceUF","Accessoires"
 
 num_serie,modele, statut, bdd, site_installation,date_cde_minarm,config,num_oracle,num_sfdc,hostname,reseau,adresse_mac,entite_beneficiaire,credo_unite,cp_insta,dep_insta,adresse,localisation,service_uf,accessoires
+
+
+<tbody>
+    <?php foreach ($lesResultats as $key => $data) :
+        $num_serie = htmlentities($data['num_serie']);
+        $bdd = htmlentities($data['bdd']);
+        $modele = htmlentities($data['modele']);
+        $statut = htmlentities($data['statut']);
+        $site_installation = htmlentities($data['site_installation']);
+        $num_ordo = htmlentities($data['num_ordo']);
+        $date_cde_minarm = htmlentities($data['date_cde_minarm']);
+        $config = htmlentities($data['config']);
+        $num_oracle = htmlentities($data['num_oracle']);
+        $num_sfdc = htmlentities($data['num_sfdc']);
+        $hostname = htmlentities($data['hostname']);
+        $reseau = htmlentities($data['reseau']);
+        $adresse_mac = htmlentities($data['adresse_mac']);
+        $entite_beneficiaire = htmlentities($data['entite_beneficiaire']);
+        $localisation = htmlentities($data['localisation']);
+        $cp_insta = htmlentities($data['cp_insta']);
+        $dep_insta = htmlentities($data['dep_insta']);
+        $adresse = htmlentities($data['adresse']);
+        $credo_unite = htmlentities($data['credo_unite']);
+        $service_uf = htmlentities($data['service_uf']);
+        $accessoires = htmlentities($data['accessoires']);
+    ?>
+        <tr>
+            <td class="num_serie"><?= $num_serie ?></td>
+            <td class="bdd"><?= $bdd ?></td>
+            <td class="modele"><?= $modele ?></td>
+            <td class="statut"><?= $statut ?></td>
+            <td class="site_installation"><?= $site_installation ?></td>
+            <td class="num_ordo"><?= $num_ordo ?></td>
+            <td class="date_cde_minarm"><?= $date_cde_minarm ?></td>
+            <td class="config"><?= $config ?></td>
+            <td class="num_oracle"><?= $num_oracle ?></td>
+            <td class="num_sfdc"><?= $num_sfdc ?></td>
+            <td class="hostname"><?= $hostname ?></td>
+            <td class="reseau"><?= $reseau ?></td>
+            <td class="adresse_mac"><?= $adresse_mac ?></td>
+            <td class="entite_beneficiaire"><?= $entite_beneficiaire ?></td>
+            <td class="localisation"><?= $localisation ?></td>
+            <td class="cp_insta"><?= $cp_insta ?></td>
+            <td class="dep_insta"><?= $dep_insta ?></td>
+            <td class="adresse"><?= $adresse ?></td>
+            <td class="credo_unite"><?= $credo_unite ?></td>
+            <td class="service_uf"><?= $service_uf ?></td>
+            <td class="accessoires"><?= $accessoires ?></td>
+        </tr>
+    <?php endforeach ?>
+</tbody>

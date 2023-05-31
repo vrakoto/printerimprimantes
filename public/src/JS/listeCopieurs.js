@@ -1,9 +1,9 @@
 // copieurs();
-$('.triggerDT').DataTable({
+/* $('.triggerDT').DataTable({
     dom: '<t>',
     responsive: true,
     order: []
-});
+}); */
 
 const selector = '#table_imprimantes tbody tr';
 $.contextMenu({

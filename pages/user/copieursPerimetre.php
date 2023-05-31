@@ -32,6 +32,7 @@ if (isset($_POST['remove_num_serie'])) {
 }
 
 $order = getValeurInput('order', 'num_serie');
+$ordertype = getValeurInput('ordertype', 'ASC');
 
 $searching_num_serie = getValeurInput('num_serie');
 $searching_bdd = getValeurInput('bdd');
@@ -46,7 +47,7 @@ $params = [
     'statut_projet' => ['nom_db' => "STATUT PROJET", 'value' => $searching_statut, 'valuePosition' => $searching_statut . '%'],
     'site_installation' => ['nom_db' => "Site d'installation", 'value' => $searching_site_installation, 'valuePosition' => '%' . $searching_site_installation . '%'],
     'num_ordo' => ['nom_db' => "N° ORDO", 'value' => $searching_num_ordo, 'valuePosition' => $searching_num_ordo . '%'],
-    'order' => ['nom_db' => $order, 'value' => 'ASC']
+    'order' => ['nom_db' => $order, 'value' => $ordertype]
 ];
 
 
@@ -73,10 +74,15 @@ if ($page <= 0) {
 
 $debut = ($page - 1) * $nb_results_par_page;
 
-$lesResultats = User::copieursPerimetre2($params, [$debut, $nb_results_par_page]);
-$lesResultatsSansPagination = User::copieursPerimetre2($params);
+try {
+    $lesResultats = User::copieursPerimetre2($params, [$debut, $nb_results_par_page]);
+    $lesResultatsSansPagination = User::copieursPerimetre2($params);
+    require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';
+} catch (\Throwable $th) {
+    $msg = "Lien incorrect";
+    require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . '404.php';
+}
 
-require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';
 ?>
 
 <div class="modal fade" id="modal_add_machine_area" tabindex="-1" aria-hidden="true">

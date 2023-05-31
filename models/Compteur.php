@@ -31,7 +31,7 @@ class Compteur extends Driver
                 <th id="num_serie">Numéro Série</th>
                 <th id="bdd">BDD</th>
                 <th id="date_releve">Date de relevé</th>
-                <th id="101_total">101 Total</th>
+                <th id="101_total_1">101 Total</th>
                 <th id="112_total">112 Total</th>
                 <th id="113_total">113 Total</th>
                 <th id="122_total">122 Total</th>
