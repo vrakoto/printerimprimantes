@@ -16,6 +16,16 @@ $searching_statut = getValeurInput('statut_projet');
 $searching_site_installation = getValeurInput('site_installation');
 $searching_num_ordo = getValeurInput('num_ordo');
 
+$lesColonnes = array_filter(Imprimante::testChamps(), function($property) {
+    return $property['display'] === true;
+}); 
+
+foreach ($_GET as $key => $value) {
+    if (strpos($key, 'checked_') === 0) {
+        $lesColonnes[str_replace('checked_', '', $key)] = ['nom_db' => Imprimante::testChamps()[str_replace('checked_', '', $key)]['nom_db']];
+    }
+}
+
 $params = [
     'num_serie' => ['nom_db' => "N° de Série", 'value' => $searching_num_serie, 'valuePosition' => $searching_num_serie . '%'],
     'bdd' => ['nom_db' => "BDD", 'value' => $searching_bdd, 'valuePosition' => $searching_bdd . '%'],
@@ -36,6 +46,9 @@ foreach ($params as $nom_input => $props) {
     } else {
         $params_query[$nom_input] = $props['value'];
     }
+}
+foreach ($lesColonnes as $nom_input => $props) {
+    $params_query["checked_$nom_input"] = 'on';
 }
 $fullURL = http_build_query($params_query);
 

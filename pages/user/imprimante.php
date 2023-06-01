@@ -72,9 +72,6 @@ $jsfile = 'imprimante';
             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Information</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Relevé de compteur</button>
-        </li>
-        <li class="nav-item" role="presentation">
             <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Responsabilité</button>
         </li>
     </ul>
@@ -111,37 +108,6 @@ $jsfile = 'imprimante';
             <?php else : ?>
         </div>
     <?php endif ?>
-    </div>
-    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-        <div class="mt-3">
-            <form method="post" class="mt-3 mb-3">
-                <input type="submit" class="btn btn-primary" name="csv" value="Exporter en CSV">
-            </form>
-            <?php if (count($releves) > 0) : ?>
-                <table class="table table-striped table-bordered personalTable">
-                    <?= Compteur::ChampsCompteur() ?>
-                    <tbody>
-                        <?php foreach ($releves as $releve) : ?>
-                            <tr>
-                                <td><?= htmlentities($releve['num_serie']) ?></td>
-                                <td><?= htmlentities($releve['bdd']) ?></td>
-                                <td><?= htmlentities(convertDate($releve['date_releve'])) ?></td>
-                                <td><?= (int)$releve['total_101'] ?></td>
-                                <td><?= (int)$releve['total_112'] ?></td>
-                                <td><?= (int)$releve['total_113'] ?></td>
-                                <td><?= (int)$releve['total_122'] ?></td>
-                                <td><?= (int)$releve['total_123'] ?></td>
-                                <td><?= htmlentities($releve['modif_par']) ?></td>
-                                <td><?= htmlentities(convertDate($releve['date_maj'], true)) ?></td>
-                                <td><?= htmlentities($releve['type_releve']) ?></td>
-                            </tr>
-                        <?php endforeach ?>
-                    </tbody>
-                </table>
-            <?php else : ?>
-                <h4 class="mt-4 text-center">Aucun relevé</h4>
-            <?php endif ?>
-        </div>
     </div>
     <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
         <div class="container mt-3">

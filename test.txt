@@ -52,3 +52,9 @@ num_serie,modele, statut, bdd, site_installation,date_cde_minarm,config,num_orac
         </tr>
     <?php endforeach ?>
 </tbody>
+
+<?php foreach ($data as $nom_input => $value) : ?>
+    <?php if (Imprimante::testChamps()[$nom_input]['display'] === true) : ?>
+        <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
+    <?php endif ?>
+<?php endforeach ?>

@@ -247,7 +247,7 @@ HTML;
             $sql .= " JOIN users_copieurs uc on uc.`numéro_série` = c.`N° de Série`";
             $options['responsable'] = self::getMonID();
         }
-        $sql .= " WHERE `STATUT PROJET` LIKE '1 - LIVRE'
+        $sql .= " WHERE 1
                 $where
                 $ordering
                 $limit";

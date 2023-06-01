@@ -56,6 +56,7 @@ $params_query = [];
 foreach ($params as $nom_input => $props) {
     if ($nom_input === 'order') {
         $params_query['order'] = $props['nom_db'];
+        $params_query['ordertype'] = $ordertype;
     } else {
         $params_query[$nom_input] = $props['value'];
     }

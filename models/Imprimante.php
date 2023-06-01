@@ -62,27 +62,27 @@ HTML;
     static function testChamps(): array
     {
         $headers = [
-            "num_ordo" => "N° ORDO",
-            "date_cde_minarm" => "DATE CDE MINARM",
-            "statut" => "Statut Projet",
-            "num_sfdc" => "N° OPP SFDC",
-            "num_oracle" => "N° Oracle",
-            "num_serie" => "N° de Série",
-            "config" => "Config",
-            "modele" => "Modèle",
-            "hostname" => "HostName",
-            "reseau" => "Réseau",
-            "adresse_mac" => "Adresse MAC@",
-            "bdd" => "BDD",
-            "entite_beneficiaire" => "Entité Bénéficiaire",
-            "credo_unite" => "Credo Unité",
-            "cp_insta" => "CP Insta",
-            "dep_insta" => "DEP Insta",
-            "adresse" => "Adresse",
-            "site_installation" => "Site d'installation",
-            "localisation" => "Localisation",
-            "service_uf" => "ServiceUF",
-            "accessoires" => "Accessoires"
+            "num_ordo" => ['nom_db' => "N° ORDO", 'display' => true],
+            "num_serie" => ['nom_db' => "N° de Série", 'display' => true],
+            "bdd" => ['nom_db' => "BDD", 'display' => true],
+            "statut" => ['nom_db' => "Statut Projet", 'display' => true],
+            "modele" => ['nom_db' => "Modèle", 'display' => true],
+            "config" => ['nom_db' => "Config", 'display' => true],
+            "date_cde_minarm" => ['nom_db' => "DATE CDE MINARM", 'display' => false],
+            "num_sfdc" => ['nom_db' => "N° OPP SFDC", 'display' => false],
+            "num_oracle" => ['nom_db' => "N° Oracle", 'display' => false],
+            "hostname" => ['nom_db' => "HostName", 'display' => false],
+            "reseau" => ['nom_db' => "Réseau", 'display' => false],
+            "adresse_mac" => ['nom_db' => "Adresse MAC@", 'display' => false],
+            "entite_beneficiaire" => ['nom_db' => "Entité Bénéficiaire", 'display' => false],
+            "credo_unite" => ['nom_db' => "Credo Unité", 'display' => false],
+            "cp_insta" => ['nom_db' => "CP Insta", 'display' => false],
+            "dep_insta" => ['nom_db' => "DEP Insta", 'display' => false],
+            "adresse" => ['nom_db' => "Adresse", 'display' => false],
+            "site_installation" => ['nom_db' => "Site d'installation", 'display' => false],
+            "localisation" => ['nom_db' => "Localisation", 'display' => false],
+            "service_uf" => ['nom_db' => "ServiceUF", 'display' => false],
+            "accessoires" => ['nom_db' => "Accessoires", 'display' => false]
         ];
         
         return $headers;
@@ -132,12 +132,12 @@ HTML;
     /**
      * Récupère une imprimante spécifique
      */
-    static function getImprimante($num_serie): array
+    static function getImprimante($num): array
     {
         $champ_num_serie = self::$champ_num_serie;
-        $req = "SELECT * FROM copieurs WHERE `$champ_num_serie` = :num_serie";
+        $req = "SELECT * FROM copieurs WHERE `$champ_num_serie` = :num_serie OR `N° ORDO` = :num_ordo";
         $p = self::$pdo->prepare($req);
-        $p->execute(['num_serie' => $num_serie]);
+        $p->execute(['num_serie' => $num, 'num_ordo' => $num]);
         if ($p->rowCount() > 0) {
             return $p->fetch();
         }

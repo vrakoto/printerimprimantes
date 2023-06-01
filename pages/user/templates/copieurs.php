@@ -9,8 +9,8 @@ $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     $champs = '';
-    foreach (colonnes(Imprimante::ChampsCopieur()) as $id => $nom) {
-        $champs .= $nom . ";";
+    foreach (Imprimante::testChamps() as $nom_input => $props) {
+        $champs .= $props['nom_db'] . ";";
     }
     Imprimante::downloadCSV($champs, 'liste_machines', $lesResultatsSansPagination);
 }
@@ -29,12 +29,13 @@ function addInformationForm($var, $titre, $value, array $size): string
 HTML;
 }
 
-function checkboxColonnes($var, $titre): string
+function checkboxColonnes($var, $titre, $checked): string
 {
+    $checked = ($checked === true) ? "checked" : "";
     return <<<HTML
     <div class="row mb-3">
         <div class="col-sm-1">
-            <input class="form-check-input" type="checkbox" id="checked_$var" name="checked_$var">
+            <input class="form-check-input" type="checkbox" id="checked_$var" name="checked_$var" $checked>
         </div>
         <label for="checked_$var" class="col-sm-4 label">$titre</label>
     </div>
@@ -96,27 +97,37 @@ HTML;
         </div>
 
         <table id="table_imprimantes" class="table table-striped table-bordered personalTable triggerDT">
-            <?php //Imprimante::ChampsCopieur() 
-            ?>
             <thead>
                 <tr>
-                    <?php
-                    foreach (Imprimante::testChamps() as $nom_input => $nom_bdd) : ?>
-                        <?php if (isset($_GET["checked_$nom_input"])) : ?>
-                            <th id="<?= $nom_input ?>"><?= $nom_bdd ?></th>
-                        <?php endif ?>
+                    <td class="actions">Actions</td>
+                    <?php foreach ($lesColonnes as $nom_input => $props) : ?>
+                        <th id="<?= $nom_input ?>"><?= $props['nom_db'] ?></th>
                     <?php endforeach ?>
                 </tr>
             </thead>
 
             <tbody>
-                <?php foreach ($lesResultats as $data) : ?>
+                <?php foreach ($lesResultats as $data) : $notEmptyNumSerie = !empty($data['num_serie']); ?>
                     <tr>
-                    <?php foreach ($data as $t => $value): ?>
-                        <?php if (isset($_GET["checked_$t"])) : ?>
-                            <td class="<?= $t ?>"><?= $value ?></td>
-                        <?php endif ?>
-                    <?php endforeach ?>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-list"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="imprimante/<?= $notEmptyNumSerie ? $data['num_serie'] : $data['num_ordo'] ?>"><i class="fa-solid fa-eye"></i> Voir</a></li>
+                                    <?php if ($notEmptyNumSerie): // uniquement les num_serie non vides ?>
+                                        <li><a class="dropdown-item" href="liste_compteurs?order=date_maj&num_serie=<?= htmlentities($data['num_serie']) ?>&ordertype=desc"><i class="fa-solid fa-book"></i> Relevés de compteurs</a></li>
+                                    <?php endif ?>
+                                </ul>
+                            </div>
+                        </td>
+                        <!-- Remplacer -->
+                        <?php foreach ($data as $nom_input => $value): ?>
+                            <?php if (isset($lesColonnes[$nom_input])): ?>
+                                <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
+                            <?php endif ?>
+                        <?php endforeach ?>
                     </tr>
                 <?php endforeach ?>
             </tbody>
@@ -141,8 +152,8 @@ HTML;
                     <div class="row mb-3">
                         <label for="order" class="col-sm-4">Trier par</label>
                         <select class="selectize col-sm-4" id="order" name="order">
-                            <?php foreach (colonnes(Imprimante::ChampsCopieur()) as $key => $s) : ?>
-                                <option value="<?= $key ?>" <?php if ($order === $key) : ?>selected<?php endif ?>><?= $s ?></option>
+                            <?php foreach (Imprimante::testChamps() as $nom_input => $props) : ?>
+                                <option value="<?= $nom_input ?>" <?php if ($order === $nom_input) : ?>selected<?php endif ?>><?= $props['nom_db'] ?></option>
                             <?php endforeach ?>
                         </select>
                         <select class="selectize col-sm-4" id="ordertype" name="ordertype">
@@ -187,15 +198,15 @@ HTML;
             </div>
             <div class="modal-body">
 
-                <?php foreach (colonnes(Imprimante::ChampsCopieur()) as $nom_input => $props) {
+                <?php foreach (Imprimante::testChamps() as $nom_input => $props) {
                     if ($nom_input !== 'order') {
-                        echo checkboxColonnes($nom_input, $props);
+                        echo checkboxColonnes($nom_input, $props['nom_db'], $props['display']);
                     }
                 } ?>
 
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Rechercher</button>
+                <button type="submit" class="btn btn-primary">Appliquer</button>
             </div>
         </form>
     </div>
