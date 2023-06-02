@@ -49,3 +49,7 @@ thead th {
 #lesCheckbox {
     overflow-x: scroll;
 }
+
+table {
+    overflow: scroll;
+}

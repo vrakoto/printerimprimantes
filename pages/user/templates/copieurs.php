@@ -100,7 +100,7 @@ HTML;
             <thead>
                 <tr>
                     <td class="actions">Actions</td>
-                    <?php foreach ($lesColonnes as $nom_input => $props) : ?>
+                    <?php foreach (Imprimante::testChamps() as $nom_input => $props) : ?>
                         <th id="<?= $nom_input ?>"><?= $props['nom_db'] ?></th>
                     <?php endforeach ?>
                 </tr>
@@ -124,7 +124,7 @@ HTML;
                         </td>
                         <!-- Remplacer -->
                         <?php foreach ($data as $nom_input => $value): ?>
-                            <?php if (isset($lesColonnes[$nom_input])): ?>
+                            <?php if (isset(Imprimante::testChamps()[$nom_input])): //if (isset($lesColonnes[$nom_input])): ?>
                                 <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
                             <?php endif ?>
                         <?php endforeach ?>

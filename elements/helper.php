@@ -1,7 +1,6 @@
 <?php
 
 use App\Imprimante;
-use App\User;
 
 function addLink(string $title, string $var, string $icon, $router, $match, array $sublinks = [])
 {
@@ -48,20 +47,6 @@ function toAmericanDate(string $date): string
     return $date->format('Y-m-d');
 }
 
-
-function menu(string $urlRouter, array $icons, string $title, bool $requiredRole = false): string
-{
-    $lesIcones = '';
-    foreach ($icons as $icon) {
-        $lesIcones .= "<i class='$icon'></i>";
-    }
-    return <<<HTML
-    <a href="$urlRouter" class="home_action text-center">
-        $lesIcones
-        <h3>$title</h3>
-    </a>
-HTML;
-}
 
 function colonnes($html) {
     // Extraction des valeurs des attributs "id"

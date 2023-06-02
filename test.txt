@@ -58,3 +58,30 @@ num_serie,modele, statut, bdd, site_installation,date_cde_minarm,config,num_orac
         <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
     <?php endif ?>
 <?php endforeach ?>
+
+
+<tbody>
+    <?php foreach ($lesResultats as $data) : $notEmptyNumSerie = !empty($data['num_serie']); ?>
+        <tr>
+            <td>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-list"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="imprimante/<?= $notEmptyNumSerie ? $data['num_serie'] : $data['num_ordo'] ?>"><i class="fa-solid fa-eye"></i> Voir</a></li>
+                        <?php if ($notEmptyNumSerie): // uniquement les num_serie non vides ?>
+                            <li><a class="dropdown-item" href="liste_compteurs?order=date_maj&num_serie=<?= htmlentities($data['num_serie']) ?>&ordertype=desc"><i class="fa-solid fa-book"></i> Relevés de compteurs</a></li>
+                        <?php endif ?>
+                    </ul>
+                </div>
+            </td>
+            <!-- Remplacer -->
+            <?php foreach ($data as $nom_input => $value): ?>
+                <?php if (isset($lesColonnes[$nom_input])): ?>
+                    <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
+                <?php endif ?>
+            <?php endforeach ?>
+        </tr>
+    <?php endforeach ?>
+</tbody>

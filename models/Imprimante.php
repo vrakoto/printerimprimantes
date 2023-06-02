@@ -33,6 +33,7 @@ class Imprimante extends Driver {
         return <<<HTML
         <thead>
             <tr>
+                <td id="actions">Actions</td>
                 <th id="num_ordo">N° ORDO</th>
                 <th id="date_cde_minarm">DATE CDE MINARM</th>
                 <th id="statut">Statut Projet</th>
@@ -66,23 +67,23 @@ HTML;
             "num_serie" => ['nom_db' => "N° de Série", 'display' => true],
             "bdd" => ['nom_db' => "BDD", 'display' => true],
             "statut" => ['nom_db' => "Statut Projet", 'display' => true],
-            "modele" => ['nom_db' => "Modèle", 'display' => true],
+            "modele" => ['nom_db' => "Modele demandé", 'display' => true],
             "config" => ['nom_db' => "Config", 'display' => true],
-            "date_cde_minarm" => ['nom_db' => "DATE CDE MINARM", 'display' => false],
-            "num_sfdc" => ['nom_db' => "N° OPP SFDC", 'display' => false],
-            "num_oracle" => ['nom_db' => "N° Oracle", 'display' => false],
-            "hostname" => ['nom_db' => "HostName", 'display' => false],
-            "reseau" => ['nom_db' => "Réseau", 'display' => false],
-            "adresse_mac" => ['nom_db' => "Adresse MAC@", 'display' => false],
-            "entite_beneficiaire" => ['nom_db' => "Entité Bénéficiaire", 'display' => false],
-            "credo_unite" => ['nom_db' => "Credo Unité", 'display' => false],
+            // "date_cde_minarm" => ['nom_db' => "DATE CDE MINARM", 'display' => false],
+            // "num_sfdc" => ['nom_db' => "N° OPP SFDC", 'display' => false],
+            // "num_oracle" => ['nom_db' => "N° Oracle", 'display' => false],
+            // "hostname" => ['nom_db' => "HostName", 'display' => false],
+            // "reseau" => ['nom_db' => "Réseau", 'display' => false],
+            // "adresse_mac" => ['nom_db' => "Adresse MAC@", 'display' => false],
+            // "entite_beneficiaire" => ['nom_db' => "Entité Bénéficiaire", 'display' => false],
+            // "credo_unite" => ['nom_db' => "Credo Unité", 'display' => false],
             "cp_insta" => ['nom_db' => "CP Insta", 'display' => false],
             "dep_insta" => ['nom_db' => "DEP Insta", 'display' => false],
             "adresse" => ['nom_db' => "Adresse", 'display' => false],
             "site_installation" => ['nom_db' => "Site d'installation", 'display' => false],
-            "localisation" => ['nom_db' => "Localisation", 'display' => false],
-            "service_uf" => ['nom_db' => "ServiceUF", 'display' => false],
-            "accessoires" => ['nom_db' => "Accessoires", 'display' => false]
+            // "localisation" => ['nom_db' => "Localisation", 'display' => false],
+            // "service_uf" => ['nom_db' => "ServiceUF", 'display' => false],
+            // "accessoires" => ['nom_db' => "Accessoires", 'display' => false]
         ];
         
         return $headers;
@@ -176,28 +177,17 @@ HTML;
             }
         }
         $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
-        $sql = "SELECT `N° ORDO` as num_ordo, 
-                `N° de Série` as num_serie, 
-                `Modele demandé` as modele, 
-                `STATUT PROJET` as statut, 
-                `BDD` as bdd, 
-                `Site d'installation` as site_installation,
-                `DATE CDE MINARM` as date_cde_minarm,
-                `Config` as config,
-                `N° Saisie ORACLE` as num_oracle,
-                `N° OPP SFDC` as num_sfdc,
-                `HostName` as hostname,
-                `réseau` as reseau,
-                `MAC@` as adresse_mac,
-                `Entité Bénéficiaire` as entite_beneficiaire,
-                `credo_unité` as credo_unite,
-                `CP INSTA` as cp_insta,
-                `DEP INSTA` as dep_insta,
-                `adresse` as adresse,
-                `localisation` as localisation,
-                `ServiceUF` as service_uf,
-                `Accessoires` as accessoires
-                FROM copieurs
+        $sql = "SELECT ";
+
+        foreach (self::testChamps() as $nom_input => $props) {
+            $nom_db = $props['nom_db'];
+            $sql .= " `$nom_db` as $nom_input,";
+        }
+
+        // Suppression de la virgule pour la dernière ligne
+        $sql = rtrim($sql, ',');
+
+        $sql .= " FROM copieurs
                 WHERE 1 $where
                 $ordering
                 $limit";
