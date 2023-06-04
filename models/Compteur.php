@@ -44,25 +44,28 @@ class Compteur extends Driver
 HTML;
     }
 
-    static function releveUserName($num_serie, $date_releve): string
-    {
-        $champ_gpn_user = User::getChamp('champ_gpn');
-        $champ_modif_par_compteur = self::$champ_modif_par;
-        $champ_id_user = User::getChamp('champ_id');
-        $champ_num_serie_compteur = self::$champ_num_serie;
-        $champ_date_releve_compteur = self::$champ_date_releve;
 
-        $req = "SELECT `$champ_gpn_user` as gpn FROM profil u
-                JOIN compteurs c on c.$champ_modif_par_compteur = u.$champ_id_user
-                AND $champ_num_serie_compteur = :num_serie
-                AND $champ_date_releve_compteur = :dr";
-        $p = self::$pdo->prepare($req);
-        $p->execute([
-            'num_serie' => $num_serie,
-            'dr' => $date_releve
-        ]);
-        $name = $p->fetch()['gpn'] ?? 'Un administrateur';
-        return $name;
+    static function testChamps($perimetre = false): array
+    {
+        $headers = [
+            "num_serie" => ['nom_db' => "Numéro_série", "libelle" => "N° de série"],
+            "bdd" => ['nom_db' => "BDD", "libelle" => "BDD", "anti_ambiguous" => 'c'],
+            "date" => ['nom_db' => "Date", "libelle" => "Date de relevé"],
+            "total_101" => ['nom_db' => "101_Total_1", "libelle" => "101 Total"],
+            "total_112" => ['nom_db' => "112_Total", "libelle" => "112 Total"],
+            "total_113" => ['nom_db' => "123_Total", "libelle" => "113 Total"],
+            "total_122" => ['nom_db' => "122_Total", "libelle" => "122 Total"],
+            "total_123" => ['nom_db' => "123_Total", "libelle" => "123 Total"],
+            "modif_par" => ['nom_db' => "grade-prenom-nom", "libelle" => "Ajouté/Modifié par"],
+            "date_maj" => ['nom_db' => "date_maj", "libelle" => "Mise à jour le"],
+            "type_releve" => ['nom_db' => "type_relevé", "libelle" => "Type de relevé"]
+        ];
+
+        if ($perimetre) {
+            unset($headers['bdd']);
+        }
+        
+        return $headers;
     }
 
     static function getLesRelevesParBDD($bdd = NULL): array
@@ -85,13 +88,17 @@ HTML;
         $where = '';
         $options = [];
         $ordering = '';
+
+        // Récupérer les paramètres de recherche dynamiquement
         foreach ($params as $nom_input => $props) {
             $value = $props['value'];
+            $anti_ambiguous = (isset($props['anti_ambiguous'])) ? $props['anti_ambiguous'] . '.' : '';
+            
             if (trim($value) !== '') {
                 $nom_db = $props['nom_db'];
                 
                 if ($nom_input !== 'order') {
-                    $where .= " AND c.`$nom_db` LIKE :$nom_input";
+                    $where .= " AND $anti_ambiguous`$nom_db` LIKE :$nom_input";
                     $options[$nom_input] = $props['valuePosition'];
                 } else {
                     // order
@@ -105,24 +112,23 @@ HTML;
             $options['bdd'] = User::getBDD();
         }
 
-
         $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
-        $sql = "SELECT
-                `Numéro_série` as num_serie,
-                c.`BDD` as bdd,
-                `Date`,
-                `101_Total_1` as total_101,
-                `112_Total` as total_112,
-                `113_Total` as total_113,
-                `122_Total` as total_122,
-                `123_Total` as total_123,
-                p.`grade-prenom-nom` as gpn,
-                `date_maj`,
-                `type_relevé` as type_releve
-                FROM compteurs c
+        $sql = "SELECT ";
+        
+        // Récupérer toutes les colonnes dynamiquement
+        foreach (self::testChamps($perimetre) as $nom_input => $props) {
+            $anti_ambiguous = (isset($props['anti_ambiguous'])) ? $props['anti_ambiguous'] . '.' : '';
+
+            $nom_db = $props['nom_db'];
+            $sql .= " $anti_ambiguous`$nom_db` as $nom_input,";
+        }
+
+        // Suppression de la virgule pour la dernière ligne
+        $sql = rtrim($sql, ',');
+
+        $sql .= " FROM compteurs c
                 LEFT JOIN profil p on p.id_profil = c.modif_par
-                WHERE 1
-                $where
+                WHERE 1 $where
                 $ordering
                 $limit";
 

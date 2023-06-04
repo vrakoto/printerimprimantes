@@ -69,7 +69,6 @@ HTML;
         <button class="btn btn-success" id="downloadCSV" title="Télécharger les données en CSV"><i class="fa-solid fa-download"></i> Télécharger les données</button>
         <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-filter"></i> Trier / Rechercher</button>
         <a class="mx-1 btn btn-secondary" href="/<?= $url ?>"><i class="fa-solid fa-arrow-rotate-left"></i> Réinitialiser la recherche</a>
-        <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_colonnes"><i class="fa-solid fa-filter"></i> Affichage des colonnes</button>
     </div>
 
     <?php if ($url === 'copieurs_perimetre' && User::getRole() !== 2) : ?>
@@ -100,8 +99,8 @@ HTML;
             <thead>
                 <tr>
                     <td class="actions">Actions</td>
-                    <?php foreach (Imprimante::testChamps() as $nom_input => $props) : ?>
-                        <th id="<?= $nom_input ?>"><?= $props['nom_db'] ?></th>
+                    <?php foreach (Imprimante::testChamps($perimetre) as $nom_input => $props) : ?>
+                        <th id="<?= $nom_input ?>"><?= $props['libelle'] ?></th>
                     <?php endforeach ?>
                 </tr>
             </thead>
@@ -122,9 +121,8 @@ HTML;
                                 </ul>
                             </div>
                         </td>
-                        <!-- Remplacer -->
                         <?php foreach ($data as $nom_input => $value): ?>
-                            <?php if (isset(Imprimante::testChamps()[$nom_input])): //if (isset($lesColonnes[$nom_input])): ?>
+                            <?php if (isset(Imprimante::testChamps()[$nom_input])): ?>
                                 <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
                             <?php endif ?>
                         <?php endforeach ?>
@@ -148,22 +146,20 @@ HTML;
             </div>
             <div class="modal-body">
 
-                <?php if (isset($params['order'])) : ?>
-                    <div class="row mb-3">
-                        <label for="order" class="col-sm-4">Trier par</label>
-                        <select class="selectize col-sm-4" id="order" name="order">
-                            <?php foreach (Imprimante::testChamps() as $nom_input => $props) : ?>
-                                <option value="<?= $nom_input ?>" <?php if ($order === $nom_input) : ?>selected<?php endif ?>><?= $props['nom_db'] ?></option>
-                            <?php endforeach ?>
-                        </select>
-                        <select class="selectize col-sm-4" id="ordertype" name="ordertype">
-                            <option value="ASC" <?php if ($ordertype === 'ASC') : ?>selected<?php endif ?>>Croissant</option>
-                            <option value="DESC" <?php if ($ordertype === 'DESC') : ?>selected<?php endif ?>>Décroissant</option>
-                        </select>
-                    </div>
-                <?php endif ?>
+                <div class="row mb-3">
+                    <label for="order" class="col-sm-4">Trier par</label>
+                    <select class="selectize col-sm-4" id="order" name="order">
+                        <?php foreach (Imprimante::testChamps($perimetre) as $nom_input => $props) : ?>
+                            <option value="<?= $nom_input ?>" <?php if ($order === $nom_input) : ?>selected<?php endif ?>><?= $props['libelle'] ?></option>
+                        <?php endforeach ?>
+                    </select>
+                    <select class="selectize col-sm-4" id="ordertype" name="ordertype">
+                        <option value="ASC" <?php if ($ordertype === 'ASC') : ?>selected<?php endif ?>>Croissant</option>
+                        <option value="DESC" <?php if ($ordertype === 'DESC') : ?>selected<?php endif ?>>Décroissant</option>
+                    </select>
+                </div>
 
-                <?php if ($url !== 'copieurs_perimetre') : ?>
+                <?php if ($url !== 'copieurs-sans-releve-trimestre'): ?>
                     <div class="row mb-3">
                         <label for="statut_projet" class="col-sm-4 label">Statut</label>
                         <select class="selectize col-sm-4" name="statut_projet" id="statut_projet">
@@ -177,36 +173,13 @@ HTML;
 
                 <?php foreach ($params as $nom_input => $props) {
                     if ($nom_input !== 'statut_projet' && $nom_input !== 'order') { // statut_projet doit être personnalisé pour les select
-                        echo addInformationForm($nom_input, $props['nom_db'], getValeurInput($nom_input), [4, 3]);
+                        echo addInformationForm($nom_input, Imprimante::testChamps($perimetre)[$nom_input]['libelle'], getValeurInput($nom_input), [4, 3]);
                     }
                 } ?>
 
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Rechercher</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="modal fade" id="modal_colonnes" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <form class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">Affichage des colonnes</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-
-                <?php foreach (Imprimante::testChamps() as $nom_input => $props) {
-                    if ($nom_input !== 'order') {
-                        echo checkboxColonnes($nom_input, $props['nom_db'], $props['display']);
-                    }
-                } ?>
-
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Appliquer</button>
             </div>
         </form>
     </div>

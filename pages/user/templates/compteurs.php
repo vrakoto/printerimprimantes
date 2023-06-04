@@ -1,17 +1,16 @@
 <?php
 
 use App\Compteur;
-use App\Imprimante;
 
 $total = count($lesResultatsSansPagination);
 $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
-    $champs = '';
-    foreach (colonnes(Imprimante::ChampsCopieur()) as $id => $nom) {
-        $champs .= $nom . ";";
+    $headers = '';
+    foreach (Compteur::testChamps() as $nom_input => $props) {
+        $headers .= $props['libelle'] . ";";
     }
-    Imprimante::downloadCSV($champs, 'liste_machines', $lesResultatsSansPagination);
+    Compteur::downloadCSV($headers, 'liste_machines', $lesResultatsSansPagination);
 }
 
 function addInformationForm($var, $titre, $value, array $size): string
@@ -48,11 +47,28 @@ HTML;
 </style>
 
 <div class="p-4">
+
+    <?php if (isset($_GET['d'])): ?>
+        <div class="alert alert-success text-center">
+            Le compteur a bien été supprimé.
+        </div>
+    <?php endif ?>
+    <?php if (isset($_GET['a'])): ?>
+        <div class="alert alert-success text-center">
+            Le compteur a bien été ajouté.
+        </div>
+    <?php endif ?>
+    <?php if (isset($_GET['e'])): ?>
+        <div class="alert alert-danger text-center">
+            Un problème technique a été rencontré.
+        </div>
+    <?php endif ?>
+    
     <div class="mt-2" id="header">
         <h1><?= $title ?></h1>
 
         <button class="btn btn-success" id="downloadCSV" title="Télécharger les données en CSV"><i class="fa-solid fa-download"></i> Télécharger les données</button>
-        <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-filter"></i> Rechercher</button>
+        <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-filter"></i> Trier / Rechercher</button>
         <a class="mx-1 btn btn-secondary" href="/<?= $url ?>"><i class="fa-solid fa-arrow-rotate-left"></i> Réinitialiser la recherche</a>
     </div>
 
@@ -66,39 +82,47 @@ HTML;
 
                 <a <?php if ($page >= $nb_pages) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page + 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-right"></i></a>
                 <a class="<?= $page != $nb_pages ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=<?= $nb_pages ?>&<?= $fullURL ?>"><?= $nb_pages ?></a>
+                
+                <?php if ($url === 'compteurs_perimetre'): ?>
+            <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_add_counter"><i class="fa-solid fa-plus"></i> Ajouter un compteur</button>
+        <?php endif ?>
             </div>
 
             <h3 class="mt-5">Nombre total de compteurs : <?= $total ?></h3>
         </div>
 
         <table id="table_imprimantes" class="table table-striped table-bordered personalTable triggerDT">
-            <?= Compteur::ChampsCompteur() ?>
+            <thead>
+                <tr>
+                    <td class="actions">Actions</td>
+                    <?php foreach ($laTable as $nom_input => $props) : ?>
+                        <th id="<?= $nom_input ?>"><?= $props['libelle'] ?></th>
+                    <?php endforeach ?>
+                </tr>
+            </thead>
             <tbody>
-                <?php foreach ($lesResultats as $data) :
-                    $num_serie = htmlentities($data['num_serie']);
-                    $bdd = htmlentities($data['bdd']);
-                    $date = htmlentities(convertDate($data['Date']));
-                    $total_101 = (int)$data['total_101'];
-                    $total_112 = (int)$data['total_112'];
-                    $total_113 = (int)$data['total_113'];
-                    $total_122 = (int)$data['total_122'];
-                    $total_123 = (int)$data['total_123'];
-                    $modif_par = htmlentities($data['gpn']);
-                    $date_maj = htmlentities(convertDate($data['date_maj'], true));
-                    $type_releve = htmlentities($data['type_releve']);
-                ?>
+                <?php foreach ($lesResultats as $data): $num_serie = htmlentities($data['num_serie']); $date = htmlentities($data['date']); ?>
                     <tr>
-                        <td class="num_serie"><?= $num_serie ?></td>
-                        <td class="bdd"><?= $bdd ?></td>
-                        <td class="date"><?= $date ?></td>
-                        <td class="total_101"><?= $total_101 ?></td>
-                        <td class="total_112"><?= $total_112 ?></td>
-                        <td class="total_113"><?= $total_113 ?></td>
-                        <td class="total_122"><?= $total_122 ?></td>
-                        <td class="total_123"><?= $total_123 ?></td>
-                        <td class="modif_par"><?= $modif_par ?></td>
-                        <td class="date_maj"><?= $date_maj ?></td>
-                        <td class="type_releve"><?= $type_releve ?></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-list"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="imprimante/<?= $num_serie ?>"><i class="fa-solid fa-eye"></i> Voir l'imprimante</a></li>
+                                    <li><a class="dropdown-item" href="supprimer-releve/<?= $num_serie ?>/<?= $date ?>" onclick="return confirm('Voulez-vous supprimer ce compteur ?');"><i class="fa-solid fa-trash"></i> Supprimer ce relevé</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                        <?php foreach ($data as $nom_input => $value):
+                            if ($nom_input === 'date') {
+                                $value = convertDate($value);
+                            } else if ($nom_input === 'date_maj') {
+                                $value = convertDate($value, true);
+                            }
+                        ?>
+                            <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
+                        <?php endforeach ?>
                     </tr>
                 <?php endforeach ?>
             </tbody>
@@ -113,7 +137,7 @@ HTML;
     <div class="modal-dialog">
         <form class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5">Effectuer une recherche</h1>
+                <h1 class="modal-title fs-5">Effectuer une recherche et/ou un tri</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -121,15 +145,19 @@ HTML;
                 <div class="row mb-3">
                     <label for="order" class="col-sm-4">Trier par</label>
                     <select class="selectize col-sm-4" id="order" name="order">
-                        <?php foreach (colonnes(Compteur::ChampsCompteur()) as $key => $s) : ?>
-                            <option value="<?= $key ?>" <?php if ($order === $key) : ?>selected<?php endif ?>><?= $s ?></option>
+                        <?php foreach ($laTable as $nom_input => $props) : ?>
+                            <option value="<?= $nom_input ?>" <?php if ($order === $nom_input) : ?>selected<?php endif ?>><?= $props['libelle'] ?></option>
                         <?php endforeach ?>
+                    </select>
+                    <select class="selectize col-sm-4" id="ordertype" name="ordertype">
+                        <option value="ASC" <?php if ($ordertype === 'ASC') : ?>selected<?php endif ?>>Croissant</option>
+                        <option value="DESC" <?php if ($ordertype === 'DESC') : ?>selected<?php endif ?>>Décroissant</option>
                     </select>
                 </div>
 
                 <?php foreach ($params as $nom_input => $props) {
                     if ($nom_input !== 'order') {
-                        echo addInformationForm($nom_input, $props['nom_db'], getValeurInput($nom_input), [4, 3]);
+                        echo addInformationForm($nom_input, $laTable[$nom_input]['libelle'], getValeurInput($nom_input), [4, 3]);
                     }
                 } ?>
 

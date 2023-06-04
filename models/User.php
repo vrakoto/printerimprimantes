@@ -153,6 +153,31 @@ HTML;
         }
     }
 
+    static function getLesNumerosMonPerimetre(): array
+    {
+        $where = '';
+        $join = '';
+        $query = "SELECT `N° de Série` as num_serie FROM copieurs c";
+
+        if (self::getRole() === 2) {
+            $where = " AND BDD = :bdd";
+            $options['bdd'] = User::getBDD();
+        } else {
+            $join = " JOIN users_copieurs uc on uc.`numéro_série` = c.`N° de Série`";
+            $where .= " AND `responsable` = :id_profil";
+            $options['id_profil'] = User::getMonID();
+        }
+
+        $query .= "$join
+                WHERE 1
+                $where";
+        
+        $p = self::$pdo->prepare($query);
+        $p->execute($options);
+
+        return $p->fetchAll();
+    }
+
     static function copieursPerimetre(): array
     {
         if (self::getRole() === 2) {
@@ -193,67 +218,6 @@ HTML;
             'id_profil' => self::getMonID()
         ]);
 
-        return $p->fetchAll();
-    }
-
-    static function copieursPerimetre2(array $params, array $limits = []): array
-    {
-        $where = '';
-        $options = [];
-        $ordering = '';
-        foreach ($params as $nom_input => $props) {
-            $value = $props['value'];
-            if (trim($value) !== '') {
-                $nom_db = $props['nom_db'];
-                
-                if ($nom_input !== 'order') {
-                    $where .= " AND `$nom_db` LIKE :$nom_input";
-                    $options[$nom_input] = $props['valuePosition'];
-                } else {
-                    // order
-                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
-                }
-            }
-        }
-
-        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
-        $sql = "SELECT `N° ORDO` as num_ordo, 
-                `N° de Série` as num_serie, 
-                `Modele demandé` as modele, 
-                `STATUT PROJET` as statut, 
-                `BDD` as bdd, 
-                `Site d'installation` as site_installation,
-                `DATE CDE MINARM` as date_cde_minarm,
-                `Config` as config,
-                `N° Saisie ORACLE` as num_oracle,
-                `N° OPP SFDC` as num_sfdc,
-                `HostName` as hostname,
-                `réseau` as reseau,
-                `MAC@` as adresse_mac,
-                `Entité Bénéficiaire` as entite_beneficiaire,
-                `credo_unité` as credo_unite,
-                `CP INSTA` as cp_insta,
-                `DEP INSTA` as dep_insta,
-                `adresse` as adresse,
-                `localisation` as localisation,
-                `ServiceUF` as service_uf,
-                `Accessoires` as accessoires
-                FROM copieurs c";
-        if (self::getRole() === 2) {
-            $where .= " AND BDD = :bdd";
-            $options['bdd'] = self::getBDD();
-        } else {
-            $where .= " AND responsable = :responsable";
-            $sql .= " JOIN users_copieurs uc on uc.`numéro_série` = c.`N° de Série`";
-            $options['responsable'] = self::getMonID();
-        }
-        $sql .= " WHERE 1
-                $where
-                $ordering
-                $limit";
-
-        $p = self::$pdo->prepare($sql);
-        $p->execute($options);
         return $p->fetchAll();
     }
 
@@ -307,12 +271,13 @@ HTML;
         $champ_num_serie = Compteur::getChamps('champ_num_serie');
         $champ_date_releve = Compteur::getChamps('champ_date_releve');
 
-        $query = "DELETE FROM compteurs WHERE `$champ_num_serie` = :num AND `$champ_date_releve` = :dr";
+        $query = "DELETE FROM compteurs WHERE `$champ_num_serie` = :num AND `$champ_date_releve` = :dr AND BDD = :bdd";
 
         $p = self::$pdo->prepare($query);
         return $p->execute([
             'num' => $num_serie,
-            'dr' => $date_releve
+            'dr' => $date_releve,
+            'bdd' => User::getBDD()
         ]);
     }
 

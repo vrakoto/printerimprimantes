@@ -60,32 +60,39 @@ class Imprimante extends Driver {
 HTML;
     }
 
-    static function testChamps(): array
+    static function testChamps($perimetre = false): array
     {
         $headers = [
-            "num_ordo" => ['nom_db' => "N° ORDO", 'display' => true],
-            "num_serie" => ['nom_db' => "N° de Série", 'display' => true],
-            "bdd" => ['nom_db' => "BDD", 'display' => true],
-            "statut" => ['nom_db' => "Statut Projet", 'display' => true],
-            "modele" => ['nom_db' => "Modele demandé", 'display' => true],
-            "config" => ['nom_db' => "Config", 'display' => true],
-            // "date_cde_minarm" => ['nom_db' => "DATE CDE MINARM", 'display' => false],
-            // "num_sfdc" => ['nom_db' => "N° OPP SFDC", 'display' => false],
-            // "num_oracle" => ['nom_db' => "N° Oracle", 'display' => false],
-            // "hostname" => ['nom_db' => "HostName", 'display' => false],
-            // "reseau" => ['nom_db' => "Réseau", 'display' => false],
-            // "adresse_mac" => ['nom_db' => "Adresse MAC@", 'display' => false],
-            // "entite_beneficiaire" => ['nom_db' => "Entité Bénéficiaire", 'display' => false],
-            // "credo_unite" => ['nom_db' => "Credo Unité", 'display' => false],
-            "cp_insta" => ['nom_db' => "CP Insta", 'display' => false],
-            "dep_insta" => ['nom_db' => "DEP Insta", 'display' => false],
-            "adresse" => ['nom_db' => "Adresse", 'display' => false],
-            "site_installation" => ['nom_db' => "Site d'installation", 'display' => false],
-            // "localisation" => ['nom_db' => "Localisation", 'display' => false],
-            // "service_uf" => ['nom_db' => "ServiceUF", 'display' => false],
-            // "accessoires" => ['nom_db' => "Accessoires", 'display' => false]
+            "num_ordo" => ['nom_db' => "N° ORDO", 'libelle' => "N° ORDO", 'display' => true],
+            "num_serie" => ['nom_db' => "N° de Série", 'libelle' => "N° de Série", 'display' => true],
+            "bdd" => ['nom_db' => "BDD", 'libelle' => "BDD", 'display' => true],
+            "statut" => ['nom_db' => "Statut Projet", 'libelle' => "Statut Projet", 'display' => true],
+            "modele" => ['nom_db' => "Modele demandé", 'libelle' => "Modèle", 'display' => true],
+            "config" => ['nom_db' => "Config", 'libelle' => "Config", 'display' => true],
+            "date_cde_minarm" => ['nom_db' => "DATE CDE MINARM", 'libelle' => "DATE CDE MINARM", 'display' => false],
+            "num_sfdc" => ['nom_db' => "N° OPP SFDC", 'libelle' => "N° OPP SFDC", 'display' => false],
+            "num_oracle" => ['nom_db' => "N° Saisie ORACLE", 'libelle' => "N° Oracle", 'display' => false],
+            "hostname" => ['nom_db' => "HostName", 'libelle' => "HostName", 'display' => false],
+            "reseau" => ['nom_db' => "Réseau", 'libelle' => "Réseau", 'display' => false],
+            "adresse_mac" => ['nom_db' => "MAC@", 'libelle' => "Adresse MAC", 'display' => false],
+            "entite_beneficiaire" => ['nom_db' => "Entité Bénéficiaire", 'libelle' => "Entité Bénéficiaire", 'display' => false],
+            "credo_unite" => ['nom_db' => "credo_unité", 'libelle' => "Credo Unité", 'display' => false],
+            "cp_insta" => ['nom_db' => "CP INSTA", 'libelle' => "Code Postal", 'display' => true],
+            "dep_insta" => ['nom_db' => "DEP INSTA", 'libelle' => "Code Départemental", 'display' => false],
+            "adresse" => ['nom_db' => "Adresse", 'libelle' => "Adresse", 'display' => false],
+            "site_installation" => ['nom_db' => "Site d'installation", 'libelle' => "Site d'installation", 'display' => true],
+            "localisation" => ['nom_db' => "localisation", 'libelle' => "Localisation", 'display' => false],
+            "service_uf" => ['nom_db' => "ServiceUF", 'libelle' => "Service UF", 'display' => false],
+            "accessoires" => ['nom_db' => "Accessoires", 'libelle' => "Accessoires", 'display' => false]
         ];
-        
+
+        $headers = array_filter($headers, function($header) {
+            return $header['display'] === true;
+        });
+
+        if ($perimetre) {
+            unset($headers['bdd']);
+        }
         return $headers;
     }
 
@@ -196,6 +203,56 @@ HTML;
         return $p->fetchAll();
     }
 
+    static function copieursPerimetre(array $params, array $limits = []): array
+    {
+        $where = '';
+        $options = [];
+        $ordering = '';
+        foreach ($params as $nom_input => $props) {
+            $value = $props['value'];
+            if (trim($value) !== '') {
+                $nom_db = $props['nom_db'];
+                
+                if ($nom_input !== 'order') {
+                    $where .= " AND `$nom_db` LIKE :$nom_input";
+                    $options[$nom_input] = $props['valuePosition'];
+                } else {
+                    // order
+                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
+                }
+            }
+        }
+
+        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
+        $sql = "SELECT ";
+
+        foreach (self::testChamps(true) as $nom_input => $props) {
+            $nom_db = $props['nom_db'];
+            $sql .= " `$nom_db` as $nom_input,";
+        }
+
+        // Suppression de la virgule pour la dernière ligne
+        $sql = rtrim($sql, ',');
+
+        $sql .= " FROM copieurs c";
+        if (User::getRole() === 2) {
+            $where .= " AND BDD = :bdd";
+            $options['bdd'] = User::getBDD();
+        } else {
+            $sql .= " JOIN users_copieurs uc on uc.`numéro_série` = c.`N° de Série`";
+            $where .= " AND responsable = :responsable";
+            $options['responsable'] = User::getMonID();
+        }
+        $sql .= " WHERE 1
+                $where
+                $ordering
+                $limit";
+
+        $p = self::$pdo->prepare($sql);
+        $p->execute($options);
+        return $p->fetchAll();
+    }
+
     static function getImprimantesParBDD($bdd): array
     {
         $req = "SELECT * FROM copieurs WHERE " . self::$champ_bdd . " = :bdd";
@@ -215,9 +272,9 @@ HTML;
         return $p->fetchAll();
     }
 
-    static function sansResponsable($bdd = ''): array
+    static function sansResponsable(array $params, array $limits = []): array
     {
-        $champ_num_serie = self::$champ_num_serie;
+        /* $champ_num_serie = self::$champ_num_serie;
         $champ_num_serie_users_copieurs = UsersCopieurs::getChamps('champ_num_serie');
         $query = "SELECT * FROM copieurs WHERE `$champ_num_serie` NOT IN (SELECT $champ_num_serie_users_copieurs FROM users_copieurs)";
         $options = [];
@@ -228,6 +285,45 @@ HTML;
         $p = self::$pdo->prepare($query);
         $p->execute($options);
 
+        return $p->fetchAll(); */
+
+        $where = '';
+        $options = [];
+        $ordering = '';
+        foreach ($params as $nom_input => $props) {
+            $value = $props['value'];
+            if (trim($value) !== '') {
+                $nom_db = $props['nom_db'];
+                
+                if ($nom_input !== 'order') {
+                    $where .= " AND `$nom_db` LIKE :$nom_input";
+                    $options[$nom_input] = $props['valuePosition'];
+                } else {
+                    // order
+                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
+                }
+            }
+        }
+        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
+        $sql = "SELECT ";
+
+        foreach (self::testChamps(true) as $nom_input => $props) {
+            $nom_db = $props['nom_db'];
+            $sql .= " `$nom_db` as $nom_input,";
+        }
+
+        // Suppression de la virgule pour la dernière ligne
+        $sql = rtrim($sql, ',');
+
+        $sql .= " FROM copieurs
+                WHERE BDD = :bdd AND `N° de Série` NOT IN (SELECT `numéro_série` FROM users_copieurs)
+                $where
+                $ordering
+                $limit";
+
+        $options['bdd'] = User::getBDD();
+        $p = self::$pdo->prepare($sql);
+        $p->execute($options);
         return $p->fetchAll();
     }
 
@@ -235,40 +331,36 @@ HTML;
     {
         $where = '';
         $options = [];
+        $ordering = '';
         foreach ($params as $nom_input => $props) {
             $value = $props['value'];
             if (trim($value) !== '') {
                 $nom_db = $props['nom_db'];
                 
-                $where .= " AND `$nom_db` LIKE :$nom_input";
-                $options[$nom_input] = $props['valuePosition'];
+                if ($nom_input !== 'order') {
+                    $where .= " AND `$nom_db` LIKE :$nom_input";
+                    $options[$nom_input] = $props['valuePosition'];
+                } else {
+                    // order
+                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
+                }
             }
         }
         $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
-        $sql = "SELECT `N° ORDO` as num_ordo, 
-                `N° de Série` as num_serie, 
-                `Modele demandé` as modele, 
-                `STATUT PROJET` as statut, 
-                `BDD` as bdd, 
-                `Site d'installation` as site_installation,
-                `DATE CDE MINARM` as date_cde_minarm,
-                `Config` as config,
-                `N° Saisie ORACLE` as num_oracle,
-                `N° OPP SFDC` as num_sfdc,
-                `HostName` as hostname,
-                `réseau` as reseau,
-                `MAC@` as adresse_mac,
-                `Entité Bénéficiaire` as entite_beneficiaire,
-                `credo_unité` as credo_unite,
-                `CP INSTA` as cp_insta,
-                `DEP INSTA` as dep_insta,
-                `adresse` as adresse,
-                `localisation` as localisation,
-                `ServiceUF` as service_uf,
-                `Accessoires` as accessoires
-                FROM copieurs
+        $sql = "SELECT ";
+
+        foreach (self::testChamps(true) as $nom_input => $props) {
+            $nom_db = $props['nom_db'];
+            $sql .= " `$nom_db` as $nom_input,";
+        }
+
+        // Suppression de la virgule pour la dernière ligne
+        $sql = rtrim($sql, ',');
+
+        $sql .= " FROM copieurs
                 WHERE `STATUT PROJET` LIKE '1 - LIVRE' AND BDD = :bdd AND `N° de Série` NOT IN (SELECT `Numéro_série` FROM compteurs_trimestre)
                 $where
+                $ordering
                 $limit";
 
         $options['bdd'] = User::getBDD();

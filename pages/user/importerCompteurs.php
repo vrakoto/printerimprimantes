@@ -1,4 +1,5 @@
 <?php
+
 use App\User;
 
 $jsfile = 'importCompteurs';
@@ -6,7 +7,7 @@ $title = "Importer des compteurs par CSV";
 
 $lesErreursCSV = [];
 $lesErreursPDO = [];
-$lesCopieursAInserer= [];
+$lesCopieursAInserer = [];
 $datas = [];
 $erreurInterne = '';
 
@@ -14,12 +15,12 @@ if (isset($_FILES['csv_file'])) {
     if ($_FILES['csv_file']['error'] == UPLOAD_ERR_OK && $_FILES['csv_file']['type'] == 'text/csv') {
         $csvData = file_get_contents($_FILES['csv_file']['tmp_name']);
         $rows = explode("\n", $csvData);
-    
+
         foreach ($rows as $row) {
             if (empty($row)) continue;
-        
+
             $line = trim($row);
-            
+
             // Vérifie si le fichier est séparé par des virgules ou points-virgules
             $separated = ';';
             if (strpos($line, ',') !== false) {
@@ -32,7 +33,7 @@ if (isset($_FILES['csv_file'])) {
             $t = str_replace(['"', "'"], '', $t);
 
             if (count($t) < 7) continue;
-    
+
             $num_serie = htmlentities($t[0]);
             $date = str_replace("/", "-", htmlentities($t[1]));
             $total_112 = (int)$t[2];
@@ -40,7 +41,7 @@ if (isset($_FILES['csv_file'])) {
             $total_122 = (int)$t[4];
             $total_123 = (int)$t[5];
             $type_releve = htmlentities($t[6]);
-    
+
             if (strpos($num_serie, ' ') !== false) {
                 $lesErreursCSV[] = "Le numéro de série <b>'$num_serie'</b> ne doit pas contenir d'espace";
             }
@@ -50,13 +51,13 @@ if (isset($_FILES['csv_file'])) {
             if (strcasecmp($type_releve, 'IWMC') !== 0 && strcasecmp($type_releve, 'MANUEL') !== 0 && strcasecmp($type_releve, 'MANUIA') !== 0) {
                 $lesErreursCSV[] = "Le type de relevé est incorrect pour '$num_serie'";
             }
-    
+
             if (empty($lesErreursCSV)) {
                 $date = toAmericanDate($date);
                 array_push($datas, compact('num_serie', 'date', 'total_112', 'total_113', 'total_122', 'total_123', 'type_releve'));
             }
         }
-    
+
         if (empty($lesErreursCSV)) {
             foreach ($datas as $data) {
                 try {
@@ -83,76 +84,76 @@ if (isset($_FILES['csv_file'])) {
     }
 </style>
 
-<div class="mt-5"></div>
+<div class="container mt-5">
+    <?php if ($erreurInterne !== '') : ?>
+        <div class="alert alert-danger"><?= $erreurInterne ?></div>
+    <?php endif ?>
 
-<?php if ($erreurInterne !== ''): ?>
-    <div class="alert alert-danger"><?= $erreurInterne ?></div>
-<?php endif ?>
+    <?php if (!empty($lesErreursCSV)) : ?>
+        <div class="alert alert-danger">
+            <h3>Le fichier CSV fourni n'est pas valide pour les raisons suivantes :</h3>
+            <ul class="mt-3">
+                <?php foreach ($lesErreursCSV as $error) : ?>
+                    <li><?= $error ?></li>
+                <?php endforeach ?>
+            </ul>
+        </div>
+    <?php endif ?>
 
-<?php if (!empty($lesErreursCSV)): ?>
-    <div class="alert alert-danger">
-        <h3>Le fichier CSV fourni n'est pas valide pour les raisons suivantes :</h3>
-        <ul class="mt-3">
-            <?php foreach ($lesErreursCSV as $error): ?>
-                <li><?= $error ?></li>
-            <?php endforeach ?>
-        </ul>
-    </div>
-<?php endif ?>
+    <?php if (!empty($lesCopieursAInserer)) : ?>
+        <?php foreach ($lesCopieursAInserer as $erreur) :
+            $type = $erreur['type'];
+        ?>
+            <p class="text-<?= $type ?>"><?= $type === 'success' ? "<i class='fa-solid fa-check'></i>" : "<i class='fa-solid fa-xmark'></i>" ?> <?= $erreur['msg'] ?></p>
+        <?php endforeach ?>
 
-<?php if (!empty($lesCopieursAInserer)): ?>
-    <?php foreach ($lesCopieursAInserer as $erreur):
-        $type = $erreur['type'];
-    ?>
-        <p class="text-<?= $type ?>"><?= $type === 'success' ? "<i class='fa-solid fa-check'></i>" : "<i class='fa-solid fa-xmark'></i>" ?> <?= $erreur['msg'] ?></p>
-    <?php endforeach ?>
+        <hr>
+    <?php endif ?>
+
+    <form action="importCompteurs" class="mb-3" method="POST" enctype="multipart/form-data">
+        <a class="btn btn-primary" onclick="document.getElementById('csv_file').click()">Insérer un fichier CSV</a>
+        <input type="file" id="csv_file" class="form-control d-none" name="csv_file" accept=".csv">
+        <p><i id="file_name"></i></p>
+
+        <div class="mb-3"></div>
+
+        <a href="<?= $router->url('counters_area') ?>" class="btn btn-secondary mt-3">Retour</a>
+        <button class="btn btn-success mt-3" type="submit">Ajouter</button>
+    </form>
 
     <hr>
-<?php endif ?>
 
-<form action="importCompteurs" class="mb-3" method="POST" enctype="multipart/form-data">
-    <a class="btn btn-primary" onclick="document.getElementById('csv_file').click()">Insérer un fichier CSV</a>
-    <input type="file" id="csv_file" class="form-control d-none" name="csv_file" accept=".csv">
-    <p><i id="file_name"></i></p>
+    <div class="accordion mt-3" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    Comment fonctionne l'importation des compteurs ?
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    Cette page vous offre la possibilité d'insérer facilement et rapidement un grand nombre de relevés de compteurs à partir d'un fichier Excel converti en CSV.
 
-    <div class="mb-3"></div>
+                    <div class="mt-3"></div>
 
-    <a href="<?= $router->url('counters_area') ?>" class="btn btn-secondary mt-3">Retour</a>
-    <button class="btn btn-success mt-3" type="submit">Ajouter</button>
-</form>
+                    Il vous suffit simplement de saisir les informations suivantes dans votre fichier Excel, dans l'ordre suivant :
+                    <ul class="mt-3 mb-5">
+                        <li>Le numéro de série de la machine</li>
+                        <li>Sa date de relevé à ce format : JJ-MM-AAAA ou JJ/MM/AAAA</li>
+                        <li>Son 112 Total (mettez 0 si aucun)</li>
+                        <li>Son 113 Total (mettez 0 si aucun)</li>
+                        <li>Son 122 Total (mettez 0 si aucun)</li>
+                        <li>Son 123 Total (mettez 0 si aucun)</li>
+                        <li>Le type de relevé (MANUEL ou IWMC)</li>
+                    </ul>
 
-<hr>
+                    <p>Voici un exemple de ce à quoi devrait ressembler votre fichier Excel :</p>
 
-<div class="accordion mt-3" id="accordionExample">
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                Comment fonctionne l'importation des compteurs ?
-            </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                Cette page vous offre la possibilité d'insérer facilement et rapidement un grand nombre de relevés de compteurs à partir d'un fichier Excel converti en CSV.
+                    <img class="img-fluid" src="/src/img/exemple_csv.JPG" alt="Image Excel CSV">
 
-                <div class="mt-3"></div>
-
-                Il vous suffit simplement de saisir les informations suivantes dans votre fichier Excel, dans l'ordre suivant :
-                <ul class="mt-3 mb-5">
-                    <li>Le numéro de série de la machine</li>
-                    <li>Sa date de relevé à ce format : JJ-MM-AAAA ou JJ/MM/AAAA</li>
-                    <li>Son 112 Total (mettez 0 si aucun)</li>
-                    <li>Son 113 Total (mettez 0 si aucun)</li>
-                    <li>Son 122 Total (mettez 0 si aucun)</li>
-                    <li>Son 123 Total (mettez 0 si aucun)</li>
-                    <li>Le type de relevé (MANUEL ou IWMC)</li>
-                </ul>
-                
-                <p>Voici un exemple de ce à quoi devrait ressembler votre fichier Excel :</p>
-                
-                <img class="img-fluid" src="/src/img/exemple_csv.JPG" alt="Image Excel CSV">
-
-                <p><b>Assurez-vous de retirer les en-têtes.</b></p>
-                <p>Puis, <b>exportez en CSV</b> (Cliquez sur l'onglet "Fichier" en haut à gauche puis "Exporter" et sélectionnez l'option CSV).</p>
+                    <p><b>Assurez-vous de retirer les en-têtes.</b></p>
+                    <p>Puis, <b>exportez en CSV</b> (Cliquez sur l'onglet "Fichier" en haut à gauche puis "Exporter" et sélectionnez l'option CSV).</p>
+                </div>
             </div>
         </div>
     </div>

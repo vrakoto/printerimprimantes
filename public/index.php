@@ -25,9 +25,12 @@ if (Driver::estConnecte()) {
     $router->request('/copieurs_perimetre', '/user/copieursPerimetre.php', 'add_machine_area', 'POST');
     $router->request('/machines_transfert', '/user/copieursTransfert.php', 'machines_transfert');
     $router->request('/copieurs-sans-releve-trimestre', '/user/copieurSansReleveTrimestre.php', 'list_machines_without_counter_3_months');
+    $router->request('/copieurs-sans-responsable', '/user/copieursSansResponsable.php', 'list_machines_without_owner');
     
     $router->request('/liste_compteurs', '/user/listeCompteurs.php', 'list_counters');
     $router->request('/compteurs_perimetre', '/user/compteursPerimetre.php', 'counters_area');
+    $router->request('/compteurs_perimetre', '/user/compteursPerimetre.php', 'add_counters', 'POST');
+    $router->request('/supprimer-releve/[*:num]/[i:year]-[i:month]-[i:day]', '/user/supprimerReleve.php', 'delete_counters');
 
     $router->request('/liste_pannes', '/user/listePannes.php', 'list_pannes');
     $router->request('/pannes_perimetre', '/user/pannesPerimetre.php', 'pannes_area');

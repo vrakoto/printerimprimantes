@@ -1,6 +1,7 @@
 <?php
 
 use App\Corsic;
+use App\Imprimante;
 use App\User;
 
 $title = "Copieurs du périmètre";
@@ -57,7 +58,7 @@ foreach ($params as $nom_input => $props) {
     if ($nom_input === 'order') {
         $params_query['order'] = $props['nom_db'];
         $params_query['ordertype'] = $ordertype;
-    } else {
+    } else if (!empty($props['value'])) {
         $params_query[$nom_input] = $props['value'];
     }
 }
@@ -76,12 +77,12 @@ if ($page <= 0) {
 $debut = ($page - 1) * $nb_results_par_page;
 
 try {
-    $lesResultats = User::copieursPerimetre2($params, [$debut, $nb_results_par_page]);
-    $lesResultatsSansPagination = User::copieursPerimetre2($params);
+    $perimetre = true;
+    $lesResultats = Imprimante::copieursPerimetre($params, [$debut, $nb_results_par_page]);
+    $lesResultatsSansPagination = Imprimante::copieursPerimetre($params);
     require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';
 } catch (\Throwable $th) {
-    $msg = "Lien incorrect";
-    require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . '404.php';
+    newException($th->getMessage());
 }
 
 ?>

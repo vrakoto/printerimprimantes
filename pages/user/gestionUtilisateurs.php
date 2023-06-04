@@ -35,6 +35,13 @@ $params = [
     'order' => ['nom_db' => $order, 'value' => 'ASC']
 ];
 
+$keysToRemove = ['order'];
+
+// Filtrer le tableau en retirant les clés spécifiées
+$modalVariables = array_filter($params, function ($key) use ($keysToRemove) {
+    return !in_array($key, $keysToRemove);
+}, ARRAY_FILTER_USE_KEY);
+
 
 // l'utilisateur a fait une recherche
 $params_query = [];
@@ -115,12 +122,6 @@ HTML;
         <a class="mx-1 btn btn-secondary" href="/<?= $url ?>"><i class="fa-solid fa-arrow-rotate-left"></i> Réinitialiser la recherche</a>
     </div>
 
-    <?php //if (User::getRole() == 2) : 
-    ?>
-    <button class="mt-5 btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_create_user">Créer un utilisateur</button>
-    <?php //endif 
-    ?>
-
     <?php if ($page <= $nb_pages) : ?>
         <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
             <div id="pagination">
@@ -136,7 +137,7 @@ HTML;
             <h3 class="mt-5">Nombre total d'utilisateurs : <?= $total ?></h3>
         </div>
 
-        <table id="table_imprimantes" class="table table-striped table-bordered personalTable triggerDT">
+        <table class="table table-striped table-bordered personalTable">
             <?= User::ChampsGestionUtilisateurs() ?>
             <tbody>
                 <?php foreach ($lesResultats as $data) :
@@ -184,38 +185,6 @@ HTML;
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Rechercher</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-
-<div class="modal fade" id="modal_create_user" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <form class="modal-content" method="post">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">Créer un utilisateur</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <?= addInformationForm("gpn", "Grade Prénom Nom", getValeurInput('gpn'), [5, 3]) ?>
-                <?= addInformationForm("courriel", "Courriel", getValeurInput('courriel'), [5, 3]) ?>
-                <?= addInformationForm("unite", "Unité", getValeurInput('unite'), [5, 3]) ?>
-
-                <div class="row mb-3">
-                    <label for="role" class="col-sm-5">Role</label>
-                    <select class="selectize col-sm-4" id="role" name="role">
-                        <option value="1">CORSIC</option>
-                        <option value="2">COORDSIC</option>
-                        <option value="3">CORRESPONDANT SOLIMP</option>
-                    </select>
-                </div>
-
-                <?= addInformationForm("mdp", "Mot de passe", getValeurInput('mdp'), [5, 3]) ?>
-                <?= addInformationForm("confirm_mdp", "Confirmez le mot de passe", getValeurInput('confirm_mdp'), [5, 3]) ?>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Créer</button>
             </div>
         </form>
     </div>

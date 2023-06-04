@@ -42,15 +42,11 @@ $(function () {
         }
     });
 
-    /* $.ajax({
-        type: "get",
-        url: "url",
-        data: "data",
-        dataType: "dataType",
-        success: function (response) {
-            
-        }
-    }); */
+    let dateInputs = document.querySelectorAll("input[type='date']");
+    dateInputs.forEach(function(input) {
+        let currentDate = new Date().toISOString().slice(0, 10);
+        input.value = currentDate;
+    });
 });
 
 function toggle_inputs_imprimante_details(e) {

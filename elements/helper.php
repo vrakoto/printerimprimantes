@@ -103,3 +103,15 @@ function getValeurInput($variable_input, string|array|int $defaultValue = ''): s
 {
     return isset($_GET[$variable_input]) ? htmlentities($_GET[$variable_input]) : $defaultValue;
 }
+
+function newException($msg = "Page introuvable"): void
+{
+    $msg = $msg;
+    require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR. '404.php';
+}
+
+function newFormError($msg = "Le formulaire est invalide"): void
+{
+    $msg = $msg;
+    require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR. 'erreurForm.php';
+}

@@ -50,6 +50,7 @@ use App\Driver;
                             <li><a class="dropdown-item" href="<?= $router->url('list_machines') ?>"><i class="fa-solid fa-list"></i> Liste des Copieurs</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('machines_area') ?>"><i class="fa-solid fa-location-dot"></i> Copieurs de mon périmètre</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_counter_3_months') ?>"><i class="fa-solid fa-user-slash"></i> Sans relevé ce Trimestre</a></li>
+                            <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_owner') ?>"><i class="fa-solid fa-user-slash"></i> Sans Responsable</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
