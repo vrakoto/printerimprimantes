@@ -7,10 +7,10 @@ $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     $headers = '';
-    foreach (Compteur::testChamps() as $nom_input => $props) {
+    foreach (Compteur::testChamps($perimetre) as $nom_input => $props) {
         $headers .= $props['libelle'] . ";";
     }
-    Compteur::downloadCSV($headers, 'liste_machines', $lesResultatsSansPagination);
+    Compteur::downloadCSV($headers, 'liste_compteurs', $lesResultatsSansPagination);
 }
 
 function addInformationForm($var, $titre, $value, array $size): string
@@ -27,24 +27,6 @@ function addInformationForm($var, $titre, $value, array $size): string
 HTML;
 }
 ?>
-
-<style>
-    thead th:hover {
-        background-color: orange;
-        cursor: pointer;
-    }
-
-    #pagination a {
-        color: black;
-        padding: 8px 16px;
-        transition: background-color .3s;
-        border: 1px solid #ddd;
-    }
-
-    #pagination a:hover {
-        background-color: #ddd;
-    }
-</style>
 
 <div class="p-4">
 
@@ -64,38 +46,16 @@ HTML;
         </div>
     <?php endif ?>
     
-    <div class="mt-2" id="header">
-        <h1><?= $title ?></h1>
-
-        <button class="btn btn-success" id="downloadCSV" title="Télécharger les données en CSV"><i class="fa-solid fa-download"></i> Télécharger les données</button>
-        <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-filter"></i> Trier / Rechercher</button>
-        <a class="mx-1 btn btn-secondary" href="/<?= $url ?>"><i class="fa-solid fa-arrow-rotate-left"></i> Réinitialiser la recherche</a>
-    </div>
+    <?php require_once 'header.php' ?>
 
     <?php if ($page <= $nb_pages) : ?>
-        <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
-            <div id="pagination">
-                <a class="<?= $page != 1 ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=1&<?= $fullURL ?>">1</a>
-                <a <?php if ($page <= 1) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page - 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-left"></i></a>
+        <?php require_once 'pagination.php' ?>
 
-                <button class="btn btn-secondary" style="cursor: unset;"><?= $page ?></button>
-
-                <a <?php if ($page >= $nb_pages) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page + 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-right"></i></a>
-                <a class="<?= $page != $nb_pages ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=<?= $nb_pages ?>&<?= $fullURL ?>"><?= $nb_pages ?></a>
-                
-                <?php if ($url === 'compteurs_perimetre'): ?>
-            <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_add_counter"><i class="fa-solid fa-plus"></i> Ajouter un compteur</button>
-        <?php endif ?>
-            </div>
-
-            <h3 class="mt-5">Nombre total de compteurs : <?= $total ?></h3>
-        </div>
-
-        <table id="table_imprimantes" class="table table-striped table-bordered personalTable triggerDT">
+        <table class="table table-striped table-bordered personalTable">
             <thead>
                 <tr>
                     <td class="actions">Actions</td>
-                    <?php foreach ($laTable as $nom_input => $props) : ?>
+                    <?php foreach (Compteur::testChamps($perimetre) as $nom_input => $props) : ?>
                         <th id="<?= $nom_input ?>"><?= $props['libelle'] ?></th>
                     <?php endforeach ?>
                 </tr>
@@ -110,7 +70,10 @@ HTML;
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="imprimante/<?= $num_serie ?>"><i class="fa-solid fa-eye"></i> Voir l'imprimante</a></li>
-                                    <li><a class="dropdown-item" href="supprimer-releve/<?= $num_serie ?>/<?= $date ?>" onclick="return confirm('Voulez-vous supprimer ce compteur ?');"><i class="fa-solid fa-trash"></i> Supprimer ce relevé</a></li>
+
+                                    <?php if ($url === 'compteurs_perimetre'): ?>
+                                        <li><a class="dropdown-item" href="supprimer-releve/<?= $num_serie ?>/<?= $date ?>" onclick="return confirm('Voulez-vous supprimer ce compteur ?');"><i class="fa-solid fa-trash"></i> Supprimer ce relevé</a></li>
+                                    <?php endif ?>
                                 </ul>
                             </div>
                         </td>
@@ -155,7 +118,7 @@ HTML;
                     </select>
                 </div>
 
-                <?php foreach ($params as $nom_input => $props) {
+                <?php foreach ($laTable as $nom_input => $props) {
                     if ($nom_input !== 'order') {
                         echo addInformationForm($nom_input, $laTable[$nom_input]['libelle'], getValeurInput($nom_input), [4, 3]);
                     }

@@ -5,7 +5,7 @@
     order: []
 }); */
 
-const selector = '#table_imprimantes tbody tr';
+/* const selector = '#table_imprimantes tbody tr';
 $.contextMenu({
     selector: selector,
     trigger: 'right',
@@ -34,4 +34,4 @@ $.contextMenu({
             $(this).css('background-color', '');
         }
     }
-});
+}); */

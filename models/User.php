@@ -353,6 +353,11 @@ HTML;
 HTML;
     }
 
+    static function setHistory()
+    {
+        debug($_SERVER['REQUEST_URI']);
+    }
+
     static function deconnexion(): void
     {
         unset($_SESSION['user']);

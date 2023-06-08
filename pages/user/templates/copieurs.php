@@ -9,8 +9,8 @@ $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     $champs = '';
-    foreach (Imprimante::testChamps() as $nom_input => $props) {
-        $champs .= $props['nom_db'] . ";";
+    foreach (Imprimante::testChamps($perimetre) as $nom_input => $props) {
+        $champs .= $props['libelle'] . ";";
     }
     Imprimante::downloadCSV($champs, 'liste_machines', $lesResultatsSansPagination);
 }
@@ -29,47 +29,10 @@ function addInformationForm($var, $titre, $value, array $size): string
 HTML;
 }
 
-function checkboxColonnes($var, $titre, $checked): string
-{
-    $checked = ($checked === true) ? "checked" : "";
-    return <<<HTML
-    <div class="row mb-3">
-        <div class="col-sm-1">
-            <input class="form-check-input" type="checkbox" id="checked_$var" name="checked_$var" $checked>
-        </div>
-        <label for="checked_$var" class="col-sm-4 label">$titre</label>
-    </div>
-HTML;
-}
-
 ?>
 
-<style>
-    thead th:hover {
-        background-color: orange;
-        cursor: pointer;
-    }
-
-    #pagination a {
-        color: black;
-        padding: 8px 16px;
-        transition: background-color .3s;
-        border: 1px solid #ddd;
-    }
-
-    #pagination a:hover {
-        background-color: #ddd;
-    }
-</style>
-
 <div class="p-4">
-    <div class="mt-2" id="header">
-        <h1><?= $title ?></h1>
-
-        <button class="btn btn-success" id="downloadCSV" title="Télécharger les données en CSV"><i class="fa-solid fa-download"></i> Télécharger les données</button>
-        <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-filter"></i> Trier / Rechercher</button>
-        <a class="mx-1 btn btn-secondary" href="/<?= $url ?>"><i class="fa-solid fa-arrow-rotate-left"></i> Réinitialiser la recherche</a>
-    </div>
+    <?php require_once 'header.php' ?>
 
     <?php if ($url === 'copieurs_perimetre' && User::getRole() !== 2) : ?>
         <div class="mt-5">
@@ -81,21 +44,9 @@ HTML;
     <?php endif ?>
 
     <?php if ($atLeastOneResult) : ?>
-        <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
-            <div id="pagination">
-                <a class="<?= $page != 1 ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=1&<?= $fullURL ?>">1</a>
-                <a <?php if ($page <= 1) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page - 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-left"></i></a>
+        <?php require_once 'pagination.php' ?>
 
-                <button class="btn btn-secondary" style="cursor: unset;"><?= $page ?></button>
-
-                <a <?php if ($page >= $nb_pages) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page + 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-right"></i></a>
-                <a class="<?= $page != $nb_pages ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=<?= $nb_pages ?>&<?= $fullURL ?>"><?= $nb_pages ?></a>
-            </div>
-
-            <h3 class="mt-5">Nombre total de copieurs : <?= $total ?></h3>
-        </div>
-
-        <table id="table_imprimantes" class="table table-striped table-bordered personalTable triggerDT">
+        <table id="table_imprimantes" class="table table-striped table-bordered personalTable">
             <thead>
                 <tr>
                     <td class="actions">Actions</td>
@@ -122,7 +73,7 @@ HTML;
                             </div>
                         </td>
                         <?php foreach ($data as $nom_input => $value): ?>
-                            <?php if (isset(Imprimante::testChamps()[$nom_input])): ?>
+                            <?php if (isset(Imprimante::testChamps($perimetre)[$nom_input])): ?>
                                 <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
                             <?php endif ?>
                         <?php endforeach ?>
@@ -165,13 +116,13 @@ HTML;
                         <select class="selectize col-sm-4" name="statut_projet" id="statut_projet">
                             <option value="%">0 - N'importe</option>
                             <?php foreach (Imprimante::getLesStatuts() as $s) : $s = htmlentities($s['STATUT PROJET']); ?>
-                                <option value="<?= $s ?>" <?php if ($searching_statut === $s) : ?>selected<?php endif ?>><?= $s ?></option>
+                                <option value="<?= $s ?>" <?php if (getValeurInput('statut_projet') === $s) : ?>selected<?php endif ?>><?= $s ?></option>
                             <?php endforeach ?>
                         </select>
                     </div>
                 <?php endif ?>
 
-                <?php foreach ($params as $nom_input => $props) {
+                <?php foreach ($laTable as $nom_input => $props) {
                     if ($nom_input !== 'statut_projet' && $nom_input !== 'order') { // statut_projet doit être personnalisé pour les select
                         echo addInformationForm($nom_input, Imprimante::testChamps($perimetre)[$nom_input]['libelle'], getValeurInput($nom_input), [4, 3]);
                     }

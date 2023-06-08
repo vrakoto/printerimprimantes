@@ -7,6 +7,8 @@ use App\User;
 $title = "Copieurs du périmètre";
 $jsfile = 'listeCopieurs';
 $url = 'copieurs_perimetre';
+$perimetre = true;
+$laTable = Imprimante::testChamps($perimetre);
 
 if (isset($_POST['add_num_serie'])) {
     $num_serie_to_add = htmlentities($_POST['add_num_serie']);
@@ -35,34 +37,26 @@ if (isset($_POST['remove_num_serie'])) {
 $order = getValeurInput('order', 'num_serie');
 $ordertype = getValeurInput('ordertype', 'ASC');
 
-$searching_num_serie = getValeurInput('num_serie');
-$searching_bdd = getValeurInput('bdd');
-$searching_modele = getValeurInput('modele');
-$searching_statut = getValeurInput('statut_projet');
-$searching_site_installation = getValeurInput('site_installation');
-$searching_num_ordo = getValeurInput('num_ordo');
-
-$params = [
-    'num_serie' => ['nom_db' => "N° de Série", 'value' => $searching_num_serie, 'valuePosition' => $searching_num_serie . '%'],
-    'modele' => ['nom_db' => "Modele demandé", 'value' => $searching_modele, 'valuePosition' => $searching_modele . '%'],
-    'statut_projet' => ['nom_db' => "STATUT PROJET", 'value' => $searching_statut, 'valuePosition' => $searching_statut . '%'],
-    'site_installation' => ['nom_db' => "Site d'installation", 'value' => $searching_site_installation, 'valuePosition' => '%' . $searching_site_installation . '%'],
-    'num_ordo' => ['nom_db' => "N° ORDO", 'value' => $searching_num_ordo, 'valuePosition' => $searching_num_ordo . '%'],
-    'order' => ['nom_db' => $order, 'value' => $ordertype]
-];
-
+foreach ($laTable as $key => $value) {
+    $laTable[$key] = array_merge($value, [
+        'value' => getValeurInput($value['nom_input']),
+        'valuePosition' => getValeurInput($value['nom_input']) . '%'
+    ]);
+}
+$laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
 
 // l'utilisateur a fait une recherche
-$params_query = [];
-foreach ($params as $nom_input => $props) {
+$laTable_query = [];
+foreach ($laTable as $nom_input => $props) {
     if ($nom_input === 'order') {
-        $params_query['order'] = $props['nom_db'];
-        $params_query['ordertype'] = $ordertype;
+        $laTable_query['order'] = $props['nom_db'];
+        $laTable_query['ordertype'] = $ordertype;
     } else if (!empty($props['value'])) {
-        $params_query[$nom_input] = $props['value'];
+        $laTable_query[$nom_input] = $props['value'];
     }
 }
-$fullURL = http_build_query($params_query);
+$fullURL = http_build_query($laTable_query);
+
 
 $nb_results_par_page = 10;
 $page = 1;
@@ -77,7 +71,6 @@ if ($page <= 0) {
 $debut = ($page - 1) * $nb_results_par_page;
 
 try {
-    $perimetre = true;
     $lesResultats = Imprimante::copieursPerimetre($params, [$debut, $nb_results_par_page]);
     $lesResultatsSansPagination = Imprimante::copieursPerimetre($params);
     require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';

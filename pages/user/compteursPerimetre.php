@@ -5,39 +5,56 @@ use App\User;
 
 $title = "Compteurs du périmètre";
 $url = 'compteurs_perimetre';
+$perimetre = true;
+$laTable = Compteur::testChamps($perimetre);
 
-$order = getValeurInput('order', 'date_maj');
-$ordertype = getValeurInput('ordertype', 'DESC');
+$order = getValeurInput('order', 'num_serie');
+$ordertype = getValeurInput('ordertype', 'ASC');
 
-$searching_num_serie = getValeurInput('num_serie');
-$searching_date = getValeurInput('date');
-$searching_101 = getValeurInput('total_101');
-$searching_112 = getValeurInput('total_112');
-$searching_113 = getValeurInput('total_113');
-$searching_122 = getValeurInput('total_122');
-$searching_123 = getValeurInput('total_123');
-$searching_modif_par = getValeurInput('modif_par');
-$searching_date_maj = getValeurInput('date_maj');
-$searching_type_releve = getValeurInput('type_releve');
+foreach ($laTable as $key => $value) {
+    $nom_input = $value['nom_input'];
+    $valuePosition = getValeurInput($value['nom_input']) . '%';
 
-$params = [
-    'num_serie' => ['nom_db' => "Numéro_série", 'value' => $searching_num_serie, 'valuePosition' => $searching_num_serie . '%'],
-    'date' => ['nom_db' => "Date", 'value' => $searching_date, 'valuePosition' => $searching_date],
-    'total_101' => ['nom_db' => "101_Total_1", 'value' => $searching_101, 'valuePosition' => $searching_101],
-    'total_112' => ['nom_db' => "112_Total", 'value' => $searching_112, 'valuePosition' => $searching_112],
-    'total_113' => ['nom_db' => "113_Total", 'value' => $searching_113, 'valuePosition' => $searching_113],
-    'total_122' => ['nom_db' => "122_Total", 'value' => $searching_122, 'valuePosition' => $searching_122],
-    'total_123' => ['nom_db' => "123_Total", 'value' => $searching_123, 'valuePosition' => $searching_123],
-    'modif_par' => ['nom_db' => "grade-prenom-nom", 'value' => $searching_modif_par, 'valuePosition' => '%' . $searching_modif_par . '%'],
-    'date_maj' => ['nom_db' => "date_maj", 'value' => $searching_date_maj, 'valuePosition' => $searching_date_maj],
-    'type_releve' => ['nom_db' => "type_relevé", 'value' => $searching_type_releve, 'valuePosition' => $searching_type_releve . '%'],
-    'order' => ['nom_db' => $order, 'value' => $ordertype]
-];
+    // Ajouter des valeurs spécifiques pour chaque clé
+    switch ($nom_input) {
+        case 'date':
+            $valuePosition = getValeurInput('date');
+        break;
+        case 'total_101':
+            $valuePosition = getValeurInput('total_101');
+        break;
+        case 'total_112':
+            $valuePosition = getValeurInput('total_112');
+        break;
+        case 'total_113':
+            $valuePosition = getValeurInput('total_113');
+        break;
+        case 'total_122':
+            $valuePosition = getValeurInput('total_122');
+        break;
+        case 'total_123':
+            $valuePosition = getValeurInput('total_123');
+        break;
+        case 'modif_par':
+            $valuePosition = '%' .getValeurInput('modif_par') . '%';
+        break;
+        case 'date_maj':
+            $valuePosition = getValeurInput('date_maj');
+        break;
+    }
+
+    $laTable[$key] = array_merge($value, [
+        'value' => getValeurInput($nom_input),
+        'valuePosition' => $valuePosition
+    ]);
+}
+
+$laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
 
 $keysToRemove = ['num_serie', 'date', 'total_101', 'modif_par', 'date_maj', 'order'];
 
 // Filtrer le tableau en retirant les clés spécifiées
-$modalVariables = array_filter($params, function ($key) use ($keysToRemove) {
+$modalVariables = array_filter($laTable, function ($key) use ($keysToRemove) {
     return !in_array($key, $keysToRemove);
 }, ARRAY_FILTER_USE_KEY);
 
@@ -64,18 +81,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
 // l'utilisateur a fait une recherche
-$params_query = [];
-foreach ($params as $nom_input => $props) {
+$laTable_query = [];
+foreach ($laTable as $nom_input => $props) {
     if ($nom_input === 'order') {
-        $params_query['order'] = $props['nom_db'];
-        $params_query['ordertype'] = $ordertype;
+        $laTable_query['order'] = $props['nom_db'];
+        $laTable_query['ordertype'] = $ordertype;
     } else if (!empty($props['value'])) {
-        $params_query[$nom_input] = $props['value'];
+        $laTable_query[$nom_input] = $props['value'];
     }
 }
-$fullURL = http_build_query($params_query);
+$fullURL = http_build_query($laTable_query);
 
 $nb_results_par_page = 10;
 $page = 1;
@@ -90,10 +106,8 @@ if ($page <= 0) {
 $debut = ($page - 1) * $nb_results_par_page;
 
 try {
-    $perimetre = true;
-    $lesResultats = Compteur::getLesReleves($params, $perimetre, [$debut, $nb_results_par_page]);
-    $lesResultatsSansPagination = Compteur::getLesReleves($params, $perimetre);
-    $laTable = Compteur::testChamps($perimetre);
+    $lesResultats = Compteur::getLesReleves($laTable, $perimetre, [$debut, $nb_results_par_page]);
+    $lesResultatsSansPagination = Compteur::getLesReleves($laTable, $perimetre);
     require_once 'templates' . DIRECTORY_SEPARATOR . 'compteurs.php';
 } catch (\Throwable $th) {
     newException($th->getMessage());

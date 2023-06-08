@@ -29,24 +29,6 @@ HTML;
 }
 ?>
 
-<style>
-    thead th:hover {
-        background-color: orange;
-        cursor: pointer;
-    }
-
-    #pagination a {
-        color: black;
-        padding: 8px 16px;
-        transition: background-color .3s;
-        border: 1px solid #ddd;
-    }
-
-    #pagination a:hover {
-        background-color: #ddd;
-    }
-</style>
-
 <div class="p-4">
     <div class="mt-2" id="header">
         <h1><?= $title ?></h1>

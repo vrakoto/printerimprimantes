@@ -5,19 +5,7 @@ use App\User;
 
 $num = htmlentities($params['num']);
 
-if (isset($_POST['csv'])) {
-    $compteurs = Compteur::searchCompteurByNumSerie($num);
-    $filename = $num . "_compteurs";
-    $champs = '';
-    foreach (colonnes(Compteur::ChampsCompteur()) as $id => $nom) {
-        $champs .= $nom . ";";
-    }
-    Compteur::downloadCSV($champs, $filename, $compteurs);
-    exit();
-}
-
 $imprimante = Imprimante::getImprimante($num);
-$releves = Compteur::searchCompteurByNumSerie($num);
 $responsabilites = Imprimante::getSesResponsables($num);
 
 $isEligible = (User::getRole() === 2 || User::getRole() === 4);

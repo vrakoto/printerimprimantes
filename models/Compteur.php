@@ -45,20 +45,20 @@ HTML;
     }
 
 
-    static function testChamps($perimetre = false): array
+    static function testChamps($perimetre): array
     {
         $headers = [
-            "num_serie" => ['nom_db' => "Numéro_série", "libelle" => "N° de série"],
-            "bdd" => ['nom_db' => "BDD", "libelle" => "BDD", "anti_ambiguous" => 'c'],
-            "date" => ['nom_db' => "Date", "libelle" => "Date de relevé"],
-            "total_101" => ['nom_db' => "101_Total_1", "libelle" => "101 Total"],
-            "total_112" => ['nom_db' => "112_Total", "libelle" => "112 Total"],
-            "total_113" => ['nom_db' => "123_Total", "libelle" => "113 Total"],
-            "total_122" => ['nom_db' => "122_Total", "libelle" => "122 Total"],
-            "total_123" => ['nom_db' => "123_Total", "libelle" => "123 Total"],
-            "modif_par" => ['nom_db' => "grade-prenom-nom", "libelle" => "Ajouté/Modifié par"],
-            "date_maj" => ['nom_db' => "date_maj", "libelle" => "Mise à jour le"],
-            "type_releve" => ['nom_db' => "type_relevé", "libelle" => "Type de relevé"]
+            "num_serie" => ['nom_input' => "num_serie", 'nom_db' => "Numéro_série", "libelle" => "N° de série"],
+            "bdd" => ['nom_input' => "bdd", 'nom_db' => "BDD", "libelle" => "BDD", "anti_ambiguous" => 'c'],
+            "date" => ['nom_input' => "date", 'nom_db' => "Date", "libelle" => "Date de relevé"],
+            "total_101" => ['nom_input' => "total_101", 'nom_db' => "101_Total_1", "libelle" => "101 Total"],
+            "total_112" => ['nom_input' => "total_112", 'nom_db' => "112_Total", "libelle" => "112 Total"],
+            "total_113" => ['nom_input' => "total_113", 'nom_db' => "123_Total", "libelle" => "113 Total"],
+            "total_122" => ['nom_input' => "total_122", 'nom_db' => "122_Total", "libelle" => "122 Total"],
+            "total_123" => ['nom_input' => "total_123", 'nom_db' => "123_Total", "libelle" => "123 Total"],
+            "modif_par" => ['nom_input' => "modif_par", 'nom_db' => "grade-prenom-nom", "libelle" => "Ajouté/Modifié par"],
+            "date_maj" => ['nom_input' => "date_maj", 'nom_db' => "date_maj", "libelle" => "Mise à jour le"],
+            "type_releve" => ['nom_input' => "type_releve", 'nom_db' => "type_relevé", "libelle" => "Type de relevé"]
         ];
 
         if ($perimetre) {
