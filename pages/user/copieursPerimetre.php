@@ -5,10 +5,13 @@ use App\Imprimante;
 use App\User;
 
 $title = "Copieurs du périmètre";
-$jsfile = 'listeCopieurs';
 $url = 'copieurs_perimetre';
 $perimetre = true;
-$laTable = Imprimante::testChamps($perimetre);
+$showColumns = 'few';
+if (isset($_GET['showColumns'])) {
+    $showColumns = htmlentities($_GET['showColumns']);
+}
+$laTable = Imprimante::ChampsCopieur($perimetre, $showColumns);
 
 if (isset($_POST['add_num_serie'])) {
     $num_serie_to_add = htmlentities($_POST['add_num_serie']);
@@ -44,6 +47,7 @@ foreach ($laTable as $key => $value) {
     ]);
 }
 $laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
+$laTable['showColumns'] = ['value' => $showColumns];
 
 // l'utilisateur a fait une recherche
 $laTable_query = [];
@@ -55,6 +59,7 @@ foreach ($laTable as $nom_input => $props) {
         $laTable_query[$nom_input] = $props['value'];
     }
 }
+unset($laTable_query['showColumns']);
 $fullURL = http_build_query($laTable_query);
 
 
@@ -71,8 +76,8 @@ if ($page <= 0) {
 $debut = ($page - 1) * $nb_results_par_page;
 
 try {
-    $lesResultats = Imprimante::copieursPerimetre($params, [$debut, $nb_results_par_page]);
-    $lesResultatsSansPagination = Imprimante::copieursPerimetre($params);
+    $lesResultats = Imprimante::copieursPerimetre($laTable, [$debut, $nb_results_par_page]);
+    $lesResultatsSansPagination = Imprimante::copieursPerimetre($laTable);
     require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';
 } catch (\Throwable $th) {
     newException($th->getMessage());

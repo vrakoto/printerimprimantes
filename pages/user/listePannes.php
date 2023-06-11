@@ -3,8 +3,6 @@
 use App\Panne;
 
 $title = "Liste des Pannes";
-$cssfile = 'listePannes';
-$jsfile = 'listePannes';
 
 $order = getValeurInput('order', 'ouverture');
 

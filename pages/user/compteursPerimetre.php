@@ -8,8 +8,8 @@ $url = 'compteurs_perimetre';
 $perimetre = true;
 $laTable = Compteur::testChamps($perimetre);
 
-$order = getValeurInput('order', 'num_serie');
-$ordertype = getValeurInput('ordertype', 'ASC');
+$order = getValeurInput('order', 'date_maj');
+$ordertype = getValeurInput('ordertype', 'DESC');
 
 foreach ($laTable as $key => $value) {
     $nom_input = $value['nom_input'];
@@ -61,7 +61,7 @@ $modalVariables = array_filter($laTable, function ($key) use ($keysToRemove) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post_variables = [];
-    foreach ($params as $nom_input => $props) {
+    foreach ($laTable as $nom_input => $props) {
         if (isset($_POST[$nom_input])) {
             $post_variables[$nom_input] = htmlentities($_POST[$nom_input]);
         }
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     } catch (\Throwable $th) {
         if ($th->getCode() === "23000") {
-            $msg = "Un relevé a déjà été effectué pour la machine " . $post_variables['num_serie'] . " à la date du " . convertDate($post_variables['date']);
+            $msg = "Un relevé a déjà été effectué pour la machine " . $post_variables['num_serie'] . " à la date du " . convertDate($post_variables['date']) . '<br> Veuillez supprimer son compteur déjà existant.';
         } else {
             $msg = "Une erreur interne a été rencontrée";
         }
@@ -128,7 +128,7 @@ try {
                     <label for="num_serie" class="col-sm-4 label">N° de Série</label>
                     <div class="col-sm-3">
                         <select class="selectize w-100" name="num_serie" id="num_serie">
-                            <?php foreach (User::getLesNumerosMonPerimetre() as $numero) : debug($numero);
+                            <?php foreach (User::getLesNumerosMonPerimetre() as $numero):
                                 $num = htmlentities($numero['num_serie']) ?>
                                 <option value="<?= $num ?>"><?= $num ?></option>
                             <?php endforeach ?>

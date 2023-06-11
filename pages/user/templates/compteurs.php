@@ -30,22 +30,22 @@ HTML;
 
 <div class="p-4">
 
-    <?php if (isset($_GET['d'])): ?>
+    <?php if (isset($_GET['d'])) : ?>
         <div class="alert alert-success text-center">
             Le compteur a bien été supprimé.
         </div>
     <?php endif ?>
-    <?php if (isset($_GET['a'])): ?>
+    <?php if (isset($_GET['a'])) : ?>
         <div class="alert alert-success text-center">
             Le compteur a bien été ajouté.
         </div>
     <?php endif ?>
-    <?php if (isset($_GET['e'])): ?>
+    <?php if (isset($_GET['e'])) : ?>
         <div class="alert alert-danger text-center">
             Un problème technique a été rencontré.
         </div>
     <?php endif ?>
-    
+
     <?php require_once 'header.php' ?>
 
     <?php if ($page <= $nb_pages) : ?>
@@ -61,7 +61,8 @@ HTML;
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($lesResultats as $data): $num_serie = htmlentities($data['num_serie']); $date = htmlentities($data['date']); ?>
+                <?php foreach ($lesResultats as $data) : $num_serie = htmlentities($data['num_serie']);
+                    $date = htmlentities($data['date']); ?>
                     <tr>
                         <td>
                             <div class="dropdown">
@@ -71,13 +72,13 @@ HTML;
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="imprimante/<?= $num_serie ?>"><i class="fa-solid fa-eye"></i> Voir l'imprimante</a></li>
 
-                                    <?php if ($url === 'compteurs_perimetre'): ?>
+                                    <?php if ($url === 'compteurs_perimetre') : ?>
                                         <li><a class="dropdown-item" href="supprimer-releve/<?= $num_serie ?>/<?= $date ?>" onclick="return confirm('Voulez-vous supprimer ce compteur ?');"><i class="fa-solid fa-trash"></i> Supprimer ce relevé</a></li>
                                     <?php endif ?>
                                 </ul>
                             </div>
                         </td>
-                        <?php foreach ($data as $nom_input => $value):
+                        <?php foreach ($data as $nom_input => $value) :
                             if ($nom_input === 'date') {
                                 $value = convertDate($value);
                             } else if ($nom_input === 'date_maj') {

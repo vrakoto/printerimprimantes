@@ -13,20 +13,6 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     }
     Imprimante::downloadCSV($champs, 'liste_pannes', $lesResultatsSansPagination);
 }
-
-function addInformationForm($var, $titre, $value, array $size): string
-{
-    $labelSize = $size[0];
-    $inputSize = $size[1];
-    return <<<HTML
-    <div class="row mb-3">
-        <label for="$var" class="col-sm-$labelSize label">$titre :</label>
-        <div class="col-sm-$inputSize">
-            <input type="text" id="$var" name="$var" class="form-control" value="$value">
-        </div>
-    </div>
-HTML;
-}
 ?>
 
 <div class="p-4">
@@ -103,22 +89,25 @@ HTML;
             </div>
             <div class="modal-body">
 
-                <?php if (isset($params['order'])) : ?>
-                    <div class="row mb-3">
-                        <label for="order" class="col-sm-4">Trier par</label>
-                        <select class="selectize col-sm-4" id="order" name="order">
-                            <?php foreach (colonnes(Imprimante::ChampsCopieur()) as $key => $s) : ?>
-                                <option value="<?= $key ?>" <?php if ($order === $key) : ?>selected<?php endif ?>><?= $s ?></option>
-                            <?php endforeach ?>
-                        </select>
-                    </div>
-                <?php endif ?>
+                <div class="row mb-3">
+                    <label for="order" class="col-sm-4">Trier par</label>
+                    <select class="selectize col-sm-4" id="order" name="order">
+                        <?php foreach (Imprimante::ChampsCopieur($perimetre) as $key => $s) : ?>
+                            <option value="<?= $key ?>" <?php if ($order === $key) : ?>selected<?php endif ?>><?= $s['libelle'] ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
 
-                <?php foreach ($params as $nom_input => $props) {
-                    if ($nom_input !== 'statut_projet' && $nom_input !== 'order') { // statut_projet doit être personnalisé pour les select
-                        echo addInformationForm($nom_input, $props['nom_db'], getValeurInput($nom_input), [4, 3]);
-                    }
-                } ?>
+                <?php foreach ($laTable as $nom_input => $props) : ?>
+                    <?php if ($nom_input !== 'order') :  ?>
+                        <div class="row mb-3">
+                            <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
+                            <div class="col-sm-3">
+                                <input type="text" id="<?= $nom_input ?>" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
+                            </div>
+                        </div>
+                    <?php endif ?>
+                <?php endforeach ?>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Rechercher</button>

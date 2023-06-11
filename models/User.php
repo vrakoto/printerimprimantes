@@ -340,17 +340,14 @@ HTML;
         return $p->fetchAll();
     }
 
-    static function ChampsGestionUtilisateurs(): string
+    static function ChampsGestionUtilisateurs(): array
     {
-        return <<<HTML
-        <thead>
-            <tr>
-                <th id="gpn">Grade Prénom Nom</th>
-                <th id="courriel">Courriel</th>
-                <th id="role">Role</th>
-            </tr>
-        </thead>
-HTML;
+        $headers = [
+            "gpn" => ['nom_input' => "gpn", 'nom_db' => "grade-prenom-nom", 'libelle' => "Grade Prénom Nom"],
+            "courriel" => ['nom_input' => "courriel", 'nom_db' => "Courriel", 'libelle' => "Courriel"],
+            "role" => ['nom_input' => "role", 'nom_db' => "rôle", 'libelle' => "Role"]
+        ];
+        return $headers;
     }
 
     static function setHistory()

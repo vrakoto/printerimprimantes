@@ -52,13 +52,20 @@ thead th {
 
 table {
     overflow: scroll;
+    text-align: center;
+    border: 1px #000 !important;
+    width: 100% !important;
 }
 
-
-thead th:hover {
-    background-color: orange;
-    cursor: pointer;
+table thead th {
+    text-align: center !important;
 }
+
+table thead tr {
+    background-color: rgb(25, 123, 25);
+    color: #FFF;
+}
+
 
 #pagination a {
     color: black;

@@ -11,20 +11,6 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     }
     UsersCopieurs::downloadCSV($champs, 'liste_responsables', $lesResultatsSansPagination);
 }
-
-function addInformationForm($var, $titre, $value, array $size): string
-{
-    $labelSize = $size[0];
-    $inputSize = $size[1];
-    return <<<HTML
-    <div class="row mb-3">
-        <label for="$var" class="col-sm-$labelSize label">$titre :</label>
-        <div class="col-sm-$inputSize">
-            <input type="text" id="$var" name="$var" class="form-control" value="$value">
-        </div>
-    </div>
-HTML;
-}
 ?>
 
 <div class="p-4">
@@ -75,13 +61,21 @@ HTML;
                             <option value="<?= $key ?>" <?php if ($order === $key) : ?>selected<?php endif ?>><?= $s['libelle'] ?></option>
                         <?php endforeach ?>
                     </select>
+                    <select class="selectize col-sm-4" id="ordertype" name="ordertype">
+                        <option value="ASC" <?php if ($ordertype === 'ASC') : ?>selected<?php endif ?>>Croissant</option>
+                        <option value="DESC" <?php if ($ordertype === 'DESC') : ?>selected<?php endif ?>>Décroissant</option>
+                    </select>
                 </div>
 
-                <?php foreach ($params as $nom_input => $props) {
-                    if ($nom_input !== 'order') {
-                        echo addInformationForm($nom_input, UsersCopieurs::testChamps()[$nom_input]['libelle'], getValeurInput($nom_input), [4, 3]);
-                    }
-                } ?>
+                <?php foreach (UsersCopieurs::testChamps() as $nom_input => $props) : ?>
+                    <div class="row mb-3">
+                        <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
+                        <div class="col-sm-3">
+                            <input type="text" id="<?= $nom_input ?>" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
+                        </div>
+                    </div>
+                <?php endforeach ?>
+
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Rechercher</button>

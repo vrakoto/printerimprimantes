@@ -7,26 +7,27 @@ $url = 'liste_compteurs';
 $perimetre = false;
 $laTable = Compteur::testChamps($perimetre);
 
-$order = getValeurInput('order', 'num_serie');
-$ordertype = getValeurInput('ordertype', 'ASC');
+$order = getValeurInput('order', 'date_maj');
+$ordertype = getValeurInput('ordertype', 'DESC');
 
 foreach ($laTable as $key => $value) {
+    $nom_input = $value['nom_input'];
+    $valuePosition = getValeurInput($value['nom_input']);
+
+    // Ajouter des valeurs spécifiques pour chaque clé
+    switch ($nom_input) {
+        case 'modif_par':
+            $valuePosition = '%' . getValeurInput('modif_par') . '%';
+        break;
+    }
+
     $laTable[$key] = array_merge($value, [
-        'value' => getValeurInput($value['nom_input']),
-        'valuePosition' => getValeurInput($value['nom_input']) . '%'
+        'value' => getValeurInput($nom_input),
+        'valuePosition' => $valuePosition
     ]);
 }
-$laTable['bdd'] = ['valuePosition' => getValeurInput('bdd'), 'anti_ambiguous' => 'c'];
-$laTable['date'] = ['valuePosition' => getValeurInput('date')];
-$laTable['total_101'] = ['valuePosition' => getValeurInput('total_101')];
-$laTable['total_112'] = ['valuePosition' => getValeurInput('total_112')];
-$laTable['total_113'] = ['valuePosition' => getValeurInput('total_113')];
-$laTable['total_122'] = ['valuePosition' => getValeurInput('total_122')];
-$laTable['total_123'] = ['valuePosition' => getValeurInput('total_123')];
-$laTable['modif_par'] = ['valuePosition' => '%' .getValeurInput('modif_par') . '%'];
-$laTable['date_maj'] = ['valuePosition' => getValeurInput('date_maj')];
-$laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
 
+$laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
 
 // l'utilisateur a fait une recherche
 $laTable_query = [];
@@ -53,9 +54,8 @@ if ($page <= 0) {
 $debut = ($page - 1) * $nb_results_par_page;
 
 try {
-    $lesResultats = Compteur::getLesReleves($params, $perimetre, [$debut, $nb_results_par_page]);
-    $lesResultatsSansPagination = Compteur::getLesReleves($params, $perimetre);
-    $laTable = Compteur::testChamps($perimetre);
+    $lesResultats = Compteur::getLesReleves($laTable, $perimetre, [$debut, $nb_results_par_page]);
+    $lesResultatsSansPagination = Compteur::getLesReleves($laTable, $perimetre);
     require_once 'templates' . DIRECTORY_SEPARATOR . 'compteurs.php';
 } catch (\Throwable $th) {
     newException($th->getMessage());

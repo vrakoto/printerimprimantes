@@ -1,8 +1,6 @@
 <?php
 use App\User;
 
-debug($params);
-
 $date = $params['year'] . '-' . $params['month'] . '-' . $params['day'];
 try {
     User::supprimerReleve($params['num'], $date);

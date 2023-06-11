@@ -1,32 +1,43 @@
 <?php
-
 use App\UsersCopieurs;
 
 $title = "Responsables du Périmètre";
 $url = 'responsables-perimetre';
+$laTable = UsersCopieurs::testChamps();
 
 $order = getValeurInput('order', 'gpn');
+$ordertype = getValeurInput('ordertype', 'ASC');
 
-$searching_gpn = getValeurInput('gpn');
-$searching_num_serie = getValeurInput('num_serie');
+foreach ($laTable as $key => $value) {
+    $nom_input = $value['nom_input'];
+    $valuePosition = getValeurInput($nom_input) . '%';
 
-$params = [
-    'gpn' => ['nom_db' => "grade-prenom-nom", 'value' => $searching_gpn, 'valuePosition' => '%' . $searching_gpn . '%'],
-    'num_serie' => ['nom_db' => "numéro_série", 'value' => $searching_num_serie, 'valuePosition' => $searching_num_serie . '%'],
-    'order' => ['nom_db' => $order, 'value' => 'ASC']
-];
+    switch ($nom_input) {
+        case 'gpn':
+            $valuePosition = '%' . getValeurInput('gpn') . '%';
+        break;
+    }
 
+    $laTable[$key] = array_merge($value, [
+        'value' => getValeurInput($nom_input),
+        'valuePosition' => $valuePosition
+    ]);
+}
+
+$laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
 
 // l'utilisateur a fait une recherche
-$params_query = [];
-foreach ($params as $nom_input => $props) {
+$laTable_query = [];
+foreach ($laTable as $nom_input => $props) {
     if ($nom_input === 'order') {
-        $params_query['order'] = $props['nom_db'];
-    } else {
-        $params_query[$nom_input] = $props['value'];
+        $laTable_query['order'] = $props['nom_db'];
+        $laTable_query['ordertype'] = $ordertype;
+    } else if (!empty($props['value'])) {
+        $laTable_query[$nom_input] = $props['value'];
     }
 }
-$fullURL = http_build_query($params_query);
+$fullURL = http_build_query($laTable_query);
+
 
 $nb_results_par_page = 10;
 $page = 1;
@@ -40,7 +51,7 @@ if ($page <= 0) {
 
 $debut = ($page - 1) * $nb_results_par_page;
 
-$lesResultats = UsersCopieurs::getResponsables($params, true, [$debut, $nb_results_par_page]);
-$lesResultatsSansPagination = UsersCopieurs::getResponsables($params, true);
+$lesResultats = UsersCopieurs::getResponsables($laTable, true, [$debut, $nb_results_par_page]);
+$lesResultatsSansPagination = UsersCopieurs::getResponsables($laTable, true);
 
 require_once 'templates' . DIRECTORY_SEPARATOR . 'responsables.php';

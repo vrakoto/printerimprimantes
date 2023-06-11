@@ -5,7 +5,7 @@ use App\Imprimante;
 $title = "Liste des copieurs sans responsable";
 $url = 'copieurs-sans-responsable'; // url actuel de la vue
 $perimetre = true;
-$laTable = Imprimante::testChamps($perimetre);
+$laTable = Imprimante::ChampsCopieur($perimetre);
 
 $order = getValeurInput('order', 'num_serie');
 $ordertype = getValeurInput('ordertype', 'ASC');

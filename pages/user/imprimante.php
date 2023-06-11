@@ -27,11 +27,11 @@ if (!empty($_POST)) {
     $localisation = htmlentities($_POST['localisation']);
     $accessoires = htmlentities($_POST['accessoires']);
 
-    try {
+    /* try {
         Imprimante::editImprimante($num, $oracle, $config, $modele, $hostname, $reseau, $mac, $entite_beneficiaire, $credo_unite, $cp, $dep, $adresse, $site_installation, $localisation, $accessoires);
     } catch (\Throwable $th) {
         die('Erreur interne' . $th->getMessage());
-    }
+    } */
 }
 
 function addInformationForm($allowEdit, $var, $titre, $value, $type = 'text'): string
@@ -49,7 +49,6 @@ function addInformationForm($allowEdit, $var, $titre, $value, $type = 'text'): s
 HTML;
 }
 
-$jsfile = 'imprimante';
 ?>
 
 <div class="mt-5"></div>

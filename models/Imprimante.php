@@ -28,39 +28,7 @@ class Imprimante extends Driver {
         return self::$$champ;
     }
 
-    static function ChampsCopieur(): string
-    {
-        return <<<HTML
-        <thead>
-            <tr>
-                <td id="actions">Actions</td>
-                <th id="num_ordo">N° ORDO</th>
-                <th id="date_cde_minarm">DATE CDE MINARM</th>
-                <th id="statut">Statut Projet</th>
-                <th id="num_sfdc">N° OPP SFDC</th>
-                <th id="num_oracle">N° Oracle</th>
-                <th id="num_serie">N° de Série</th>
-                <th id="config">Config</th>
-                <th id="modele">Modèle</th>
-                <th id="hostname">HostName</th>
-                <th id="reseau">Réseau</th>
-                <th id="adresse_mac">Adresse MAC@</th>
-                <th id="bdd">BDD</th>
-                <th id="entite_beneficiaire">Entité Bénéficiaire</th>
-                <th id="credo_unite">Credo Unité</th>
-                <th id="cp_insta">CP Insta</th>
-                <th id="dep_insta">DEP Insta</th>
-                <th id="adresse">Adresse</th>
-                <th id="site_installation">Site d'installation</th>
-                <th id="localisation">Localisation</th>
-                <th id="service_uf">ServiceUF</th>
-                <th id="accessoires">Accessoires</th>
-            </tr>
-        </thead>
-HTML;
-    }
-
-    static function testChamps($perimetre = false, bool $getAllColumns = true): array
+    static function ChampsCopieur($perimetre = false, string $getAllColumns = 'few'): array
     {
         $headers = [
             "num_ordo" => ['nom_input' => "num_ordo", 'nom_db' => "N° ORDO", 'libelle' => "N° ORDO", 'display' => true],
@@ -69,26 +37,26 @@ HTML;
             "statut_projet" => ['nom_input' => "statut_projet", 'nom_db' => "Statut Projet", 'libelle' => "Statut Projet", 'display' => true],
             "modele" => ['nom_input' => "modele", 'nom_db' => "Modele demandé", 'libelle' => "Modèle", 'display' => true],
             "config" => ['nom_input' => "config", 'nom_db' => "Config", 'libelle' => "Config", 'display' => true],
-            "date_cde_minarm" => ['nom_input' => "date_cde_minarm", 'nom_db' => "DATE CDE MINARM", 'libelle' => "DATE CDE MINARM", 'display' => false],
-            "num_sfdc" => ['nom_input' => "num_sfdc", 'nom_db' => "N° OPP SFDC", 'libelle' => "N° OPP SFDC", 'display' => false],
-            "num_oracle" => ['nom_input' => "num_oracle", 'nom_db' => "N° Saisie ORACLE", 'libelle' => "N° Oracle", 'display' => false],
-            "hostname" => ['nom_input' => "hostname", 'nom_db' => "HostName", 'libelle' => "HostName", 'display' => false],
-            "reseau" => ['nom_input' => "reseau", 'nom_db' => "Réseau", 'libelle' => "Réseau", 'display' => false],
-            "adresse_mac" => ['nom_input' => "adresse_mac", 'nom_db' => "MAC@", 'libelle' => "Adresse MAC", 'display' => false],
-            "entite_beneficiaire" => ['nom_input' => "entite_beneficiaire", 'nom_db' => "Entité Bénéficiaire", 'libelle' => "Entité Bénéficiaire", 'display' => false],
-            "credo_unite" => ['nom_input' => "credo_unite", 'nom_db' => "credo_unité", 'libelle' => "Credo Unité", 'display' => false],
+            "date_cde_minarm" => ['nom_input' => "date_cde_minarm", 'nom_db' => "DATE CDE MINARM", 'libelle' => "DATE CDE MINARM"],
+            "num_sfdc" => ['nom_input' => "num_sfdc", 'nom_db' => "N° OPP SFDC", 'libelle' => "N° OPP SFDC"],
+            "num_oracle" => ['nom_input' => "num_oracle", 'nom_db' => "N° Saisie ORACLE", 'libelle' => "N° Oracle"],
+            "hostname" => ['nom_input' => "hostname", 'nom_db' => "HostName", 'libelle' => "HostName"],
+            "reseau" => ['nom_input' => "reseau", 'nom_db' => "Réseau", 'libelle' => "Réseau"],
+            "adresse_mac" => ['nom_input' => "adresse_mac", 'nom_db' => "MAC@", 'libelle' => "Adresse MAC"],
+            "entite_beneficiaire" => ['nom_input' => "entite_beneficiaire", 'nom_db' => "Entité Bénéficiaire", 'libelle' => "Entité Bénéficiaire"],
+            "credo_unite" => ['nom_input' => "credo_unite", 'nom_db' => "credo_unité", 'libelle' => "Credo Unité"],
             "cp_insta" => ['nom_input' => "cp_insta", 'nom_db' => "CP INSTA", 'libelle' => "Code Postal", 'display' => true],
-            "dep_insta" => ['nom_input' => "dep_insta", 'nom_db' => "DEP INSTA", 'libelle' => "Code Départemental", 'display' => false],
-            "adresse" => ['nom_input' => "adresse", 'nom_db' => "Adresse", 'libelle' => "Adresse", 'display' => false],
+            "dep_insta" => ['nom_input' => "dep_insta", 'nom_db' => "DEP INSTA", 'libelle' => "Code Départemental"],
+            "adresse" => ['nom_input' => "adresse", 'nom_db' => "Adresse", 'libelle' => "Adresse"],
             "site_installation" => ['nom_input' => "site_installation", 'nom_db' => "Site d'installation", 'libelle' => "Site d'installation", 'display' => true],
-            "localisation" => ['nom_input' => "localisation", 'nom_db' => "localisation", 'libelle' => "Localisation", 'display' => false],
-            "service_uf" => ['nom_input' => "service_uf", 'nom_db' => "ServiceUF", 'libelle' => "Service UF", 'display' => false],
-            "accessoires" => ['nom_input' => "accessoires", 'nom_db' => "Accessoires", 'libelle' => "Accessoires", 'display' => false]
+            "localisation" => ['nom_input' => "localisation", 'nom_db' => "localisation", 'libelle' => "Localisation"],
+            "service_uf" => ['nom_input' => "service_uf", 'nom_db' => "ServiceUF", 'libelle' => "Service UF"],
+            "accessoires" => ['nom_input' => "accessoires", 'nom_db' => "Accessoires", 'libelle' => "Accessoires"]
         ];
 
-        if (!$getAllColumns) {
+        if ($getAllColumns === 'few') {
             $headers = array_filter($headers, function($header) {
-                return $header['display'] === true;
+                return isset($header['display']);
             });
         }
 
@@ -96,47 +64,6 @@ HTML;
             unset($headers['bdd']);
         }
         return $headers;
-    }
-
-    static function editImprimante($num,$oracle,$config,$modele,$hostname,$reseau,$mac,$entite_beneficiaire,$credo_unite, int $cp, int $dep,$adresse,$site_installation,$localisation,$accessoires): bool
-    {
-        $req = "UPDATE `copieurs` SET
-        `N° Saisie ORACLE`= :oracle,
-        `Config`= :config,
-        `Modele demandé`= :modele,
-        `HostName`= :hostname,
-        `réseau`= :reseau,
-        `MAC@`= :mac,
-        `Entité Bénéficiaire`= :entite_beneficiaire,
-        `credo_unité`= :credo_unite,
-        `CP INSTA`= :cp,
-        `DEP INSTA`= :dep,
-        `adresse`= :adresse,
-        `Site d'installation`= :site_installation,
-        `localisation`= :localisation,
-        `last_user`= :id_profil,
-        `Accessoires`= :accessoires
-        WHERE `N° de Série` = :num_serie";
-        $p = self::$pdo->prepare($req);
-        
-        return $p->execute([
-            'num_serie' => $num,
-            'oracle' => $oracle,
-            'config' => $config,
-            'modele' => $modele,
-            'hostname' => $hostname,
-            'reseau' => $reseau,
-            'mac' => $mac,
-            'entite_beneficiaire' => $entite_beneficiaire,
-            'credo_unite' => $credo_unite,
-            'cp' => (int)$cp,
-            'dep' => (int)$dep,
-            'adresse' => $adresse,
-            'site_installation' => $site_installation,
-            'localisation' => $localisation,
-            'accessoires' => $accessoires,
-            'id_profil' => User::getMonID()
-        ]);
     }
 
     /**
@@ -166,14 +93,14 @@ HTML;
         return $p->fetchAll();
     }
 
-    static function getImprimantes(array $params, array $limits = []): array
+    static function getImprimantes(array $params, bool $enableLimit = true): array
     {        
         $where = '';
         $options = [];
         $ordering = '';
         foreach ($params as $nom_input => $props) {
             $value = $props['value'];
-            if (trim($value) !== '') {
+            if (trim($value) !== '' && isset($props['nom_db'])) {
                 $nom_db = $props['nom_db'];
                 
                 if ($nom_input !== 'order') {
@@ -185,10 +112,16 @@ HTML;
                 }
             }
         }
-        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
+        $limit = '';
+        if ($enableLimit) {
+            $debut = (int)$params['debut']['value'];
+            $nb_results_page = (int)$params['nb_results_page']['value'];
+            $limit = "LIMIT $debut, $nb_results_page";
+        }
+        
         $sql = "SELECT ";
 
-        foreach (self::testChamps() as $nom_input => $props) {
+        foreach (self::ChampsCopieur(false, $params['showColumns']['value']) as $nom_input => $props) {
             $nom_db = $props['nom_db'];
             $sql .= " `$nom_db` as $nom_input,";
         }
@@ -212,7 +145,7 @@ HTML;
         $ordering = '';
         foreach ($params as $nom_input => $props) {
             $value = $props['value'];
-            if (trim($value) !== '') {
+            if (trim($value) !== '' && $nom_input !== 'showColumns') {
                 $nom_db = $props['nom_db'];
                 
                 if ($nom_input !== 'order') {
@@ -228,7 +161,7 @@ HTML;
         $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
         $sql = "SELECT ";
 
-        foreach (self::testChamps(true) as $nom_input => $props) {
+        foreach (self::ChampsCopieur(true, $params['showColumns']['value']) as $nom_input => $props) {
             $nom_db = $props['nom_db'];
             $sql .= " `$nom_db` as $nom_input,";
         }
@@ -276,19 +209,6 @@ HTML;
 
     static function sansResponsable(array $params, array $limits = []): array
     {
-        /* $champ_num_serie = self::$champ_num_serie;
-        $champ_num_serie_users_copieurs = UsersCopieurs::getChamps('champ_num_serie');
-        $query = "SELECT * FROM copieurs WHERE `$champ_num_serie` NOT IN (SELECT $champ_num_serie_users_copieurs FROM users_copieurs)";
-        $options = [];
-        if ($bdd !== '') {
-            $query = "SELECT * FROM copieurs WHERE " . self::$champ_bdd . " = :bdd AND `$champ_num_serie` NOT IN (SELECT $champ_num_serie_users_copieurs FROM users_copieurs)";
-            $options = ['bdd' => $bdd];
-        }
-        $p = self::$pdo->prepare($query);
-        $p->execute($options);
-
-        return $p->fetchAll(); */
-
         $where = '';
         $options = [];
         $ordering = '';
@@ -309,7 +229,7 @@ HTML;
         $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
         $sql = "SELECT ";
 
-        foreach (self::testChamps(true) as $nom_input => $props) {
+        foreach (self::ChampsCopieur(true, $params['showColumns']) as $nom_input => $props) {
             $nom_db = $props['nom_db'];
             $sql .= " `$nom_db` as $nom_input,";
         }
@@ -351,7 +271,7 @@ HTML;
         $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
         $sql = "SELECT ";
 
-        foreach (self::testChamps(true) as $nom_input => $props) {
+        foreach (self::ChampsCopieur(true, $params['showColumns']) as $nom_input => $props) {
             $nom_db = $props['nom_db'];
             $sql .= " `$nom_db` as $nom_input,";
         }

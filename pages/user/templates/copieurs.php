@@ -9,26 +9,11 @@ $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     $champs = '';
-    foreach (Imprimante::testChamps($perimetre) as $nom_input => $props) {
+    foreach (Imprimante::ChampsCopieur($perimetre, true) as $nom_input => $props) {
         $champs .= $props['libelle'] . ";";
     }
     Imprimante::downloadCSV($champs, 'liste_machines', $lesResultatsSansPagination);
 }
-
-function addInformationForm($var, $titre, $value, array $size): string
-{
-    $labelSize = $size[0];
-    $inputSize = $size[1];
-    return <<<HTML
-    <div class="row mb-3">
-        <label for="$var" class="col-sm-$labelSize label">$titre :</label>
-        <div class="col-sm-$inputSize">
-            <input type="text" id="$var" name="$var" class="form-control" value="$value">
-        </div>
-    </div>
-HTML;
-}
-
 ?>
 
 <div class="p-4">
@@ -46,11 +31,11 @@ HTML;
     <?php if ($atLeastOneResult) : ?>
         <?php require_once 'pagination.php' ?>
 
-        <table id="table_imprimantes" class="table table-striped table-bordered personalTable">
+        <table class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <td class="actions">Actions</td>
-                    <?php foreach (Imprimante::testChamps($perimetre) as $nom_input => $props) : ?>
+                    <?php foreach (Imprimante::ChampsCopieur($perimetre, $laTable['showColumns']['value']) as $nom_input => $props) : ?>
                         <th id="<?= $nom_input ?>"><?= $props['libelle'] ?></th>
                     <?php endforeach ?>
                 </tr>
@@ -73,7 +58,7 @@ HTML;
                             </div>
                         </td>
                         <?php foreach ($data as $nom_input => $value): ?>
-                            <?php if (isset(Imprimante::testChamps($perimetre)[$nom_input])): ?>
+                            <?php if (isset(Imprimante::ChampsCopieur($perimetre, $laTable['showColumns']['value'])[$nom_input])): ?>
                                 <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
                             <?php endif ?>
                         <?php endforeach ?>
@@ -100,7 +85,7 @@ HTML;
                 <div class="row mb-3">
                     <label for="order" class="col-sm-4">Trier par</label>
                     <select class="selectize col-sm-4" id="order" name="order">
-                        <?php foreach (Imprimante::testChamps($perimetre) as $nom_input => $props) : ?>
+                        <?php foreach (Imprimante::ChampsCopieur($perimetre, $showColumns) as $nom_input => $props) : ?>
                             <option value="<?= $nom_input ?>" <?php if ($order === $nom_input) : ?>selected<?php endif ?>><?= $props['libelle'] ?></option>
                         <?php endforeach ?>
                     </select>
@@ -122,11 +107,16 @@ HTML;
                     </div>
                 <?php endif ?>
 
-                <?php foreach ($laTable as $nom_input => $props) {
-                    if ($nom_input !== 'statut_projet' && $nom_input !== 'order') { // statut_projet doit être personnalisé pour les select
-                        echo addInformationForm($nom_input, Imprimante::testChamps($perimetre)[$nom_input]['libelle'], getValeurInput($nom_input), [4, 3]);
-                    }
-                } ?>
+                <?php foreach (Imprimante::ChampsCopieur($perimetre, $showColumns) as $nom_input => $props): ?>
+                    <?php if ($nom_input !== 'statut_projet'): // statut_projet doit être personnalisé pour les select ?>
+                        <div class="row mb-3">
+                            <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
+                            <div class="col-sm-3">
+                                <input type="text" id="<?= $nom_input ?>" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
+                            </div>
+                        </div>
+                    <?php endif ?>
+                <?php endforeach ?>
 
             </div>
             <div class="modal-footer">

@@ -99,7 +99,7 @@ function debug($render)
     echo '</pre>';
 }
 
-function getValeurInput($variable_input, string|array|int $defaultValue = ''): string|array|int
+function getValeurInput($variable_input, string|int $defaultValue = ''): string|int
 {
     return isset($_GET[$variable_input]) ? htmlentities($_GET[$variable_input]) : $defaultValue;
 }

@@ -5,7 +5,7 @@ use App\Imprimante;
 $title = "Copieurs sans relevé ce Trimestre";
 $url = 'copieurs-sans-releve-trimestre'; // url actuel de la vue
 $perimetre = true;
-$laTable = Imprimante::testChamps($perimetre);
+$laTable = Imprimante::ChampsCopieur($perimetre);
 
 $order = getValeurInput('order', 'num_serie');
 $ordertype = getValeurInput('ordertype', 'ASC');

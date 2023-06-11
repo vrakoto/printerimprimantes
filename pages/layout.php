@@ -19,9 +19,6 @@ use App\Driver;
 
     <link rel="stylesheet" href="/src/CSS/contextmenu/main.css">
     <link rel="stylesheet" href="/src/CSS/selectize/selectize.css">
-    <link rel="stylesheet" href="/src/CSS/datatables/datatables.min.css">
-
-    <link type="text/css" rel="stylesheet" href="/src/CSS/responsive.css">
 
     <link rel="icon" href="/src/icon/print.png">
 
@@ -103,12 +100,6 @@ use App\Driver;
         <script src="/src/JS/utils/popper.min.js"></script>
         <script src="/src/JS/utils/bootstrap.min.js"></script>
         <script src="/src/JS/utils/selectize.js"></script>
-
-        <script src="/src/JS/utils/datatables.min.js"></script>
-        
-        
-
-        <script src="/src/JS/commun.js"></script>
 
         <?php if (isset($jsfile)) : ?>
             <script src="/src/JS/<?= $jsfile ?>.js"></script>

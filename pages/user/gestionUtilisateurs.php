@@ -6,6 +6,8 @@ use App\User;
 
 $title = "Gestion des Utilisateurs";
 $url = "gestion-utilisateurs";
+$laTable = User::ChampsGestionUtilisateurs();
+
 
 if (!empty($_POST)) {
     $gpn = htmlentities($_POST['gpn']);
@@ -23,36 +25,43 @@ if (!empty($_POST)) {
 }
 
 $order = getValeurInput('order', 'gpn');
+$ordertype = getValeurInput('ordertype', 'DESC');
 
-$searching_gpn = getValeurInput('gpn');
-$searching_courriel = getValeurInput('courriel');
-$searching_role = getValeurInput('role');
+foreach ($laTable as $key => $value) {
+    $nom_input = $value['nom_input'];
+    $valuePosition = getValeurInput($value['nom_input']) . '%';
 
-$params = [
-    'gpn' => ['nom_db' => "grade-prenom-nom", 'value' => $searching_gpn, 'valuePosition' => '%' . $searching_gpn . '%'],
-    'courriel' => ['nom_db' => "Courriel", 'value' => $searching_courriel, 'valuePosition' => $searching_courriel . '%'],
-    'role' => ['nom_db' => "userlevelname", 'value' => $searching_role, 'valuePosition' => $searching_role . '%'],
-    'order' => ['nom_db' => $order, 'value' => 'ASC']
-];
+    switch ($nom_input) {
+        case 'gpn':
+            $valuePosition = '%' . getValeurInput('gpn') . '%';
+        break;
+    }
 
-$keysToRemove = ['order'];
+    $laTable[$key] = array_merge($value, [
+        'value' => getValeurInput($nom_input),
+        'valuePosition' => $valuePosition
+    ]);
+}
 
-// Filtrer le tableau en retirant les clés spécifiées
-$modalVariables = array_filter($params, function ($key) use ($keysToRemove) {
-    return !in_array($key, $keysToRemove);
-}, ARRAY_FILTER_USE_KEY);
-
+$laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
 
 // l'utilisateur a fait une recherche
-$params_query = [];
-foreach ($params as $nom_input => $props) {
+$laTable_query = [];
+foreach ($laTable as $nom_input => $props) {
     if ($nom_input === 'order') {
-        $params_query['order'] = $props['nom_db'];
-    } else {
-        $params_query[$nom_input] = $props['value'];
+        $laTable_query['order'] = $props['nom_db'];
+        $laTable_query['ordertype'] = $ordertype;
+    } else if (!empty($props['value'])) {
+        $laTable_query[$nom_input] = $props['value'];
     }
 }
-$fullURL = http_build_query($params_query);
+$fullURL = http_build_query($laTable_query);
+
+
+$keysToRemove = ['order'];
+$formVariables = array_filter($laTable, function ($key) use ($keysToRemove) {
+    return !in_array($key, $keysToRemove);
+}, ARRAY_FILTER_USE_KEY);
 
 $nb_results_par_page = 10;
 $page = 1;
@@ -66,61 +75,23 @@ if ($page <= 0) {
 
 $debut = ($page - 1) * $nb_results_par_page;
 
-$lesResultats = User::getUtilisateursPerimetre($params, [$debut, $nb_results_par_page]);
-$lesResultatsSansPagination = User::getUtilisateursPerimetre($params);
+$lesResultats = User::getUtilisateursPerimetre($laTable, [$debut, $nb_results_par_page]);
+$lesResultatsSansPagination = User::getUtilisateursPerimetre($laTable);
 
 $total = count($lesResultatsSansPagination);
 $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     $champs = '';
-    foreach (colonnes(Imprimante::ChampsCopieur()) as $id => $nom) {
-        $champs .= $nom . ";";
+    foreach (User::ChampsGestionUtilisateurs() as $nom_input => $props) {
+        $champs .= $props['libelle'] . ";";
     }
-    Imprimante::downloadCSV($champs, 'liste_machines', $lesResultatsSansPagination);
-}
-
-function addInformationForm($var, $titre, $value, array $size): string
-{
-    $labelSize = $size[0];
-    $inputSize = $size[1];
-    return <<<HTML
-    <div class="row mb-3">
-        <label for="$var" class="col-sm-$labelSize label">$titre :</label>
-        <div class="col-sm-$inputSize">
-            <input type="text" id="$var" name="$var" class="form-control" value="$value">
-        </div>
-    </div>
-HTML;
+    Imprimante::downloadCSV($champs, 'sapollon_liste_utilisateurs_' . User::getBDD(), $lesResultatsSansPagination);
 }
 ?>
 
-<style>
-    thead th:hover {
-        background-color: orange;
-        cursor: pointer;
-    }
-
-    #pagination a {
-        color: black;
-        padding: 8px 16px;
-        transition: background-color .3s;
-        border: 1px solid #ddd;
-    }
-
-    #pagination a:hover {
-        background-color: #ddd;
-    }
-</style>
-
 <div class="p-4">
-    <div class="mt-2" id="header">
-        <h1><?= $title ?></h1>
-
-        <button class="btn btn-success" id="downloadCSV" title="Télécharger les données en CSV"><i class="fa-solid fa-download"></i> Télécharger les données</button>
-        <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_search"><i class="fa-solid fa-filter"></i> Rechercher</button>
-        <a class="mx-1 btn btn-secondary" href="/<?= $url ?>"><i class="fa-solid fa-arrow-rotate-left"></i> Réinitialiser la recherche</a>
-    </div>
+    <?php require_once 'templates' . DIRECTORY_SEPARATOR . 'header.php' ?>
 
     <?php if ($page <= $nb_pages) : ?>
         <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
@@ -134,21 +105,23 @@ HTML;
                 <a class="<?= $page != $nb_pages ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=<?= $nb_pages ?>&<?= $fullURL ?>"><?= $nb_pages ?></a>
             </div>
 
-            <h3 class="mt-5">Nombre total d'utilisateurs : <?= $total ?></h3>
+            <h3 class="mt-5">Total d'utilisateurs : <?= $total ?></h3>
         </div>
 
         <table class="table table-striped table-bordered personalTable">
-            <?= User::ChampsGestionUtilisateurs() ?>
+            <thead>
+                <tr>
+                    <?php foreach (User::ChampsGestionUtilisateurs() as $nom_input => $props) : ?>
+                        <th id="<?= $nom_input ?>"><?= $props['libelle'] ?></th>
+                    <?php endforeach ?>
+                </tr>
+            </thead>
             <tbody>
-                <?php foreach ($lesResultats as $data) :
-                    $gpn = htmlentities($data['gpn']);
-                    $courriel = htmlentities($data['courriel']);
-                    $role = htmlentities($data['role']);
-                ?>
+                <?php foreach ($lesResultats as $data) : ?>
                     <tr>
-                        <td class="gpn"><?= $gpn ?></td>
-                        <td class="courriel"><?= $courriel ?></td>
-                        <td class="bdd"><?= $role ?></td>
+                        <?php foreach ($data as $nom_input => $value) : ?>
+                            <td><?= $value ?></td>
+                        <?php endforeach ?>
                     </tr>
                 <?php endforeach ?>
             </tbody>
@@ -158,11 +131,11 @@ HTML;
     <?php endif ?>
 </div>
 
-<div class="modal fade" id="modal_search" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <form class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5">Effectuer une recherche</h1>
+                <h1 class="modal-title fs-5">Effectuer une recherche et/ou un tri</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -170,17 +143,24 @@ HTML;
                 <div class="row mb-3">
                     <label for="order" class="col-sm-4">Trier par</label>
                     <select class="selectize col-sm-4" id="order" name="order">
-                        <?php foreach (colonnes(User::ChampsGestionUtilisateurs()) as $key => $s) : ?>
-                            <option value="<?= $key ?>" <?php if ($order === $key) : ?>selected<?php endif ?>><?= $s ?></option>
+                        <?php foreach (User::ChampsGestionUtilisateurs() as $key => $s) : ?>
+                            <option value="<?= $key ?>" <?php if ($order === $key) : ?>selected<?php endif ?>><?= $s['libelle'] ?></option>
                         <?php endforeach ?>
+                    </select>
+                    <select class="selectize col-sm-4" id="ordertype" name="ordertype">
+                        <option value="ASC" <?php if ($ordertype === 'ASC') : ?>selected<?php endif ?>>Croissant</option>
+                        <option value="DESC" <?php if ($ordertype === 'DESC') : ?>selected<?php endif ?>>Décroissant</option>
                     </select>
                 </div>
 
-                <?php foreach ($params as $nom_input => $props) {
-                    if ($nom_input !== 'statut_projet' && $nom_input !== 'order') { // statut_projet doit être personnalisé pour les select
-                        echo addInformationForm($nom_input, $props['nom_db'], getValeurInput($nom_input), [4, 3]);
-                    }
-                } ?>
+                <?php foreach (User::ChampsGestionUtilisateurs() as $nom_input => $props) { ?>
+                    <div class="row mb-3">
+                        <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
+                        <div class="col-sm-3">
+                            <input type="text" id="<?= $nom_input ?>" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
+                        </div>
+                    </div>
+                <?php } ?>
 
             </div>
             <div class="modal-footer">

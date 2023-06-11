@@ -27,8 +27,8 @@ HTML;
     static function testChamps(): array
     {
         $headers = [
-            "gpn" => ['nom_db' => "grade-prenom-nom", 'libelle' => "Grade Prénom Nom"],
-            "num_serie" => ['nom_db' => "Numéro_série", 'libelle' => "N° de Série"],
+            "gpn" => ['nom_input' => 'gpn', 'nom_db' => "grade-prenom-nom", 'libelle' => "Grade Prénom Nom"],
+            "num_serie" => ['nom_input' => 'num_serie', 'nom_db' => "Numéro_série", 'libelle' => "N° de Série"],
         ];
 
         return $headers;
