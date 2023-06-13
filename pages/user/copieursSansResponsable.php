@@ -5,10 +5,14 @@ use App\Imprimante;
 $title = "Liste des copieurs sans responsable";
 $url = 'copieurs-sans-responsable'; // url actuel de la vue
 $perimetre = true;
-$laTable = Imprimante::ChampsCopieur($perimetre);
+$nb_results_par_page = 10;
 
+$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
 $order = getValeurInput('order', 'num_serie');
 $ordertype = getValeurInput('ordertype', 'ASC');
+$showColumns = $_SESSION['showColumns'];
+
+$laTable = Imprimante::ChampsCopieur($perimetre, $showColumns);
 
 foreach ($laTable as $key => $value) {
     $laTable[$key] = array_merge($value, [
@@ -30,21 +34,18 @@ foreach ($laTable as $nom_input => $props) {
 }
 $fullURL = http_build_query($laTable_query);
 
-$nb_results_par_page = 10;
-$page = 1;
-if (isset($_GET['page'])) {
-    $page = (int)$_GET['page'];
-}
+$laTable['page'] = ['value' => $page];
+$laTable['debut'] = ['value' => (($page - 1) * $nb_results_par_page)];
+$laTable['nb_results_page'] = ['value' => $nb_results_par_page];
+
 if ($page <= 0) {
-    header('Location:/' . $match['name']);
+    header('Location:/' . $url);
     exit();
 }
 
-$debut = ($page - 1) * $nb_results_par_page;
-
 try {
-    $lesResultats = Imprimante::sansResponsable($params, [$debut, $nb_results_par_page]);
-    $lesResultatsSansPagination = Imprimante::sansResponsable($params);
+    $lesResultats = Imprimante::sansResponsable($laTable);
+    $lesResultatsSansPagination = Imprimante::sansResponsable($laTable, false);
     require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';
 } catch (\Throwable $th) {
     newException($th->getMessage());

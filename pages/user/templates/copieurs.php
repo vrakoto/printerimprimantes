@@ -35,7 +35,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
             <thead>
                 <tr>
                     <td class="actions">Actions</td>
-                    <?php foreach (Imprimante::ChampsCopieur($perimetre, $laTable['showColumns']['value']) as $nom_input => $props) : ?>
+                    <?php foreach (Imprimante::ChampsCopieur($perimetre, $showColumns) as $nom_input => $props) : ?>
                         <th id="<?= $nom_input ?>"><?= $props['libelle'] ?></th>
                     <?php endforeach ?>
                 </tr>
@@ -58,7 +58,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                             </div>
                         </td>
                         <?php foreach ($data as $nom_input => $value): ?>
-                            <?php if (isset(Imprimante::ChampsCopieur($perimetre, $laTable['showColumns']['value'])[$nom_input])): ?>
+                            <?php if (isset(Imprimante::ChampsCopieur($perimetre, $showColumns)[$nom_input])): ?>
                                 <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
                             <?php endif ?>
                         <?php endforeach ?>

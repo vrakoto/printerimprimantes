@@ -5,10 +5,14 @@ use App\Imprimante;
 $title = "Copieurs sans relevé ce Trimestre";
 $url = 'copieurs-sans-releve-trimestre'; // url actuel de la vue
 $perimetre = true;
-$laTable = Imprimante::ChampsCopieur($perimetre);
+$nb_results_par_page = 10;
 
+$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
 $order = getValeurInput('order', 'num_serie');
 $ordertype = getValeurInput('ordertype', 'ASC');
+$showColumns = $_SESSION['showColumns'];
+
+$laTable = Imprimante::ChampsCopieur($perimetre, $showColumns);
 
 foreach ($laTable as $key => $value) {
     $laTable[$key] = array_merge($value, [
@@ -16,6 +20,9 @@ foreach ($laTable as $key => $value) {
         'valuePosition' => getValeurInput($value['nom_input']) . '%'
     ]);
 }
+$laTable['page'] = ['value' => $page];
+$laTable['debut'] = ['value' => (($page - 1) * $nb_results_par_page)];
+$laTable['nb_results_page'] = ['value' => $nb_results_par_page];
 $laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
 
 // l'utilisateur a fait une recherche
@@ -28,23 +35,21 @@ foreach ($laTable as $nom_input => $props) {
         $laTable_query[$nom_input] = $props['value'];
     }
 }
+unset($laTable_query['page']);
+unset($laTable_query['debut']);
+unset($laTable_query['nb_results_page']);
+
 $fullURL = http_build_query($laTable_query);
 
-$nb_results_par_page = 10;
-$page = 1;
-if (isset($_GET['page'])) {
-    $page = (int)$_GET['page'];
-}
 if ($page <= 0) {
-    header('Location:/' . $match['name']);
+    header('Location:/' . $url);
     exit();
 }
 
-$debut = ($page - 1) * $nb_results_par_page;
 
 try {
-    $lesResultats = Imprimante::sansReleves3Mois($params, [$debut, $nb_results_par_page]);
-    $lesResultatsSansPagination = Imprimante::sansReleves3Mois($params);
+    $lesResultats = Imprimante::sansReleves3Mois($laTable);
+    $lesResultatsSansPagination = Imprimante::sansReleves3Mois($laTable, false);
     require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';
 } catch (\Throwable $th) {
     newException($th->getMessage());

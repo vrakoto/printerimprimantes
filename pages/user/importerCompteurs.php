@@ -1,12 +1,8 @@
 <?php
-
 use App\User;
-
-$jsfile = 'importCompteurs';
 $title = "Importer des compteurs par CSV";
 
 $lesErreursCSV = [];
-$lesErreursPDO = [];
 $lesCopieursAInserer = [];
 $datas = [];
 $erreurInterne = '';
@@ -86,12 +82,12 @@ if (isset($_FILES['csv_file'])) {
 
 <div class="container mt-5">
     <?php if ($erreurInterne !== '') : ?>
-        <div class="alert alert-danger"><?= $erreurInterne ?></div>
+        <?= newFormError($erreurInterne) ?>
     <?php endif ?>
 
     <?php if (!empty($lesErreursCSV)) : ?>
         <div class="alert alert-danger">
-            <h3>Le fichier CSV fourni n'est pas valide pour les raisons suivantes :</h3>
+            <h3>Le fichier CSV fourni est <u><b>invalide</b></u> pour les raisons suivantes :</h3>
             <ul class="mt-3">
                 <?php foreach ($lesErreursCSV as $error) : ?>
                     <li><?= $error ?></li>
@@ -110,7 +106,12 @@ if (isset($_FILES['csv_file'])) {
         <hr>
     <?php endif ?>
 
-    <form action="importCompteurs" class="mb-3" method="POST" enctype="multipart/form-data">
+    <div class="text-center">
+        <h3>Importer des relevés de compteurs via un fichier CSV</h3>
+        <i class="fs-6">Veuillez lire le guide juste en dessous.</i>
+    </div>
+
+    <form action="importCompteurs" class="mt-5 mb-3" method="POST" enctype="multipart/form-data">
         <a class="btn btn-primary" onclick="document.getElementById('csv_file').click()">Insérer un fichier CSV</a>
         <input type="file" id="csv_file" class="form-control d-none" name="csv_file" accept=".csv">
         <p><i id="file_name"></i></p>
@@ -152,7 +153,7 @@ if (isset($_FILES['csv_file'])) {
                     <img class="img-fluid" src="/src/img/exemple_csv.JPG" alt="Image Excel CSV">
 
                     <p><b>Assurez-vous de retirer les en-têtes.</b></p>
-                    <p>Puis, <b>exportez en CSV</b> (Cliquez sur l'onglet "Fichier" en haut à gauche puis "Exporter" et sélectionnez l'option CSV).</p>
+                    <p>Puis, <b>exportez en CSV</b> (Cliquez sur l'onglet "Fichier" en haut à gauche puis "Exporter" et sélectionnez le format CSV).</p>
                 </div>
             </div>
         </div>

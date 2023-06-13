@@ -67,13 +67,13 @@ table thead tr {
 }
 
 
-#pagination a {
+#pagination a:not(:last-child) {
     color: black;
     padding: 8px 16px;
     transition: background-color .3s;
     border: 1px solid #ddd;
 }
 
-#pagination a:hover {
+#pagination a:not(:last-child):hover {
     background-color: #ddd;
 }

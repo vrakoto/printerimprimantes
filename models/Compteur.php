@@ -83,7 +83,7 @@ HTML;
         return $p->fetchAll();
     }
 
-    static function getLesReleves(array $params, bool $perimetre, array $limits = []): array
+    static function getLesReleves(array $params, bool $perimetre, bool $enableLimit = true): array
     {
         $where = '';
         $options = [];
@@ -94,7 +94,7 @@ HTML;
             $value = $props['value'];
             $anti_ambiguous = (isset($props['anti_ambiguous'])) ? $props['anti_ambiguous'] . '.' : '';
             
-            if (trim($value) !== '') {
+            if (trim($value) !== '' && isset($props['nom_db'])) {
                 $nom_db = $props['nom_db'];
                 
                 if ($nom_input !== 'order') {
@@ -107,12 +107,18 @@ HTML;
             }
         }
 
+        $limit = '';
+        if ($enableLimit) {
+            $debut = (int)$params['debut']['value'];
+            $nb_results_page = (int)$params['nb_results_page']['value'];
+            $limit = "LIMIT $debut, $nb_results_page";
+        }
+
         if ($perimetre) {
             $where .= " AND c.`BDD` = :bdd";
             $options['bdd'] = User::getBDD();
         }
-
-        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
+        
         $sql = "SELECT ";
         
         // Récupérer toutes les colonnes dynamiquement

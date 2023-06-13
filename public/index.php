@@ -9,9 +9,7 @@ use App\User;
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'elements' . DIRECTORY_SEPARATOR . 'helper.php';
 
 $VUES = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR;
-$AJAX = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ajax' . DIRECTORY_SEPARATOR;
 $router = new Router($VUES);
-$ajaxRouter = new Router($AJAX, true);
 
 if (Driver::estConnecte()) {
     $router->request('/', '/user/compte.php', 'home');
@@ -41,8 +39,8 @@ if (Driver::estConnecte()) {
     $router->request('/gestion-utilisateurs', '/user/gestionUtilisateurs.php', 'view_users_area');
     $router->request('/historique-actions', '/user/historiqueActions.php', 'history_actions');
 
-    $router->request('/importCompteurs', '/user/importerCompteurs.php', 'importCompteurs');
-    $router->request('/importCompteurs', '/user/importerCompteurs.php', 'importerCompteurs', 'POST');
+    $router->request('/importCompteurs', '/user/importerCompteurs.php', 'view_import_counters');
+    $router->request('/importCompteurs', '/user/importerCompteurs.php', 'import_counters', 'POST');
 
 
     if (User::getRole() !== 2) {

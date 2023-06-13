@@ -1,3 +1,11 @@
+<?php
+if (isset($_GET['switchColumns'])) {
+    $_SESSION['showColumns'] = ($_SESSION['showColumns'] === 'few') ? 'all' : 'few';
+    header('Location:' . $url);
+    exit();
+}
+?>
+
 <div class="mt-2" id="header">
     <h1><?= $title ?></h1>
 
@@ -6,6 +14,9 @@
     <a class="mx-1 btn btn-secondary" href="/<?= $url ?>"><i class="fa-solid fa-arrow-rotate-left"></i> Réinitialiser la recherche</a>
 
     <?php if (str_contains($url, 'copieur')): ?>
-        <a class="mx-3 btn btn-primary text-white" href="?page=<?= $page ?>&<?= $fullURL ?>&showColumns=<?= ($showColumns === 'few') ? 'all' : 'few' ?>"><?= $showColumns === 'few' ? 'Afficher toutes' : 'Reduire' ?> les informations</a>
+        <form action="" method="get" class="d-inline-block">
+            <input type="hidden" name="switchColumns">
+            <button class="mx-3 btn btn-primary text-white" href="?page=<?= $page ?>&<?= $fullURL ?>"><?= $showColumns === 'few' ? 'Afficher toutes' : 'Reduire' ?> les informations</button>
+        </form>
     <?php endif ?>
 </div>

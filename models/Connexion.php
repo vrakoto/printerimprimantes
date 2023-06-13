@@ -62,8 +62,8 @@ class Connexion extends Driver {
 
     function etablirConnexion(): void
     {
-        // $_SESSION[User::getChamp('champ_id')] = $this->getIdProfil();
         $_SESSION['user'] = $this->getInformations();
+        $_SESSION['showColumns'] = 'few';
         header('Location:/');
         exit();
     }

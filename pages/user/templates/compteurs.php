@@ -12,20 +12,6 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     }
     Compteur::downloadCSV($headers, 'liste_compteurs', $lesResultatsSansPagination);
 }
-
-function addInformationForm($var, $titre, $value, array $size): string
-{
-    $labelSize = $size[0];
-    $inputSize = $size[1];
-    return <<<HTML
-    <div class="row mb-3">
-        <label for="$var" class="col-sm-$labelSize label">$titre :</label>
-        <div class="col-sm-$inputSize">
-            <input type="text" id="$var" name="$var" class="form-control" value="$value">
-        </div>
-    </div>
-HTML;
-}
 ?>
 
 <div class="p-4">
@@ -119,11 +105,16 @@ HTML;
                     </select>
                 </div>
 
-                <?php foreach ($laTable as $nom_input => $props) {
-                    if ($nom_input !== 'order') {
-                        echo addInformationForm($nom_input, $laTable[$nom_input]['libelle'], getValeurInput($nom_input), [4, 3]);
-                    }
-                } ?>
+                <?php foreach (Compteur::testChamps($perimetre) as $nom_input => $props) : ?>
+                    <?php if ($nom_input !== 'order') : ?>
+                        <div class="row mb-3">
+                            <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
+                            <div class="col-sm-3">
+                                <input type="text" id="<?= $nom_input ?>" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
+                            </div>
+                        </div>
+                    <?php endif ?>
+                <?php endforeach ?>
 
             </div>
             <div class="modal-footer">

@@ -5,10 +5,14 @@ use App\Compteur;
 $title = "Liste des Compteurs";
 $url = 'liste_compteurs';
 $perimetre = false;
-$laTable = Compteur::testChamps($perimetre);
+$nb_results_par_page = 10;
 
-$order = getValeurInput('order', 'date_maj');
-$ordertype = getValeurInput('ordertype', 'DESC');
+$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
+$order = getValeurInput('order', 'num_serie');
+$ordertype = getValeurInput('ordertype', 'ASC');
+$showColumns = $_SESSION['showColumns'];
+
+$laTable = Compteur::testChamps($perimetre);
 
 foreach ($laTable as $key => $value) {
     $nom_input = $value['nom_input'];
@@ -41,21 +45,18 @@ foreach ($laTable as $nom_input => $props) {
 }
 $fullURL = http_build_query($laTable_query);
 
-$nb_results_par_page = 10;
-$page = 1;
-if (isset($_GET['page'])) {
-    $page = (int)$_GET['page'];
-}
+$laTable['page'] = ['value' => $page];
+$laTable['debut'] = ['value' => (($page - 1) * $nb_results_par_page)];
+$laTable['nb_results_page'] = ['value' => $nb_results_par_page];
+
 if ($page <= 0) {
     header('Location:/' . $url);
     exit();
 }
 
-$debut = ($page - 1) * $nb_results_par_page;
-
 try {
-    $lesResultats = Compteur::getLesReleves($laTable, $perimetre, [$debut, $nb_results_par_page]);
-    $lesResultatsSansPagination = Compteur::getLesReleves($laTable, $perimetre);
+    $lesResultats = Compteur::getLesReleves($laTable, $perimetre);
+    $lesResultatsSansPagination = Compteur::getLesReleves($laTable, $perimetre, false);
     require_once 'templates' . DIRECTORY_SEPARATOR . 'compteurs.php';
 } catch (\Throwable $th) {
     newException($th->getMessage());
