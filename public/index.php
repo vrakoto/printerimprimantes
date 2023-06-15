@@ -37,7 +37,6 @@ if (Driver::estConnecte()) {
     $router->request('/liste-responsables', '/user/listeResponsables.php', 'list_owners');
     $router->request('/responsables-perimetre', '/user/responsablesPerimetre.php', 'owners_area');
     $router->request('/gestion-utilisateurs', '/user/gestionUtilisateurs.php', 'view_users_area');
-    $router->request('/historique-actions', '/user/historiqueActions.php', 'history_actions');
 
     $router->request('/importCompteurs', '/user/importerCompteurs.php', 'view_import_counters');
     $router->request('/importCompteurs', '/user/importerCompteurs.php', 'import_counters', 'POST');

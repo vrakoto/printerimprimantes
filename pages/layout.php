@@ -73,7 +73,6 @@ use App\Driver;
                             Administration
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="<?= $router->url('history_actions') ?>"><i class="fa-solid fa-list"></i> Historique des actions</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('view_users_area') ?>"><i class="fa-solid fa-list"></i> Gestion des utilisateurs</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('list_owners') ?>"><i class="fa-solid fa-user-tag"></i> Liste des Responsables</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('owners_area') ?>"><i class="fa-solid fa-location-dot"></i> Responsables du périmtre</a></li>

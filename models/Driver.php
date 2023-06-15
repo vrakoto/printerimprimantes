@@ -20,8 +20,7 @@ class Driver {
 
     static function downloadCSV(string $header, string $filename, array $results)
     {
-        echo "ok";
-        /* $filename = $filename . '.csv';
+        $filename = $filename . '.csv';
         $output = fopen("php://output", "w");
         $separator = ';';
 
@@ -38,7 +37,7 @@ class Driver {
         header('Content-Type: application/csv');
         header('Content-Disposition: attachment; filename="' . $filename . '";');
         
-        readfile('php://output'); */
+        readfile('php://output');
         exit();
     }
 }

@@ -113,15 +113,17 @@ class Imprimante extends Driver {
             }
         }
         $limit = '';
+        $showColumns = $_SESSION['showColumns'];        
         if ($enableLimit) {
             $debut = (int)$params['debut']['value'];
             $nb_results_page = (int)$params['nb_results_page']['value'];
             $limit = "LIMIT $debut, $nb_results_page";
+            $showColumns = 'all';
         }
         
         $sql = "SELECT ";
 
-        foreach (self::ChampsCopieur(false, $_SESSION['showColumns']) as $nom_input => $props) {
+        foreach (self::ChampsCopieur(false, $showColumns) as $nom_input => $props) {
             $nom_db = $props['nom_db'];
             $sql .= " `$nom_db` as $nom_input,";
         }
@@ -159,14 +161,16 @@ class Imprimante extends Driver {
         }
 
         $limit = '';
+        $showColumns = $_SESSION['showColumns'];
         if ($enableLimit) {
             $debut = (int)$params['debut']['value'];
             $nb_results_page = (int)$params['nb_results_page']['value'];
             $limit = "LIMIT $debut, $nb_results_page";
+            $showColumns = 'all'; // téléchargement
         }
         $sql = "SELECT ";
 
-        foreach (self::ChampsCopieur(true, $_SESSION['showColumns']) as $nom_input => $props) {
+        foreach (self::ChampsCopieur(true, $showColumns) as $nom_input => $props) {
             $nom_db = $props['nom_db'];
             $sql .= " `$nom_db` as $nom_input,";
         }

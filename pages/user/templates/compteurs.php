@@ -7,7 +7,7 @@ $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     $headers = '';
-    foreach (Compteur::testChamps($perimetre) as $nom_input => $props) {
+    foreach (Compteur::testChamps(false) as $nom_input => $props) {
         $headers .= $props['libelle'] . ";";
     }
     Compteur::downloadCSV($headers, 'liste_compteurs', $lesResultatsSansPagination);

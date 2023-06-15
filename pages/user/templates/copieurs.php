@@ -9,7 +9,7 @@ $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     $champs = '';
-    foreach (Imprimante::ChampsCopieur($perimetre, true) as $nom_input => $props) {
+    foreach (Imprimante::ChampsCopieur(false, 'all') as $nom_input => $props) {
         $champs .= $props['libelle'] . ";";
     }
     Imprimante::downloadCSV($champs, 'liste_machines', $lesResultatsSansPagination);
