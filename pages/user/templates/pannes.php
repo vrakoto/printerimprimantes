@@ -16,60 +16,58 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
 ?>
 
 <div class="p-4">
-    <div class="mt-2" id="header">
-        <h1><?= $title ?></h1>
-
-        <button class="btn btn-success" id="downloadCSV" title="Télécharger les données en CSV"><i class="fa-solid fa-download"></i> Télécharger les données</button>
-        <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-filter"></i> Recherche</button>
-        <a class="mx-1 btn btn-secondary" href="/<?= $url ?>"><i class="fa-solid fa-arrow-rotate-left"></i> Réinitialiser les recherches</a>
-    </div>
+    <?php require_once 'header.php' ?>
 
     <?php if ($page <= $nb_pages) : ?>
-        <div class="d-flex justify-content-between align-items-center">
-            <div id="pagination" class="mt-5 mb-3">
-                <a class="<?= $page != 1 ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=1&<?= $fullURL ?>">1</a>
-                <a <?php if ($page <= 1) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page - 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-left"></i></a>
-
-                <button class="btn btn-secondary" style="cursor: unset;"><?= $page ?></button>
-
-                <a <?php if ($page >= $nb_pages) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page + 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-right"></i></a>
-                <a class="<?= $page != $nb_pages ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=<?= $nb_pages ?>&<?= $fullURL ?>"><?= $nb_pages ?></a>
-            </div>
-            <h3 class="mt-5">Nombre total de pannes : <?= $total ?></h3>
-        </div>
+        <?php require_once 'pagination.php' ?>
 
         <table id="table_imprimantes" class="table table-striped table-bordered personalTable">
-            <?= Panne::ChampPannes() ?>
+            <thead>
+                <tr>
+                    <td class="actions">Actions</td>
+                    <?php foreach (Panne::ChampPannes() as $nom_input => $props) : ?>
+                        <th id="<?= $nom_input ?>"><?= $props['libelle'] ?></th>
+                    <?php endforeach ?>
+                </tr>
+            </thead>
             <tbody>
-                <?php foreach ($lesResultats as $panne) :
-                    $id_event = htmlentities($panne['id_event']);
-                    $num_serie = htmlentities($panne['num_serie']);
-                    $contexte = htmlentities($panne['contexte']);
-                    $type_panne = htmlentities($panne['type_panne']);
-                    $statut_intervention = htmlentities($panne['statut_intervention']);
-                    $commentaires = htmlentities($panne['commentaires']);
-                    $date_evolution = htmlentities(convertDate($panne['date_evolution']));
-                    $heure_evolution = htmlentities($panne['heure_evolution']);
-                    $modif_par = htmlentities($panne['maj_par']);
-                    $modif_date = htmlentities($panne['maj_date']);
-                    $fichier = htmlentities($panne['fichier']);
-                    $ouverture = convertDate(htmlentities($panne['ouverture']));
-                    $fermeture = (htmlentities($panne['fermeture']));
-                ?>
+                <?php foreach ($lesResultats as $data): ?>
                     <tr>
-                        <td><a href="imprimante/<?= $num_serie ?>"><?= $num_serie ?></a></td>
-                        <td><?= $id_event ?></td>
-                        <td><?= $contexte ?></td>
-                        <td><?= $type_panne ?></td>
-                        <td><?= $statut_intervention ?></td>
-                        <td><?= $commentaires ?></td>
-                        <td><?= $date_evolution ?></td>
-                        <td><?= $heure_evolution ?></td>
-                        <td><?= $modif_par ?></td>
-                        <td><?= $modif_date ?></td>
-                        <td><?= $fichier ?></td>
-                        <td><?= $ouverture ?></td>
-                        <td><?= $fermeture ?></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-list"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="imprimante/<?= $data['num_serie'] ?>"><i class="fa-solid fa-eye"></i> Voir le copieur</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                        <?php foreach ($data as $nom_input => $value):
+                            switch ($nom_input) {
+                                case 'maj_date':
+                                    if (!empty($value)) {
+                                        $value = convertDate($value, true);
+                                    }
+                                break;
+
+                                case 'ouverture':
+                                    $value = convertDate($value, true);
+                                break;
+
+                                case 'fermeture':
+                                    if (!empty($value)) {
+                                        $value = convertDate($value, true);
+                                    }
+                                break;
+
+                                case 'date_evolution':
+                                    $value = convertDate($value);
+                                break;
+                            }
+                        ?>
+                            <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
+                        <?php endforeach ?>
                     </tr>
                 <?php endforeach ?>
             </tbody>
@@ -92,21 +90,23 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                 <div class="row mb-3">
                     <label for="order" class="col-sm-4">Trier par</label>
                     <select class="selectize col-sm-4" id="order" name="order">
-                        <?php foreach (Imprimante::ChampsCopieur($perimetre) as $key => $s) : ?>
+                        <?php foreach (Panne::ChampPannes() as $key => $s) : ?>
                             <option value="<?= $key ?>" <?php if ($order === $key) : ?>selected<?php endif ?>><?= $s['libelle'] ?></option>
                         <?php endforeach ?>
                     </select>
+                    <select class="selectize col-sm-4" id="ordertype" name="ordertype">
+                        <option value="ASC" <?php if ($ordertype === 'ASC') : ?>selected<?php endif ?>>Croissant</option>
+                        <option value="DESC" <?php if ($ordertype === 'DESC') : ?>selected<?php endif ?>>Décroissant</option>
+                    </select>
                 </div>
 
-                <?php foreach ($laTable as $nom_input => $props) : ?>
-                    <?php if ($nom_input !== 'order') :  ?>
-                        <div class="row mb-3">
-                            <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
-                            <div class="col-sm-3">
-                                <input type="text" id="<?= $nom_input ?>" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
-                            </div>
+                <?php foreach (Panne::ChampPannes() as $nom_input => $props) : ?>
+                    <div class="row mb-3">
+                        <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
+                        <div class="col-sm-3">
+                            <input type="text" id="<?= $nom_input ?>" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
                         </div>
-                    <?php endif ?>
+                    </div>
                 <?php endforeach ?>
             </div>
             <div class="modal-footer">

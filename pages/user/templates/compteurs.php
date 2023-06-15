@@ -78,7 +78,9 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
             </tbody>
         </table>
     <?php else : ?>
-        <h3 class="mt-4">Aucun compteur trouvé</h3>
+        <h3 class="mt-5">Aucun compteur trouvé</h3>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_add_counter"><i class="fa-solid fa-plus"></i> Ajouter un compteur</button>
+        <a id="btn_exception" class="btn btn-secondary text-white" href="<?= $router->url('view_import_counters') ?>"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-file mx-2"></i> Ajouter massivement des compteurs</a>
     <?php endif ?>
 </div>
 
@@ -95,7 +97,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                 <div class="row mb-3">
                     <label for="order" class="col-sm-4">Trier par</label>
                     <select class="selectize col-sm-4" id="order" name="order">
-                        <?php foreach ($laTable as $nom_input => $props) : ?>
+                        <?php foreach (Compteur::testChamps($perimetre) as $nom_input => $props) : ?>
                             <option value="<?= $nom_input ?>" <?php if ($order === $nom_input) : ?>selected<?php endif ?>><?= $props['libelle'] ?></option>
                         <?php endforeach ?>
                     </select>
@@ -106,14 +108,12 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                 </div>
 
                 <?php foreach (Compteur::testChamps($perimetre) as $nom_input => $props) : ?>
-                    <?php if ($nom_input !== 'order') : ?>
-                        <div class="row mb-3">
-                            <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
-                            <div class="col-sm-3">
-                                <input type="text" id="<?= $nom_input ?>" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
-                            </div>
+                    <div class="row mb-3">
+                        <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
+                        <div class="col-sm-3">
+                            <input type="text" id="<?= $nom_input ?>" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
                         </div>
-                    <?php endif ?>
+                    </div>
                 <?php endforeach ?>
 
             </div>

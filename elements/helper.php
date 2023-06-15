@@ -106,12 +106,10 @@ function getValeurInput($variable_input, string|int $defaultValue = ''): string|
 
 function newException($msg = "Page introuvable"): void
 {
-    $msg = "Un problème technique a été rencontré.";
     require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR. '404.php';
 }
 
 function newFormError($msg = "Le formulaire est invalide"): void
 {
-    $msg = $msg;
     require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR. 'erreurForm.php';
 }

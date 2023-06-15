@@ -1,4 +1,6 @@
 <?php
+use App\User;
+
 if (isset($_GET['switchColumns'])) {
     $_SESSION['showColumns'] = ($_SESSION['showColumns'] === 'few') ? 'all' : 'few';
     header('Location:' . $url);
@@ -18,5 +20,10 @@ if (isset($_GET['switchColumns'])) {
             <input type="hidden" name="switchColumns">
             <button class="mx-3 btn btn-primary text-white" href="?page=<?= $page ?>&<?= $fullURL ?>"><?= $showColumns === 'few' ? 'Afficher toutes' : 'Reduire' ?> les informations</button>
         </form>
+    <?php endif ?>
+
+
+    <?php if (User::getRole() === 2 && $url === 'responsables-perimetre'): ?>
+        <a class="mx-1 btn btn-success" href="<?= $router->url('view_create_edit_user') ?>"><i class="fa-solid fa-plus"></i> Créer/Modifier un utilisateur</a>
     <?php endif ?>
 </div>

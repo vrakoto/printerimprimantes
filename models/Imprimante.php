@@ -113,7 +113,7 @@ class Imprimante extends Driver {
             }
         }
         $limit = '';
-        $showColumns = $_SESSION['showColumns'];        
+        $showColumns = $_SESSION['showColumns'];
         if ($enableLimit) {
             $debut = (int)$params['debut']['value'];
             $nb_results_page = (int)$params['nb_results_page']['value'];

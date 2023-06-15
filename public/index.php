@@ -37,34 +37,10 @@ if (Driver::estConnecte()) {
     $router->request('/liste-responsables', '/user/listeResponsables.php', 'list_owners');
     $router->request('/responsables-perimetre', '/user/responsablesPerimetre.php', 'owners_area');
     $router->request('/gestion-utilisateurs', '/user/gestionUtilisateurs.php', 'view_users_area');
+    $router->request('/gestion-utilisateur', '/user/createEditUser.php', 'view_create_edit_user');
 
     $router->request('/importCompteurs', '/user/importerCompteurs.php', 'view_import_counters');
     $router->request('/importCompteurs', '/user/importerCompteurs.php', 'import_counters', 'POST');
-
-
-    if (User::getRole() !== 2) {
-        $router->requestAjax('/ajouterCopieurPerimetre', 'ajouter_machine_perimetre', 'POST');
-        $router->requestAjax('/retirerCopieurPerimetre', 'retirer_machine_perimetre', 'POST');
-    }
-
-    $router->requestAjax('/getCompteurs', 'get_compteurs');
-    $router->requestAjax('/getCompteursPerimetre', 'get_compteurs_perimetre');
-
-    $router->requestAjax('/getLesCompteursImprimante[*:num]', 'get_compteurs_imprimante');
-
-    $router->requestAjax('/ajouterReleve', 'ajouter_compteur', 'POST');
-    $router->requestAjax('/editReleve', 'modifier_compteur', 'POST');
-    $router->requestAjax('/supprimerReleve', 'supprimer_compteur', 'POST');
-
-    $router->requestAjax('/getImprimantes', 'get_imprimantes');
-    $router->requestAjax('/getImprimantesPerimetre', 'get_imprimantes_perimetre');
-    $router->requestAjax('/getImprimantesSansReleve3Mois', 'get_imprimantes_sans_releve_trimestre');
-
-    $router->requestAjax('/getListeResponsables', 'get_responsables');
-    $router->requestAjax('/getResponsablesPerimetre', 'get_responsables_perimetre');
-
-    $router->requestAjax('/creerUtilisateur', 'creer_utilisateur', 'POST');
-    $router->requestAjax('/getGestionUtilisateurs', 'get_utilisateurs_perimetre');
 
     // $router->request('/test', '/user/test.php', 'test');
     

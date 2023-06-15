@@ -139,13 +139,13 @@ if (isset($_FILES['csv_file'])) {
 
                     Il vous suffit simplement de saisir les informations suivantes dans votre fichier Excel, dans l'ordre suivant :
                     <ul class="mt-3 mb-5">
-                        <li>Le numéro de série de la machine</li>
-                        <li>Sa date de relevé à ce format : JJ-MM-AAAA ou JJ/MM/AAAA</li>
-                        <li>Son 112 Total (mettez 0 si aucun)</li>
-                        <li>Son 113 Total (mettez 0 si aucun)</li>
-                        <li>Son 122 Total (mettez 0 si aucun)</li>
-                        <li>Son 123 Total (mettez 0 si aucun)</li>
-                        <li>Le type de relevé (MANUEL ou IWMC)</li>
+                        <li>Dans la colonne A : Le numéro de série de la machine</li>
+                        <li>Dans la colonne B : Sa date de relevé au format JJ-MM-AAAA ou JJ/MM/AAAA</li>
+                        <li>Dans la colonne C : Son 112 Total (mettez 0 si aucun)</li>
+                        <li>Dans la colonne D : Son 113 Total (mettez 0 si aucun)</li>
+                        <li>Dans la colonne E : Son 122 Total (mettez 0 si aucun)</li>
+                        <li>Dans la colonne F : Son 123 Total (mettez 0 si aucun)</li>
+                        <li>Dans la colonne G : Le type de relevé (MANUEL ou IWMC)</li>
                     </ul>
 
                     <p>Voici un exemple de ce à quoi devrait ressembler votre fichier Excel :</p>

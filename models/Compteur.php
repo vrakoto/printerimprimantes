@@ -48,7 +48,7 @@ HTML;
     static function testChamps($perimetre): array
     {
         $headers = [
-            "num_serie" => ['nom_input' => "num_serie", 'nom_db' => "Numéro_série", "libelle" => "N° de série"],
+            "num_serie" => ['nom_input' => "num_serie", 'nom_db' => "Numéro_série", "libelle" => "N° de série", "anti_ambiguous" => 'c'],
             "bdd" => ['nom_input' => "bdd", 'nom_db' => "BDD", "libelle" => "BDD", "anti_ambiguous" => 'c'],
             "date" => ['nom_input' => "date", 'nom_db' => "Date", "libelle" => "Date de relevé"],
             "total_101" => ['nom_input' => "total_101", 'nom_db' => "101_Total_1", "libelle" => "101 Total"],
@@ -115,8 +115,13 @@ HTML;
         }
 
         if ($perimetre) {
-            $where .= " AND c.`BDD` = :bdd";
-            $options['bdd'] = User::getBDD();
+            if (User::getRole() === 2) {
+                $where .= " AND c.`BDD` = :bdd";
+                $options['bdd'] = User::getBDD();
+            } else {
+                $where .= " AND p.id_profil IN (SELECT responsable FROM users_copieurs WHERE responsable = :id_profil)";
+                $options['id_profil'] = User::getMonID();
+            }
         }
         
         $sql = "SELECT ";
