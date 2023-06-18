@@ -119,7 +119,7 @@ try {
                 <div class="row mb-3">
                     <label for="remove_num_serie" class="col-auto">Sélectionnez un N° de Série</label>
                     <select class="selectize w-100" name="remove_num_serie" id="remove_num_serie">
-                        <?php foreach (Corsic::copieursPerimetre() as $numero) : $num = htmlentities($numero['num_serie']) ?>
+                        <?php foreach (Imprimante::copieursPerimetre([], false) as $numero) : $num = htmlentities($numero['num_serie']) ?>
                             <option value="<?= $num ?>"><?= $num ?></option>
                         <?php endforeach ?>
                     </select>

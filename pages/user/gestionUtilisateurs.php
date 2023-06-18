@@ -6,43 +6,30 @@ use App\User;
 
 $title = "Gestion des Utilisateurs";
 $url = "gestion-utilisateurs";
+$nb_results_par_page = 10;
+
+$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
+$order = getValeurInput('order', 'gpn');
+$ordertype = getValeurInput('ordertype', 'ASC');
+$showColumns = $_SESSION['showColumns'];
+
 $laTable = User::ChampsGestionUtilisateurs();
 
-
-if (!empty($_POST)) {
-    $gpn = htmlentities($_POST['gpn']);
-    $courriel = htmlentities($_POST['courriel']);
-    $role = htmlentities($_POST['role']);
-    $unite = htmlentities($_POST['unite']);
-    $mdp = htmlentities($_POST['mdp']);
-    $confirm_mdp = htmlentities($_POST['confirm_mdp']);
-
-    try {
-        Coordsic::creerUtilisateur(User::getBDD(), $gpn, $courriel, $role, $mdp, $unite);
-    } catch (PDOException $th) {
-        die('erreur');
-    }
-}
-
-$order = getValeurInput('order', 'gpn');
-$ordertype = getValeurInput('ordertype', 'DESC');
-
-foreach ($laTable as $key => $value) {
-    $nom_input = $value['nom_input'];
-    $valuePosition = getValeurInput($value['nom_input']) . '%';
-
+foreach ($laTable as $nom_input => $value) {
     switch ($nom_input) {
         case 'gpn':
-            $valuePosition = '%' . getValeurInput('gpn') . '%';
-        break;
-    }
+            $valuePosition = '%' . getValeurInput($nom_input) . '%';
+            break;
 
-    $laTable[$key] = array_merge($value, [
+        default:
+            $valuePosition = getValeurInput($nom_input) . '%';
+            break;
+    }
+    $laTable[$nom_input] = array_merge($value, [
         'value' => getValeurInput($nom_input),
         'valuePosition' => $valuePosition
     ]);
 }
-
 $laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
 
 // l'utilisateur a fait une recherche
@@ -57,26 +44,51 @@ foreach ($laTable as $nom_input => $props) {
 }
 $fullURL = http_build_query($laTable_query);
 
+$laTable['page'] = ['value' => $page];
+$laTable['debut'] = ['value' => (($page - 1) * $nb_results_par_page)];
+$laTable['nb_results_page'] = ['value' => $nb_results_par_page];
 
-$keysToRemove = ['order'];
-$formVariables = array_filter($laTable, function ($key) use ($keysToRemove) {
-    return !in_array($key, $keysToRemove);
-}, ARRAY_FILTER_USE_KEY);
-
-$nb_results_par_page = 10;
-$page = 1;
-if (isset($_GET['page'])) {
-    $page = (int)$_GET['page'];
-}
 if ($page <= 0) {
     header('Location:/' . $url);
     exit();
 }
 
-$debut = ($page - 1) * $nb_results_par_page;
 
-$lesResultats = User::getUtilisateursPerimetre($laTable, [$debut, $nb_results_par_page]);
-$lesResultatsSansPagination = User::getUtilisateursPerimetre($laTable);
+$erreur = false;
+if (isset($_POST) && !empty($_POST)) {
+    $post_variables = [];
+    foreach (User::ChampsGestionUtilisateurs(true) as $nom_input => $props) {
+        if (isset($_POST[$nom_input])) {
+            $post_variables[$nom_input] = htmlentities($_POST[$nom_input]);
+        }
+    }
+
+    if (empty($post_variables['courriel']) && empty($post_variables['mdp']) && empty($post_variables['courriel']) && empty($post_variables['gpn'])) {
+        $erreur = true;
+    }
+
+    if (!$erreur) {
+        try {
+            Coordsic::creerUtilisateur(User::getBDD(), $post_variables['gpn'], $post_variables['courriel'], 1, $post_variables['mdp'], $post_variables['unite']);
+            $success = true;
+        } catch (PDOException $th) {
+            $msg = "Erreur interne";
+            if ($th->getCode() === "23000") {
+                $msg = "Un utilisateur avec le mail '" . $post_variables['courriel'] . "' est déjà existant";
+            }
+            newFormError($msg);
+        }
+    } else {
+        newFormError("Veuillez remplir tous les champs. Le champ 'Unité' est falcultatié.");
+    }
+}
+
+try {
+    $lesResultats = User::getUtilisateursPerimetre($laTable);
+    $lesResultatsSansPagination = User::getUtilisateursPerimetre($laTable, false);
+} catch (\Throwable $th) {
+    newException($th->getMessage());
+}
 
 $total = count($lesResultatsSansPagination);
 $nb_pages = ceil($total / $nb_results_par_page);
@@ -91,22 +103,17 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
 ?>
 
 <div class="p-4">
+
+    <?php if (isset($success)): ?>
+        <div class="alert alert-success text-center">
+            Compte ajouté avec succès.
+        </div>
+    <?php endif ?>
+
     <?php require_once 'templates' . DIRECTORY_SEPARATOR . 'header.php' ?>
 
     <?php if ($page <= $nb_pages) : ?>
-        <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
-            <div id="pagination">
-                <a class="<?= $page != 1 ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=1&<?= $fullURL ?>">1</a>
-                <a <?php if ($page <= 1) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page - 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-left"></i></a>
-
-                <button class="btn btn-secondary" style="cursor: unset;"><?= $page ?></button>
-
-                <a <?php if ($page >= $nb_pages) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page + 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-right"></i></a>
-                <a class="<?= $page != $nb_pages ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=<?= $nb_pages ?>&<?= $fullURL ?>"><?= $nb_pages ?></a>
-            </div>
-
-            <h3 class="mt-5">Total d'utilisateurs : <?= $total ?></h3>
-        </div>
+        <?php require_once 'templates' . DIRECTORY_SEPARATOR . 'pagination.php' ?>
 
         <table class="table table-striped table-bordered personalTable">
             <thead>
@@ -143,8 +150,8 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                 <div class="row mb-3">
                     <label for="order" class="col-sm-4">Trier par</label>
                     <select class="selectize col-sm-4" id="order" name="order">
-                        <?php foreach (User::ChampsGestionUtilisateurs() as $key => $s) : ?>
-                            <option value="<?= $key ?>" <?php if ($order === $key) : ?>selected<?php endif ?>><?= $s['libelle'] ?></option>
+                        <?php foreach (User::ChampsGestionUtilisateurs() as $nom_input => $s) : ?>
+                            <option value="<?= $nom_input ?>" <?php if ($order === $nom_input) : ?>selected<?php endif ?>><?= $s['libelle'] ?></option>
                         <?php endforeach ?>
                     </select>
                     <select class="selectize col-sm-4" id="ordertype" name="ordertype">
@@ -157,7 +164,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                     <div class="row mb-3">
                         <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
                         <div class="col-sm-3">
-                            <input type="text" id="<?= $nom_input ?>" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
+                            <input type="text" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
                         </div>
                     </div>
                 <?php } ?>
@@ -165,6 +172,33 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Rechercher</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_create_user" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="post">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Créer un Utilisateur</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <?php foreach (User::ChampsGestionUtilisateurs(true) as $nom_input => $props) : ?>
+                    <?php if ($nom_input !== 'role') : ?>
+                        <div class="row mb-3">
+                            <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
+                            <div class="col-sm-3">
+                                <input type="text" id="<?= $nom_input ?>" name="<?= $nom_input ?>" class="form-control" value="<?= getValeurInput($nom_input) ?>">
+                            </div>
+                        </div>
+                    <?php endif ?>
+                <?php endforeach ?>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Créer</button>
             </div>
         </form>
     </div>

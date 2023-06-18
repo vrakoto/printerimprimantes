@@ -4,7 +4,6 @@ session_start();
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 use App\Driver;
 use App\Router;
-use App\User;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'elements' . DIRECTORY_SEPARATOR . 'helper.php';
 
@@ -13,6 +12,7 @@ $router = new Router($VUES);
 
 if (Driver::estConnecte()) {
     $router->request('/', '/user/compte.php', 'home');
+    $router->request('/logs', '/user/changeLogs.php', 'logs');
     $router->request('/', '/user/compte.php', 'edit_account', 'POST'); // changer mdp
     
     $router->request('/imprimante/[*:num]', '/user/imprimante.php', 'machine_details');
@@ -24,6 +24,8 @@ if (Driver::estConnecte()) {
     $router->request('/machines_transfert', '/user/copieursTransfert.php', 'machines_transfert');
     $router->request('/copieurs-sans-releve-trimestre', '/user/copieurSansReleveTrimestre.php', 'list_machines_without_counter_3_months');
     $router->request('/copieurs-sans-responsable', '/user/copieursSansResponsable.php', 'list_machines_without_owner');
+    $router->request('/transfert-copieur', '/user/transfertCopieur.php', 'view_transfert_machine');
+    $router->request('/transfert-copieur', '/user/transfertCopieur.php', 'transfert_machine', 'POST');
     
     $router->request('/liste_compteurs', '/user/listeCompteurs.php', 'list_counters');
     $router->request('/compteurs_perimetre', '/user/compteursPerimetre.php', 'counters_area');
@@ -37,6 +39,7 @@ if (Driver::estConnecte()) {
     $router->request('/liste-responsables', '/user/listeResponsables.php', 'list_owners');
     $router->request('/responsables-perimetre', '/user/responsablesPerimetre.php', 'owners_area');
     $router->request('/gestion-utilisateurs', '/user/gestionUtilisateurs.php', 'view_users_area');
+    $router->request('/gestion-utilisateurs', '/user/gestionUtilisateurs.php', 'create_users_area', 'POST');
     $router->request('/gestion-utilisateur', '/user/createEditUser.php', 'view_create_edit_user');
 
     $router->request('/importCompteurs', '/user/importerCompteurs.php', 'view_import_counters');

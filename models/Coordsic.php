@@ -44,4 +44,36 @@ class Coordsic extends User {
             'unite' => $unite
         ]); 
     }
+
+
+    static function transfererCopieur($num, $bdd): bool
+    {
+        $query = "UPDATE `copieurs` SET BDD = :new_bdd WHERE `N° de Série` = :num_serie AND BDD = :old_bdd";
+        $old_bdd = Imprimante::getImprimante($num)['BDD'];
+
+        $p = self::$pdo->prepare($query);
+        return $p->execute([
+            'num_serie' => $num,
+            'new_bdd' => $bdd,
+            'old_bdd' => $old_bdd
+        ]);
+    }
+
+    static function historiqueTransfert($num, $bdd): bool
+    {
+        $query = "INSERT INTO copieurs_transfert
+        (num_serie, old_bdd, new_bdd, modif_par)
+        VALUES
+        (:num_serie, :old_bdd, :new_bdd, :modif_par)";
+
+        $old_bdd = Imprimante::getImprimante($num)['BDD'];
+
+        $p = self::$pdo->prepare($query);
+        return $p->execute([
+            'num_serie' => $num,
+            'new_bdd' => $bdd,
+            'old_bdd' => $old_bdd,
+            'modif_par' => User::getMonID()
+        ]);
+    }
 }

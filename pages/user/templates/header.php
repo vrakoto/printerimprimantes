@@ -15,7 +15,7 @@ if (isset($_GET['switchColumns'])) {
     <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-filter"></i> Recherche / Trier</button>
     <a class="mx-1 btn btn-secondary" href="/<?= $url ?>"><i class="fa-solid fa-arrow-rotate-left"></i> Réinitialiser la recherche</a>
 
-    <?php if (str_contains($url, 'copieur')): ?>
+    <?php if ($url === 'liste_copieurs' || $url === 'copieurs_perimetre'): ?>
         <form action="" method="get" class="d-inline-block">
             <input type="hidden" name="switchColumns">
             <button class="mx-3 btn btn-primary text-white" href="?page=<?= $page ?>&<?= $fullURL ?>"><?= $showColumns === 'few' ? 'Afficher toutes' : 'Reduire' ?> les informations</button>
@@ -23,7 +23,7 @@ if (isset($_GET['switchColumns'])) {
     <?php endif ?>
 
 
-    <?php if (User::getRole() === 2 && $url === 'responsables-perimetre'): ?>
-        <a class="mx-1 btn btn-success" href="<?= $router->url('view_create_edit_user') ?>"><i class="fa-solid fa-plus"></i> Créer/Modifier un utilisateur</a>
+    <?php if (User::getRole() === 2 && $url === 'gestion-utilisateurs'): ?>
+        <button class="mx-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_create_user"><i class="fa-solid fa-plus"></i> Créer un utilisateur</button>
     <?php endif ?>
 </div>

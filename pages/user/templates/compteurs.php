@@ -80,7 +80,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     <?php else : ?>
         <h3 class="mt-5">Aucun compteur trouvé</h3>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_add_counter"><i class="fa-solid fa-plus"></i> Ajouter un compteur</button>
-        <a id="btn_exception" class="btn btn-secondary text-white" href="<?= $router->url('view_import_counters') ?>"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-file mx-2"></i> Ajouter massivement des compteurs</a>
+        <!-- <a id="btn_exception" class="btn btn-secondary text-white" href="<?= $router->url('view_import_counters') ?>"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-file mx-2"></i> Ajouter massivement des compteurs</a> -->
     <?php endif ?>
 </div>
 

@@ -37,7 +37,10 @@ use App\Driver;
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="<?= $router->url('home') ?>">Mon Compte</a>
+                        <a class="nav-link" aria-current="page" href="<?= $router->url('home') ?>">Compte</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= $router->url('logs') ?>">Logs</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -46,8 +49,9 @@ use App\Driver;
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="<?= $router->url('list_machines') ?>"><i class="fa-solid fa-list"></i> Liste des Copieurs</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('machines_area') ?>"><i class="fa-solid fa-location-dot"></i> Copieurs de mon périmètre</a></li>
-                            <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_counter_3_months') ?>"><i class="fa-solid fa-user-slash"></i> Sans relevé ce Trimestre</a></li>
-                            <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_owner') ?>"><i class="fa-solid fa-user-slash"></i> Sans Responsable</a></li>
+                            <!-- <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_counter_3_months') ?>"><i class="fa-solid fa-user-slash"></i> Sans relevé ce Trimestre</a></li> -->
+                            <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_owner') ?>"><i class="fa-solid fa-user-slash"></i> Copieurs sans Responsable</a></li>
+                            <li><a class="dropdown-item" href="<?= $router->url('view_transfert_machine') ?>"><i class="fa-solid fa-truck"></i> Suivi des Transferts</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

@@ -333,4 +333,65 @@ class Imprimante extends Driver {
             ]);
         }
     }
+
+    static function ChampsTransfert(): array
+    {
+        $headers = [
+            "num_serie" => ['nom_db' => "num_serie", 'libelle' => "N° de Série"],
+            "old_bdd" => ['nom_db' => "old_bdd", 'libelle' => "Ancienne BDD"],
+            "new_bdd" => ['nom_db' => "new_bdd", 'libelle' => "Nouvelle BDD"],
+            "modif_par" => ['nom_db' => "grade-prenom-nom", 'libelle' => "Transféré par"],
+            "date" => ['nom_db' => "date", 'libelle' => "Date du transfert"]
+        ];
+
+        return $headers;
+    }
+
+    static function getLesTransferts(array $params, bool $enableLimit = true): array
+    {
+        $where = '';
+        $options = [];
+        $ordering = '';
+        foreach ($params as $nom_input => $props) {
+            $value = $props['value'];
+            if (trim($value) !== '' && isset($props['nom_db'])) {
+                $nom_db = $props['nom_db'];
+                
+                if ($nom_input !== 'order') {
+                    $where .= " AND `$nom_db` LIKE :$nom_input";
+                    $options[$nom_input] = $props['valuePosition'];
+                } else {
+                    // order
+                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
+                }
+            }
+        }
+
+        $limit = '';
+        if ($enableLimit) {
+            $debut = (int)$params['debut']['value'];
+            $nb_results_page = (int)$params['nb_results_page']['value'];
+            $limit = "LIMIT $debut, $nb_results_page";
+        }
+        $sql = "SELECT ";
+
+        foreach (self::ChampsTransfert() as $nom_input => $props) {
+            $nom_db = $props['nom_db'];
+            $sql .= " `$nom_db` as $nom_input,";
+        }
+
+        // Suppression de la virgule pour la dernière ligne
+        $sql = rtrim($sql, ',');
+
+        $sql .= " FROM copieurs_transfert
+                JOIN profil on `id_profil` = `modif_par`
+                WHERE 1
+                $where
+                $ordering
+                $limit";
+
+        $p = self::$pdo->prepare($sql);
+        $p->execute($options);
+        return $p->fetchAll();
+    }
 }

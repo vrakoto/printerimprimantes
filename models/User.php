@@ -183,35 +183,11 @@ HTML;
         if (self::getRole() === 2) {
             return Imprimante::getImprimantesParBDD(self::getBDD());
         }
-        $champ_num_serie_users_copieurs = UsersCopieurs::getChamps('champ_num_serie');
-        $champ_id_user_users_copieurs = UsersCopieurs::getChamps('champ_id_user');
-        $champ_num_serie_imprimante = Imprimante::getChamps('champ_num_serie');
 
-        $query = "SELECT 
-                `N° ORDO` as num_ordo, 
-                `N° de Série` as num_serie, 
-                `Modele demandé` as modele, 
-                `STATUT PROJET` as statut, 
-                `BDD` as bdd, 
-                `Site d'installation` as site_installation,
-                `DATE CDE MINARM` as date_cde_minarm,
-                `Config` as config,
-                `N° Saisie ORACLE` as num_oracle,
-                `N° OPP SFDC` as num_sfdc,
-                `HostName` as hostname,
-                `réseau` as reseau,
-                `MAC@` as adresse_mac,
-                `Entité Bénéficiaire` as entite_beneficiaire,
-                `credo_unité` as credo_unite,
-                `CP INSTA` as cp_insta,
-                `DEP INSTA` as dep_insta,
-                `adresse` as adresse,
-                `localisation` as localisation,
-                `ServiceUF` as service_uf,
-                `Accessoires` as accessoires
+        $query = "SELECT `N° de Série` as num_serie
                 FROM copieurs c
-                JOIN users_copieurs uc on uc.`$champ_num_serie_users_copieurs` = c.`$champ_num_serie_imprimante`
-                WHERE $champ_id_user_users_copieurs = :id_profil";
+                JOIN users_copieurs uc on uc.`responsable` = c.`N° de Série`
+                WHERE responsable = :id_profil";
         
         $p = self::$pdo->prepare($query);
         $p->execute([
@@ -305,14 +281,14 @@ HTML;
         ]);
     }
 
-    static function getUtilisateursPerimetre(array $params, array $limits = []): array
+    static function getUtilisateursPerimetre(array $params, bool $enableLimit = true): array
     {
         $where = '';
         $options = [];
         $ordering = '';
         foreach ($params as $nom_input => $props) {
             $value = $props['value'];
-            if (trim($value) !== '') {
+            if (trim($value) !== '' && isset($props['nom_db'])) {
                 $nom_db = $props['nom_db'];
                 
                 if ($nom_input !== 'order') {
@@ -324,10 +300,23 @@ HTML;
                 }
             }
         }
+        $limit = '';
+        if ($enableLimit) {
+            $debut = (int)$params['debut']['value'];
+            $nb_results_page = (int)$params['nb_results_page']['value'];
+            $limit = "LIMIT $debut, $nb_results_page";
+        }
 
-        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
-        $sql = "SELECT p.`grade-prenom-nom` as gpn, p.`Courriel` as courriel, ul.userlevelname as role
-                FROM profil p
+        $sql = "SELECT ";
+        foreach (self::ChampsGestionUtilisateurs() as $nom_input => $props) {
+            $nom_db = $props['nom_db'];
+            $sql .= " `$nom_db` as $nom_input,";
+        }
+
+        // Suppression de la virgule pour la dernière ligne
+        $sql = rtrim($sql, ',');
+
+        $sql .= " FROM profil p
                 JOIN userlevels ul on ul.userlevelid = p.role
                 WHERE BDD = :bdd
                 $where
@@ -340,13 +329,20 @@ HTML;
         return $p->fetchAll();
     }
 
-    static function ChampsGestionUtilisateurs(): array
+    static function ChampsGestionUtilisateurs(bool $showMDP = false): array
     {
         $headers = [
-            "gpn" => ['nom_input' => "gpn", 'nom_db' => "grade-prenom-nom", 'libelle' => "Grade Prénom Nom"],
-            "courriel" => ['nom_input' => "courriel", 'nom_db' => "Courriel", 'libelle' => "Courriel"],
-            "role" => ['nom_input' => "role", 'nom_db' => "rôle", 'libelle' => "Role"]
+            "gpn" => ['nom_db' => "grade-prenom-nom", 'libelle' => "Grade Prénom Nom"],
+            "courriel" => ['nom_db' => "Courriel", 'libelle' => "Courriel"],
+            "role" => ['nom_db' => "userlevelname", 'libelle' => "Role"],
+            "mdp" => ['nom_db' => "mdp", 'libelle' => "Mot de passe"],
+            "unite" => ['nom_db' => "Unité", 'libelle' => "Unité"]
         ];
+
+        if (!$showMDP) {
+            unset($headers['mdp']);
+        }
+
         return $headers;
     }
 
