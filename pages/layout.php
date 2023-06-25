@@ -50,9 +50,9 @@ use App\Driver;
                             <li><a class="dropdown-item" href="<?= $router->url('list_machines') ?>"><i class="fa-solid fa-list"></i> Liste des Copieurs</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('machines_area') ?>"><i class="fa-solid fa-location-dot"></i> Copieurs de mon périmètre</a></li>
                             <div class="dropdown-divider"></div> <!-- Divider -->
+                            <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_owner') ?>"><i class="fa-solid fa-xmark"></i> <i class="fa-solid fa-user"></i> Sans Responsable</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_counter_3_months') ?>"><i class="fa-solid fa-xmark"></i> <i class="fa-solid fa-book"></i> Sans relevé ce Trimestre</a></li>
-                            <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_owner') ?>"><i class="fa-solid fa-user-slash"></i> Copieurs sans Responsable</a></li>
-                            <li><a class="dropdown-item" href="<?= $router->url('view_transfert_machine') ?>"><i class="fa-solid fa-truck"></i> Suivi des Transferts</a></li>
+                            <li><a class="dropdown-item" href="<?= $router->url('view_transfert_machine') ?>"><i class="fa-solid fa-arrow-right"></i> <i class="fa-solid fa-truck"></i> Suivi des Transferts</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

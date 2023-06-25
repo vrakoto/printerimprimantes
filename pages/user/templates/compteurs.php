@@ -1,12 +1,20 @@
 <?php
 
 use App\Compteur;
+use App\User;
 
+$isURLCompteurs = true;
 $total = count($lesResultatsSansPagination);
 $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     Compteur::downloadCSV(Compteur::ChampsCompteur(false), 'liste_compteurs', $lesResultatsSansPagination);
+}
+
+if (isset($_GET['uniqueCompteurs'])) {
+    $_SESSION['uniqueCompteurs'] = ($_SESSION['uniqueCompteurs'] === 'true') ? 'false' : 'true';
+    header('Location:' . $_SERVER['HTTP_REFERER']);
+    exit();
 }
 ?>
 
@@ -54,7 +62,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="imprimante/<?= $num_serie ?>"><i class="fa-solid fa-eye"></i> Voir l'imprimante</a></li>
 
-                                    <?php if ($url === 'compteurs_perimetre') : ?>
+                                    <?php if ((Compteur::isMine($num_serie, $date) || User::getRole() === 2) && $url === 'compteurs_perimetre') : ?>
                                         <li><a class="dropdown-item" href="supprimer-releve/<?= $num_serie ?>/<?= $date ?>" onclick="return confirm('Voulez-vous supprimer ce compteur ?');"><i class="fa-solid fa-trash"></i> Supprimer ce relevé</a></li>
                                     <?php endif ?>
                                 </ul>

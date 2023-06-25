@@ -82,7 +82,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     </div>
 </div>
 
-<?php if (User::getRole() === 2): ?>
+<?php if (User::getRole() === 2 || User::getRole() === 4): ?>
     <div class="modal fade" id="modal_assign_machine" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <form class="modal-content" method="post">
@@ -95,7 +95,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                     <div class="row mb-3">
                         <label for="add_num_serie" class="col-sm-4">Sélectionnez l'utilisateur</label>
                         <select name="num_serie" class="selectize col-sm-4" placeholder="Sélectionnez un utilisateur...">
-                            <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero['num_serie']) ?>
+                            <?php foreach (User::ChampsGestionUtilisateurs() as $nom_input => $props): ?>
                                 <option value="<?= $num ?>"><?= $num ?></option>
                             <?php endforeach ?>
                         </select>

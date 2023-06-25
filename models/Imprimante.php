@@ -62,7 +62,7 @@ class Imprimante extends Driver {
     }
 
     static function getImprimantes(array $params, bool $perimetre, bool $enableLimit = true): array
-    {        
+    {
         $where = '';
         $options = [];
         $ordering = '';
@@ -77,13 +77,17 @@ class Imprimante extends Driver {
 
         $sql .= " FROM copieurs c";
         if ($perimetre) {
-            if (User::getRole() === 2) {
-                $where .= " AND BDD = :bdd";
-                $options['bdd'] = User::getBDD();
-            } else {
-                $sql .= " JOIN users_copieurs uc on uc.`numéro_série` = c.`N° de Série`";
-                $where .= " AND responsable = :responsable";
-                $options['responsable'] = User::getMonID();
+            switch (User::getRole()) {
+                case 2:
+                    $where .= " AND BDD = :bdd";
+                    $options['bdd'] = User::getBDD();
+                break;
+
+                default:
+                    $sql .= " JOIN users_copieurs uc on uc.`numéro_série` = c.`N° de Série`";
+                    $where .= " AND responsable = :responsable";
+                    $options['responsable'] = User::getMonID();
+                break;
             }
         }
 
@@ -288,11 +292,11 @@ class Imprimante extends Driver {
     static function ChampsTransfert(): array
     {
         $headers = [
-            "num_serie" => ['nom_db' => "num_serie", 'libelle' => "N° de Série"],
-            "old_bdd" => ['nom_db' => "old_bdd", 'libelle' => "Ancienne BDD"],
-            "new_bdd" => ['nom_db' => "new_bdd", 'libelle' => "Nouvelle BDD"],
-            "modif_par" => ['nom_db' => "grade-prenom-nom", 'libelle' => "Transféré par"],
-            "date" => ['nom_db' => "date", 'libelle' => "Date du transfert"]
+            "num_serie" => ['nom_db' => "num_serie", 'libelle' => "N° de Série", "valuePosition" => "right"],
+            "old_bdd" => ['nom_db' => "old_bdd", 'libelle' => "Ancienne BDD", "valuePosition" => "exact"],
+            "new_bdd" => ['nom_db' => "new_bdd", 'libelle' => "Nouvelle BDD", "valuePosition" => "exact"],
+            "modif_par" => ['nom_db' => "grade-prenom-nom", 'libelle' => "Transféré par", "valuePosition" => "right"],
+            "date" => ['nom_db' => "date", 'libelle' => "Date du transfert", "valuePosition" => "exact"]
         ];
 
         return $headers;
@@ -303,6 +307,14 @@ class Imprimante extends Driver {
         $where = '';
         $options = [];
         $ordering = '';
+
+        $sql = "SELECT ";
+        foreach (self::ChampsTransfert() as $nom_input => $props) {
+            $nom_db = $props['nom_db'];
+            $sql .= " `$nom_db` as $nom_input,";
+        }
+        $sql = rtrim($sql, ',');
+
         foreach ($params as $nom_input => $props) {
             $value = $props['value'];
             if (trim($value) !== '' && isset($props['nom_db'])) {
@@ -310,14 +322,8 @@ class Imprimante extends Driver {
                 
                 if ($nom_input !== 'order') {
                     $where .= " AND `$nom_db` LIKE :$nom_input";
-                    switch ($props['valuePosition']) {
-                        case 'left':
-                            $value = '%' . $value;
-                        break;
-
-                        case 'right':
-                            $value = $value . '%';
-                        break;
+                    if ($props['valuePosition'] === 'right') {
+                        $value = $value . '%';
                     }
                     $options[$nom_input] = $value;
                 } else {
@@ -333,15 +339,7 @@ class Imprimante extends Driver {
             $nb_results_page = (int)$params['nb_results_page']['value'];
             $limit = "LIMIT $debut, $nb_results_page";
         }
-        $sql = "SELECT ";
-
-        foreach (self::ChampsTransfert() as $nom_input => $props) {
-            $nom_db = $props['nom_db'];
-            $sql .= " `$nom_db` as $nom_input,";
-        }
-
-        // Suppression de la virgule pour la dernière ligne
-        $sql = rtrim($sql, ',');
+        
 
         $sql .= " FROM copieurs_transfert
                 JOIN profil on `id_profil` = `modif_par`

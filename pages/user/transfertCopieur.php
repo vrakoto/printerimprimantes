@@ -9,52 +9,12 @@ $title = "Transfert des Copieurs";
 $url = "transfert-copieur";
 $nb_results_par_page = 10;
 
-$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
-$order = getValeurInput('order', 'date');
-$ordertype = getValeurInput('ordertype', 'DESC');
-
 $lesNumeros = Imprimante::getImprimantes([], true, false);
 
 $laTable = Imprimante::ChampsTransfert();
-
-foreach ($laTable as $nom_input => $value) {
-    switch ($nom_input) {
-        case 'modif_par':
-            $valuePosition = '%' . getValeurInput($nom_input) . '%';
-        break;
-
-        default:
-            $valuePosition = getValeurInput($nom_input) . '%';
-        break;
-    }
-    $laTable[$nom_input] = array_merge($value, [
-        'value' => getValeurInput($nom_input),
-        'valuePosition' => $valuePosition
-    ]);
-}
-$laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
-
-// l'utilisateur a fait une recherche
-$laTable_query = [];
-foreach ($laTable as $nom_input => $props) {
-    if ($nom_input === 'order') {
-        $laTable_query['order'] = $props['nom_db'];
-        $laTable_query['ordertype'] = $ordertype;
-    } else if (!empty($props['value'])) {
-        $laTable_query[$nom_input] = $props['value'];
-    }
-}
-$fullURL = http_build_query($laTable_query);
-
-$laTable['page'] = ['value' => $page];
-$laTable['debut'] = ['value' => (($page - 1) * $nb_results_par_page)];
-$laTable['nb_results_page'] = ['value' => $nb_results_par_page];
-
-if ($page <= 0) {
-    header('Location:/' . $url);
-    exit();
-}
-
+$defaultOrder = "date";
+$defaultOrderType = "DESC";
+require_once 'templates' . DIRECTORY_SEPARATOR . 'logique.php';
 
 try {
     $lesResultats = Imprimante::getLesTransferts($laTable);
@@ -147,7 +107,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                 </div>
 
                 <div class="row">
-                    <label for="select_num_serie" class="col-sm-4">Future BdD</label>
+                    <label for="select_num_serie" class="col-sm-4">BDD ciblée</label>
                     <select name="bdd" class="selectize col-sm-4" placeholder="Sélectionnez une BdD...">
                         <?php foreach (BdD::getTousLesBDD() as $lesBdDs) : $bdd = htmlentities($lesBdDs['BDD']) ?>
                             <?php if ($bdd !== User::getBDD()) : ?>

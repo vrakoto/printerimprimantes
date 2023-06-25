@@ -27,10 +27,10 @@ use App\User;
             <!-- <a id="btn_exception" class="btn btn-secondary text-white" href="<?= $router->url('view_import_counters') ?>"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-file mx-2"></i> Ajouter massivement des compteurs</a> -->
         <?php endif ?>
 
-        <?php if (User::getRole() === 2 && $url === 'responsables-perimetre'): ?>
+        <?php if ((User::getRole() === 2 || User::getRole() === 4) && $url === 'responsables-perimetre'): ?>
             <button class="mx-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_assign_machine"><i class="fa-solid fa-plus"></i> Affecter un copieur à un utilisateur</button>
         <?php endif ?>
     </div>
 
-    <h4 class="mx-4"><?= $total ?> Résultat<?= ($total > 1) ? 's' : '' ?></h4>
+    <h4 class="mx-4"><?= number_format($total, 0, ',', ' '); ?> Résultat<?= ($total > 1) ? 's' : '' ?></h4>
 </div>

@@ -28,9 +28,5 @@
         <ul class="list-unstyled mt-3">
             <li class="text-muted ml-3"><i class="mdi mdi-circle-medium mr-2"></i>Initial Released</li>
         </ul>
-
-
-        <div class="mt-4">
-        </div>
     </div>
 </div>

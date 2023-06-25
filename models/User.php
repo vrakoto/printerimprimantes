@@ -58,26 +58,6 @@ class User extends Driver {
         ]);
     }
 
-    static function getLesRelevesMonPerimetre(): array
-    {
-        if (self::getRole() === 1 || self::getRole() === 3) {
-            $query = "SELECT * FROM compteurs
-                      WHERE modif_par IN
-                        (SELECT `responsable` FROM users_copieurs
-                        WHERE `responsable` = :id_profil)";
-
-            $p = self::$pdo->prepare($query);
-            $p->execute([
-                'id_profil' => self::getMonID()
-            ]);
-
-            return $p->fetchAll();
-
-        } else if (self::getRole() === 2) {
-            return Compteur::getLesRelevesParBDD();
-        }
-    }
-
     static function ajouterReleve($num_serie, $date_releve, $total_112, $total_113, $total_122, $total_123, $type_releve): bool
     {
         $query = "INSERT INTO compteurs
@@ -219,7 +199,7 @@ class User extends Driver {
 
     static function deconnexion(): void
     {
-        unset($_SESSION['user']);
+        session_destroy();
         header('Location:/');
         exit();
     }

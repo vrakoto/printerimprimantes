@@ -50,7 +50,7 @@ class Compteur extends Driver
 
     static function getLesReleves(array $params, bool $perimetre, bool $enableLimit = true): array
     {
-        $where = '';
+        $where = ' WHERE 1';
         $options = [];
         $ordering = '';
 
@@ -108,38 +108,37 @@ class Compteur extends Driver
                 $options['id_profil'] = User::getMonID();
             }
         }
-        
+
+        if ($_SESSION['uniqueCompteurs'] === "true") {
+            $where .= " AND c.date_maj =
+                        (SELECT MAX(date_maj) FROM compteurs
+                        WHERE Numéro_série = c.Numéro_série)";
+        }
 
         $sql .= " FROM compteurs c
                 LEFT JOIN profil p on p.id_profil = c.modif_par
-                WHERE 1 $where
+                $where
                 $ordering
                 $limit";
+
         $p = self::$pdo->prepare($sql);
         $p->execute($options);
         return $p->fetchAll();
     }
 
-
-    static function searchCompteurByNumSerie($num_serie): array
+    static function isMine($num_serie, $date_releve): bool
     {
-        $req = "SELECT Numéro_série as num_serie,
-                c.BDD as bdd,
-                Date as date_releve,
-                `101_Total_1` as total_101,
-                `112_Total` as total_112,
-                `113_Total` as total_113,
-                `122_Total` as total_122,
-                `123_Total` as total_123,
-                `grade-prenom-nom` as modif_par,
-                date_maj,
-                type_relevé as type_releve
-                FROM compteurs c
-                LEFT JOIN profil p on p.id_profil = c.modif_par
-                WHERE c.Numéro_série LIKE :num_serie
-                ORDER BY date_maj DESC";
-        $p = self::$pdo->prepare($req);
-        $p->execute(['num_serie' => '%' . $num_serie . '%']);
-        return $p->fetchAll();
+        $query = "SELECT modif_par FROM compteurs
+                WHERE `modif_par` = :id_profil
+                AND `Numéro_série` = :num_serie
+                AND `Date` = :dr";
+        $p = self::$pdo->prepare($query);
+        $p->execute([
+            'id_profil' => User::getMonID(),
+            'num_serie' => $num_serie,
+            'dr' => $date_releve
+        ]);
+
+        return !empty($p->fetch());
     }
 }

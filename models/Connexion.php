@@ -60,6 +60,7 @@ class Connexion extends Driver {
     {
         $_SESSION['user'] = $this->getInformations();
         $_SESSION['showColumns'] = 'few';
+        $_SESSION['uniqueCompteurs'] = "true";
         header('Location:/');
         exit();
     }

@@ -9,6 +9,8 @@ $perimetre = true;
 $nb_results_par_page = 10;
 
 $laTable = Compteur::ChampsCompteur($perimetre);
+$defaultOrder = "date_maj";
+$defaultOrderType = "DESC";
 require_once 'templates' . DIRECTORY_SEPARATOR . 'logique.php';
 
 // Filtre qui les clés spécifiées pour le formulaire d'ajout d'un compteur

@@ -3,6 +3,7 @@
 use App\Imprimante;
 use App\User;
 
+$isURLCopieurs = true;
 $total = count($lesResultatsSansPagination);
 $atLeastOneResult = (count($lesResultats)) > 0 ? true : false;
 $nb_pages = ceil($total / $nb_results_par_page);
@@ -10,13 +11,18 @@ $nb_pages = ceil($total / $nb_results_par_page);
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     Imprimante::downloadCSV(Imprimante::ChampsCopieur(false, 'all'), 'liste_machines', $lesResultatsSansPagination);
 }
-$isURLCopieurs = true;
+
+if (isset($_GET['switchColumns'])) {
+    $_SESSION['showColumns'] = ($_SESSION['showColumns'] === 'few') ? 'all' : 'few';
+    header('Location:' . $_SERVER['HTTP_REFERER']);
+    exit();
+}
 ?>
 
 <div class="p-4">
     <?php require_once 'header.php' ?>
 
-    <?php if ($url === 'copieurs_perimetre' && User::getRole() !== 2) : ?>
+    <?php if ($url === 'copieurs_perimetre' && (User::getRole() !== 2 && User::getRole() !== 4)) : ?>
         <div class="mt-5">
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_add_machine_area">Ajouter un copieur dans mon périmètre</button>
             <?php if ($total > 0) : ?>

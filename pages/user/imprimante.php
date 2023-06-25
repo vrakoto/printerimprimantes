@@ -63,26 +63,20 @@ HTML;
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-            <?php if ($isEligible) : ?>
-                <form action="" method="post" class="mt-3 p-3">
-                <?php else : ?>
-                    <div class="mt-5 p-3">
+            <form action="" method="post" class="mt-3 p-3">
+                <div class="mt-5 p-3">
+
+                <?php foreach (Imprimante::ChampsCopieur(false, 'all') as $nom_input => $props): ?>
+                    <?php if ($nom_input === 'num_ordo' || $nom_input === 'num_serie' || $nom_input === 'bdd' || $nom_input === 'statut' || $nom_input === 'date_cde_minarm'): ?>
+                        <?= addInformationForm(false, $nom_input, $props['libelle'], $imprimante[$props['nom_db']] ) ?>
+                    <?php else: ?>
+                        <?= addInformationForm(true, $nom_input, $props['libelle'], $imprimante[$props['nom_db']] ) ?>
                     <?php endif ?>
+                <?php endforeach ?>
 
-                    <?php foreach (Imprimante::ChampsCopieur(false, 'all') as $nom_input => $props): ?>
-                        <?php if ($nom_input === 'num_ordo' || $nom_input === 'num_serie' || $nom_input === 'bdd' || $nom_input === 'statut' || $nom_input === 'date_cde_minarm'): ?>
-                            <?= addInformationForm(false, $nom_input, $props['libelle'], $imprimante[$props['nom_db']] ) ?>
-                        <?php else: ?>
-                            <?= addInformationForm(true, $nom_input, $props['libelle'], $imprimante[$props['nom_db']] ) ?>
-                        <?php endif ?>
-                    <?php endforeach ?>
-
-                    <?php if ($isEligible) : ?>
-                        <button type="submit" class="btn btn-success">Sauvegarder</button>
-                </form>
-            <?php else : ?>
+                    <button type="submit" class="btn btn-success">Sauvegarder</button>
+            </form>
         </div>
-    <?php endif ?>
     </div>
     <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
         <div class="container mt-3">

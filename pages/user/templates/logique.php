@@ -6,21 +6,27 @@ $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
 if (!isset($defaultOrder)) {
     $defaultOrder = 'num_serie';
 }
+if (!isset($defaultOrderType)) {
+    $defaultOrderType = 'ASC';
+}
 $order = getValeurInput('order', $defaultOrder);
-$ordertype = getValeurInput('ordertype', 'ASC');
+$ordertype = getValeurInput('ordertype', $defaultOrderType);
 
 foreach ($laTable as $nom_input => $value) {
     $laTable[$nom_input]['value'] = getValeurInput($nom_input);
 }
-$laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
 
 // l'utilisateur a fait une recherche
 $laTable_query = [];
 foreach ($laTable as $nom_input => $props) {
-    $laTable_query[$nom_input] = $props['value'];
+    if (!empty($props['value'])) {
+        $laTable_query[$nom_input] = $props['value'];
+    }
 }
+
 $fullURL = http_build_query($laTable_query) . '&order=' . $order . '&ordertype=' . $ordertype;
 
+$laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
 $laTable['page'] = ['value' => $page];
 $laTable['debut'] = ['value' => (($page - 1) * $nb_results_par_page)];
 $laTable['nb_results_page'] = ['value' => $nb_results_par_page];
