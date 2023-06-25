@@ -4,13 +4,11 @@ use AltoRouter;
 
 class Router {
     private $viewPath;
-    private $isAjax;
     private $router;
 
-    function __construct(string $viewPath, bool $isAjax = FALSE)
+    function __construct(string $viewPath)
     {
         $this->viewPath = $viewPath;
-        $this->isAjax = $isAjax;
         $this->router = new AltoRouter();
     }
 
@@ -26,7 +24,7 @@ class Router {
         return $this;
     }
     
-    function url (string $name, array $params = []): string
+    function url(string $name, array $params = []): string
     {
         return $this->router->generate($name, $params);
     }

@@ -1,5 +1,4 @@
 <?php
-
 use App\Imprimante;
 
 $title = "Ajout d'une Panne";
@@ -61,7 +60,7 @@ if (!empty($_POST)) {
                 <input type="text" id="num_serie" class="form-control">
             </div>
             <select class="selectize w-100" name="num_serie" id="num_serie" required>
-                <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero[Imprimante::getChamps('champ_num_serie')]) ?>
+                <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero['N° de Série']) ?>
                     <option value="<?= $num ?>"><?= $num ?></option>
                 <?php endforeach ?>
             </select>

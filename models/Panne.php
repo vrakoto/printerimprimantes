@@ -2,29 +2,6 @@
 namespace App;
 
 class Panne extends Driver {
-    static function ChampPannes2(): string
-    {
-        return <<<HTML
-        <thead>
-            <tr>
-                <th id="id_event">N° de ticket</th>
-                <th id="num_serie">N° de série</th>
-                <th id="contexte">Contexte de la panne</th>
-                <th id="type_panne">Nature de la panne</th>
-                <th id="statut_intervention">Statut de l'intervention</th>
-                <th id="commentaires">Commentaires</th>
-                <th id="date_evolution">Date de changement de situation</th>
-                <th id="heure_evolution">Heure de changement de situation</th>
-                <th id="maj_par">Déclaré/Modifié par</th>
-                <th id="maj_date">Ticket modifié le</th>
-                <th id="fichier">Fichier(s) complémentaire(s)</th>
-                <th id="ouverture">Ouverture du ticket</th>
-                <th id="fermeture">Fermeture du ticket</th>
-            </tr>
-        </thead>
-HTML;
-    }
-
     static function ChampPannes(): array
     {
         $headers = [
@@ -33,7 +10,7 @@ HTML;
             "contexte" => ['nom_db' => "contexte", "libelle" => "Contexte de la panne"],
             "type_panne" => ['nom_db' => "type_panne", "libelle" => "Nature de la panne"],
             "statut_intervention" => ['nom_db' => "statut_intervention", "libelle" => "Statut de l'intervention"],
-            "commentaires" => ['nom_db' => "commentaires", "libelle" => "Commentaires"],
+            "commentaires" => ['nom_db' => "commentaires", "libelle" => "Commentaires", "valuePosition" => "tout"],
             "date_evolution" => ['nom_db' => "date_évolution", "libelle" => "Date de changement de situation"],
             "heure_evolution" => ['nom_db' => "heure_évolution", "libelle" => "Heure de changement de situation"],
             "maj_par" => ['nom_db' => "maj_par", "libelle" => "Déclaré/Modifié par"],
@@ -43,6 +20,12 @@ HTML;
             "fermeture" => ['nom_db' => "fermeture", "libelle" => "Fermeture du ticket"],
         ];
 
+        foreach ($headers as $nom_input => $value) {
+            if (!isset($headers[$nom_input]['valuePosition'])) {
+                $headers[$nom_input]['valuePosition'] = 'right';
+            }
+        }
+
         return $headers;
     }
 
@@ -51,6 +34,15 @@ HTML;
         $where = '';
         $options = [];
         $ordering = '';
+
+        $sql = "SELECT ";
+        foreach (self::ChampPannes() as $nom_input => $props) {
+            $nom_db = $props['nom_db'];
+            $sql .= " `$nom_db` as $nom_input,";
+        }
+        $sql = rtrim($sql, ','); // Suppression de la virgule pour la dernière ligne
+
+
         foreach ($params as $nom_input => $props) {
             $value = $props['value'];
             if (trim($value) !== '' && isset($props['nom_db'])) {
@@ -58,9 +50,22 @@ HTML;
                 
                 if ($nom_input !== 'order') {
                     $where .= " AND `$nom_db` LIKE :$nom_input";
-                    $options[$nom_input] = $props['valuePosition'];
+                    switch ($props['valuePosition']) {
+                        case 'left':
+                            $value = '%' . $value;
+                        break;
+
+                        case 'right':
+                            $value = $value . '%';
+                        break;
+
+                        case 'tout':
+                            $value = '%' . $value . '%';
+                        break;
+                    }
+                    $options[$nom_input] = $value;
                 } else {
-                    // order
+                    // order, $value = ASC || DESC
                     $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
                 }
             }
@@ -78,15 +83,7 @@ HTML;
             $limit = "LIMIT $debut, $nb_results_page";
         }
 
-        $sql = "SELECT ";
-
-        foreach (self::ChampPannes() as $nom_input => $props) {
-            $nom_db = $props['nom_db'];
-            $sql .= " `$nom_db` as $nom_input,";
-        }
-
-        // Suppression de la virgule pour la dernière ligne
-        $sql = rtrim($sql, ',');
+        
 
         $sql .= " FROM panne
                 JOIN profil p on p.id_profil = panne.maj_par

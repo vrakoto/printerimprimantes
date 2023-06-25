@@ -8,12 +8,9 @@ $atLeastOneResult = (count($lesResultats)) > 0 ? true : false;
 $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
-    $champs = '';
-    foreach (Imprimante::ChampsCopieur(false, 'all') as $nom_input => $props) {
-        $champs .= $props['libelle'] . ";";
-    }
-    Imprimante::downloadCSV($champs, 'liste_machines', $lesResultatsSansPagination);
+    Imprimante::downloadCSV(Imprimante::ChampsCopieur(false, 'all'), 'liste_machines', $lesResultatsSansPagination);
 }
+$isURLCopieurs = true;
 ?>
 
 <div class="p-4">
@@ -94,6 +91,8 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                         <option value="DESC" <?php if ($ordertype === 'DESC') : ?>selected<?php endif ?>>Décroissant</option>
                     </select>
                 </div>
+                
+                <hr>
 
                 <?php if ($url !== 'copieurs-sans-releve-trimestre'): ?>
                     <div class="row mb-3">

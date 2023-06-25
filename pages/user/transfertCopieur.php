@@ -13,7 +13,7 @@ $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
 $order = getValeurInput('order', 'date');
 $ordertype = getValeurInput('ordertype', 'DESC');
 
-$lesNumeros = Imprimante::copieursPerimetre([], false);
+$lesNumeros = Imprimante::getImprimantes([], true, false);
 
 $laTable = Imprimante::ChampsTransfert();
 
@@ -89,11 +89,7 @@ if (isset($_POST['num_serie'], $_POST['bdd'])) {
 
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
-    $champs = '';
-    foreach (Imprimante::ChampsTransfert() as $nom_input => $props) {
-        $champs .= $props['libelle'] . ";";
-    }
-    Imprimante::downloadCSV($champs, 'liste_transfert', $lesResultatsSansPagination);
+    Imprimante::downloadCSV(Imprimante::ChampsTransfert(), 'liste_transfert', $lesResultatsSansPagination);
 }
 ?>
 
@@ -127,6 +123,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
         </table>
     <?php else : ?>
         <h3 class="mt-4">Aucun transfert trouvé</h3>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_transfert_machine"><i class="fa-solid fa-plus"></i> Transférer un copieur</button>
     <?php endif ?>
 </div>
 

@@ -15,10 +15,7 @@ class Connexion extends Driver {
     // Sans chiffrement
     function verifierAuth(): bool
     {
-        $champ_id_profil = User::getChamp('champ_id');
-        $champ_courriel = User::getChamp('champ_messagerie');
-        $champ_mdp = User::getChamp('champ_mdp');
-        $req = "SELECT $champ_id_profil FROM profil WHERE $champ_courriel = :courriel AND $champ_mdp = :mdp";
+        $req = "SELECT `id_profil` FROM profil WHERE `Courriel` = :courriel AND `mdp` = :mdp";
         $p = self::$pdo->prepare($req);
         $p->execute([
             'courriel' => $this->courriel,
@@ -50,8 +47,7 @@ class Connexion extends Driver {
 
     private function getInformations(): array
     {
-        $champ_courriel = User::getChamp('champ_messagerie');
-        $req = "SELECT * FROM profil WHERE $champ_courriel = :courriel";
+        $req = "SELECT * FROM profil WHERE `Courriel` = :courriel";
         $p = self::$pdo->prepare($req);
         $p->execute([
             'courriel' => $this->courriel

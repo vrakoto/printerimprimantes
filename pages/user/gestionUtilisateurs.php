@@ -8,49 +8,22 @@ $title = "Gestion des Utilisateurs";
 $url = "gestion-utilisateurs";
 $nb_results_par_page = 10;
 
-$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
-$order = getValeurInput('order', 'gpn');
-$ordertype = getValeurInput('ordertype', 'ASC');
-$showColumns = $_SESSION['showColumns'];
-
 $laTable = User::ChampsGestionUtilisateurs();
+$defaultOrder = 'gpn';
+require_once 'templates' . DIRECTORY_SEPARATOR . 'logique.php';
 
-foreach ($laTable as $nom_input => $value) {
-    switch ($nom_input) {
-        case 'gpn':
-            $valuePosition = '%' . getValeurInput($nom_input) . '%';
-            break;
-
-        default:
-            $valuePosition = getValeurInput($nom_input) . '%';
-            break;
-    }
-    $laTable[$nom_input] = array_merge($value, [
-        'value' => getValeurInput($nom_input),
-        'valuePosition' => $valuePosition
-    ]);
+try {
+    $lesResultats = User::getUtilisateursPerimetre($laTable);
+    $lesResultatsSansPagination = User::getUtilisateursPerimetre($laTable, false);
+} catch (\Throwable $th) {
+    newException($th->getMessage());
 }
-$laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
 
-// l'utilisateur a fait une recherche
-$laTable_query = [];
-foreach ($laTable as $nom_input => $props) {
-    if ($nom_input === 'order') {
-        $laTable_query['order'] = $props['nom_db'];
-        $laTable_query['ordertype'] = $ordertype;
-    } else if (!empty($props['value'])) {
-        $laTable_query[$nom_input] = $props['value'];
-    }
-}
-$fullURL = http_build_query($laTable_query);
+$total = count($lesResultatsSansPagination);
+$nb_pages = ceil($total / $nb_results_par_page);
 
-$laTable['page'] = ['value' => $page];
-$laTable['debut'] = ['value' => (($page - 1) * $nb_results_par_page)];
-$laTable['nb_results_page'] = ['value' => $nb_results_par_page];
-
-if ($page <= 0) {
-    header('Location:/' . $url);
-    exit();
+if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
+    Imprimante::downloadCSV(User::ChampsGestionUtilisateurs(), 'sapollon_liste_utilisateurs_' . User::getBDD(), $lesResultatsSansPagination);
 }
 
 
@@ -81,24 +54,6 @@ if (isset($_POST) && !empty($_POST)) {
     } else {
         newFormError("Veuillez remplir tous les champs. Le champ 'Unité' est falcultatié.");
     }
-}
-
-try {
-    $lesResultats = User::getUtilisateursPerimetre($laTable);
-    $lesResultatsSansPagination = User::getUtilisateursPerimetre($laTable, false);
-} catch (\Throwable $th) {
-    newException($th->getMessage());
-}
-
-$total = count($lesResultatsSansPagination);
-$nb_pages = ceil($total / $nb_results_par_page);
-
-if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
-    $champs = '';
-    foreach (User::ChampsGestionUtilisateurs() as $nom_input => $props) {
-        $champs .= $props['libelle'] . ";";
-    }
-    Imprimante::downloadCSV($champs, 'sapollon_liste_utilisateurs_' . User::getBDD(), $lesResultatsSansPagination);
 }
 ?>
 

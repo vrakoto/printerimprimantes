@@ -7,11 +7,7 @@ $total = count($lesResultatsSansPagination);
 $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
-    $champs = '';
-    foreach (colonnes(Panne::ChampPannes()) as $id => $nom) {
-        $champs .= $nom . ";";
-    }
-    Imprimante::downloadCSV($champs, 'liste_pannes', $lesResultatsSansPagination);
+    Imprimante::downloadCSV(Panne::ChampPannes(), 'liste_pannes', $lesResultatsSansPagination);
 }
 ?>
 

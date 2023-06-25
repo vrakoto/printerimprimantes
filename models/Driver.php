@@ -18,14 +18,18 @@ class Driver {
         return !empty($_SESSION['user']);
     }
 
-    static function downloadCSV(string $header, string $filename, array $results)
+    static function downloadCSV(array $headers, string $filename, array $results)
     {
+        $champs = '';
+        foreach ($headers as $nom_input => $props) {
+            $champs .= $props['libelle'] . ";";
+        }
         $filename = $filename . '.csv';
         $output = fopen("php://output", "w");
         $separator = ';';
 
         // Header en première ligne
-        $header_row = explode($separator, $header);
+        $header_row = explode($separator, $champs);
         fputcsv($output, $header_row, $separator);
 
         foreach ($results as $row) {

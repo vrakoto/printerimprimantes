@@ -6,11 +6,7 @@ $total = count($lesResultatsSansPagination);
 $nb_pages = ceil($total / $nb_results_par_page);
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
-    $headers = '';
-    foreach (Compteur::testChamps(false) as $nom_input => $props) {
-        $headers .= $props['libelle'] . ";";
-    }
-    Compteur::downloadCSV($headers, 'liste_compteurs', $lesResultatsSansPagination);
+    Compteur::downloadCSV(Compteur::ChampsCompteur(false), 'liste_compteurs', $lesResultatsSansPagination);
 }
 ?>
 
@@ -41,7 +37,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
             <thead>
                 <tr>
                     <td class="actions">Actions</td>
-                    <?php foreach (Compteur::testChamps($perimetre) as $nom_input => $props) : ?>
+                    <?php foreach (Compteur::ChampsCompteur($perimetre) as $nom_input => $props) : ?>
                         <th id="<?= $nom_input ?>"><?= $props['libelle'] ?></th>
                     <?php endforeach ?>
                 </tr>
@@ -79,8 +75,6 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
         </table>
     <?php else : ?>
         <h3 class="mt-5">Aucun compteur trouvé</h3>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_add_counter"><i class="fa-solid fa-plus"></i> Ajouter un compteur</button>
-        <!-- <a id="btn_exception" class="btn btn-secondary text-white" href="<?= $router->url('view_import_counters') ?>"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-file mx-2"></i> Ajouter massivement des compteurs</a> -->
     <?php endif ?>
 </div>
 
@@ -97,7 +91,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                 <div class="row mb-3">
                     <label for="order" class="col-sm-4">Trier par</label>
                     <select class="selectize col-sm-4" id="order" name="order">
-                        <?php foreach (Compteur::testChamps($perimetre) as $nom_input => $props) : ?>
+                        <?php foreach (Compteur::ChampsCompteur($perimetre) as $nom_input => $props) : ?>
                             <option value="<?= $nom_input ?>" <?php if ($order === $nom_input) : ?>selected<?php endif ?>><?= $props['libelle'] ?></option>
                         <?php endforeach ?>
                     </select>
@@ -107,7 +101,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
                     </select>
                 </div>
 
-                <?php foreach (Compteur::testChamps($perimetre) as $nom_input => $props) : ?>
+                <?php foreach (Compteur::ChampsCompteur($perimetre) as $nom_input => $props) : ?>
                     <div class="row mb-3">
                         <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
                         <div class="col-sm-3">

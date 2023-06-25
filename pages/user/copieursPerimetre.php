@@ -6,45 +6,12 @@ use App\User;
 
 $title = "Copieurs du périmètre";
 $url = 'copieurs_perimetre';
-$perimetre = false;
+$perimetre = true;
 $nb_results_par_page = 10;
-
-$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
-$order = getValeurInput('order', 'num_serie');
-$ordertype = getValeurInput('ordertype', 'ASC');
 $showColumns = $_SESSION['showColumns'];
 
 $laTable = Imprimante::ChampsCopieur($perimetre, $showColumns);
-
-foreach ($laTable as $key => $value) {
-    $laTable[$key] = array_merge($value, [
-        'value' => getValeurInput($value['nom_input']),
-        'valuePosition' => getValeurInput($value['nom_input']) . '%'
-    ]);
-}
-$laTable['order'] = ['nom_db' => $order, 'value' => $ordertype];
-
-// l'utilisateur a fait une recherche
-$laTable_query = [];
-foreach ($laTable as $nom_input => $props) {
-    if ($nom_input === 'order') {
-        $laTable_query['order'] = $props['nom_db'];
-        $laTable_query['ordertype'] = $ordertype;
-    } else if (!empty($props['value'])) {
-        $laTable_query[$nom_input] = $props['value'];
-    }
-}
-$fullURL = http_build_query($laTable_query);
-
-$laTable['page'] = ['value' => $page];
-$laTable['debut'] = ['value' => (($page - 1) * $nb_results_par_page)];
-$laTable['nb_results_page'] = ['value' => $nb_results_par_page];
-
-if ($page <= 0) {
-    header('Location:/' . $url);
-    exit();
-}
-
+require_once 'templates' . DIRECTORY_SEPARATOR . 'logique.php';
 
 if (isset($_POST['add_num_serie'])) {
     $num_serie_to_add = htmlentities($_POST['add_num_serie']);
@@ -71,8 +38,8 @@ if (isset($_POST['remove_num_serie'])) {
 }
 
 try {
-    $lesResultats = Imprimante::copieursPerimetre($laTable);
-    $lesResultatsSansPagination = Imprimante::copieursPerimetre($laTable, false);
+    $lesResultats = Imprimante::getImprimantes($laTable, $perimetre);
+    $lesResultatsSansPagination = Imprimante::getImprimantes($laTable, $perimetre, false);
     require_once 'templates' . DIRECTORY_SEPARATOR . 'copieurs.php';
 } catch (\Throwable $th) {
     newException($th->getMessage());
@@ -119,7 +86,7 @@ try {
                 <div class="row mb-3">
                     <label for="remove_num_serie" class="col-auto">Sélectionnez un N° de Série</label>
                     <select class="selectize w-100" name="remove_num_serie" id="remove_num_serie">
-                        <?php foreach (Imprimante::copieursPerimetre([], false) as $numero) : $num = htmlentities($numero['num_serie']) ?>
+                        <?php foreach (Imprimante::getImprimantes([], true, false) as $numero) : $num = htmlentities($numero['num_serie']) ?>
                             <option value="<?= $num ?>"><?= $num ?></option>
                         <?php endforeach ?>
                     </select>
