@@ -13,7 +13,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
 
 if (isset($_GET['uniqueCompteurs'])) {
     $_SESSION['uniqueCompteurs'] = ($_SESSION['uniqueCompteurs'] === 'true') ? 'false' : 'true';
-    header('Location:' . $_SERVER['HTTP_REFERER']);
+    header('Location:' . $url);
     exit();
 }
 ?>

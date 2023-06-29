@@ -51,7 +51,6 @@ use App\Driver;
                             <li><a class="dropdown-item" href="<?= $router->url('machines_area') ?>"><i class="fa-solid fa-location-dot"></i> Copieurs de mon périmètre</a></li>
                             <div class="dropdown-divider"></div> <!-- Divider -->
                             <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_owner') ?>"><i class="fa-solid fa-xmark"></i> <i class="fa-solid fa-user"></i> Sans Responsable</a></li>
-                            <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_counter_3_months') ?>"><i class="fa-solid fa-xmark"></i> <i class="fa-solid fa-book"></i> Sans relevé ce Trimestre</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('view_transfert_machine') ?>"><i class="fa-solid fa-arrow-right"></i> <i class="fa-solid fa-truck"></i> Suivi des Transferts</a></li>
                         </ul>
                     </li>
@@ -62,6 +61,8 @@ use App\Driver;
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="<?= $router->url('list_counters') ?>"><i class="fa-solid fa-list"></i> Liste des Compteurs</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('counters_area') ?>"><i class="fa-solid fa-location-dot"></i> Compteurs de mon périmètre</a></li>
+                            <div class="dropdown-divider"></div> <!-- Divider -->
+                            <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_counter_3_months') ?>"><i class="fa-solid fa-xmark"></i> <i class="fa-solid fa-book"></i> Sans relevé ce Trimestre</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

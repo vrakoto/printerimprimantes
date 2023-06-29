@@ -12,7 +12,7 @@ use App\User;
     <?php if (isset($isURLCopieurs)): ?>
         <form action="" method="get" class="d-inline-block">
             <input type="hidden" name="switchColumns">
-            <button class="mx-3 btn btn-primary text-white" href="?page=<?= $page ?>&<?= $fullURL ?>"><?= $showColumns === 'few' ? 'Afficher toutes' : 'Reduire' ?> les informations</button>
+            <button class="mx-3 btn btn-primary text-white"><?= $showColumns === 'few' ? 'Afficher toutes' : 'Reduire' ?> les informations</button>
         </form>
     <?php endif ?>
 
@@ -20,13 +20,8 @@ use App\User;
     <?php if (isset($isURLCompteurs)): ?>
         <form action="" method="get" class="d-inline-block">
             <input type="hidden" name="uniqueCompteurs">
-            <button class="mx-3 btn btn-primary text-white" href="?page=<?= $page ?>&<?= $fullURL ?>"><i class="fa-solid fa-display"></i> <?= $_SESSION['uniqueCompteurs'] === "false" ? "Afficher uniquement les derniers compteurs" : "Afficher l'historique complet des compteurs" ?></button>
+            <button class="mx-3 btn btn-primary text-white"><i class="fa-solid fa-display"></i> <?= $_SESSION['uniqueCompteurs'] === "false" ? "Afficher uniquement les derniers compteurs" : "Afficher tous les compteurs" ?></button>
         </form>
-
-        <!-- <form action="" method="get" class="d-inline-block">
-            <input type="hidden" name="compteursTrimestre">
-            <button class="mx-3 btn btn-primary text-white" href="?page=<?= $page ?>&<?= $fullURL ?>"><i class="fa-solid fa-display"></i> <?= $_SESSION[''] === "false" ? "Afficher uniquement les derniers compteurs" : "Afficher l'historique complet des compteurs" ?></button>
-        </form> -->
     <?php endif ?>
 
 

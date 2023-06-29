@@ -38,6 +38,7 @@ if (Driver::estConnecte()) {
     
     $router->request('/liste-responsables', '/user/listeResponsables.php', 'list_owners');
     $router->request('/responsables-perimetre', '/user/responsablesPerimetre.php', 'owners_area');
+    $router->request('/responsables-perimetre', '/user/responsablesPerimetre.php', 'assign_machine_users', 'POST');
     $router->request('/gestion-utilisateurs', '/user/gestionUtilisateurs.php', 'view_users_area');
     $router->request('/gestion-utilisateurs', '/user/gestionUtilisateurs.php', 'create_users_area', 'POST');
     $router->request('/gestion-utilisateur', '/user/createEditUser.php', 'view_create_edit_user');

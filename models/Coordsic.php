@@ -70,4 +70,16 @@ class Coordsic extends User {
             'modif_par' => User::getMonID()
         ]);
     }
+
+    
+    static function getUsers(): array
+    {
+        $query = "SELECT id_profil, `grade-prenom-nom` as gpn FROM profil WHERE BDD = :bdd AND role <> 2";
+        $p = self::$pdo->prepare($query);
+        $p->execute([
+            'bdd' => User::getBDD()
+        ]);
+        return $p->fetchAll();
+    }
+
 }

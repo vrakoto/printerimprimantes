@@ -91,7 +91,7 @@ class User extends Driver {
         ]);
     }
 
-    static function ajouterDansPerimetre($num_serie): bool
+    static function ajouterDansPerimetre($num_serie, $id_profil = NULL): bool
     {
         $query = "INSERT INTO users_copieurs
         (`responsable`, `numéro_série`)
@@ -100,7 +100,7 @@ class User extends Driver {
 
         $p = self::$pdo->prepare($query);
         return $p->execute([
-            'id_profil' => self::getMonID(),
+            'id_profil' => ($id_profil === NULL) ? User::getMonID() : $id_profil,
             'num_serie' => $num_serie
         ]);
     }
