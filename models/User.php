@@ -79,18 +79,6 @@ class User extends Driver {
         ]);
     }
 
-    static function supprimerReleve($num_serie, $date_releve): bool
-    {
-        $query = "DELETE FROM compteurs WHERE `Numéro_série` = :num AND `Date` = :dr AND BDD = :bdd";
-
-        $p = self::$pdo->prepare($query);
-        return $p->execute([
-            'num' => $num_serie,
-            'dr' => $date_releve,
-            'bdd' => User::getBDD()
-        ]);
-    }
-
     static function ajouterDansPerimetre($num_serie, $id_profil = NULL): bool
     {
         $query = "INSERT INTO users_copieurs

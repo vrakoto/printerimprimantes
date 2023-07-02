@@ -52,8 +52,15 @@ class Imprimante extends Driver {
      */
     static function getImprimante($num): array
     {
-        $req = "SELECT * FROM copieurs WHERE `N° de Série` = :num_serie";
-        $p = self::$pdo->prepare($req);
+        $sql = "SELECT ";
+        foreach (self::ChampsCopieur(false, 'all') as $nom_input => $props) {
+            $nom_db = $props['nom_db'];
+            $sql .= "`$nom_db` as $nom_input,";
+        }
+        $sql = rtrim($sql, ','); // Suppression de la virgule pour la dernière ligne
+
+        $sql .= " FROM copieurs WHERE `N° de Série` = :num_serie";
+        $p = self::$pdo->prepare($sql);
         $p->execute(['num_serie' => $num]);
         if ($p->rowCount() > 0) {
             return $p->fetch();
@@ -77,6 +84,7 @@ class Imprimante extends Driver {
 
         $sql .= " FROM copieurs c";
         if ($perimetre) {
+            $where .= " AND `STATUT PROJET` <> 'RETRAIT'";
             switch (User::getRole()) {
                 case 2:
                     $where .= " AND BDD = :bdd";
@@ -196,67 +204,6 @@ class Imprimante extends Driver {
         // Assemblage de la requete finale
         $sql .= " FROM copieurs
                 WHERE BDD = :bdd AND `N° de Série` NOT IN (SELECT `numéro_série` FROM users_copieurs)
-                $where
-                $ordering
-                $limit";
-
-        $options['bdd'] = User::getBDD();
-        $p = self::$pdo->prepare($sql);
-        $p->execute($options);
-        return $p->fetchAll();
-    }
-
-    static function sansReleves3Mois(array $params, bool $enableLimit = true): array
-    {
-        $where = '';
-        $options = [];
-        $ordering = '';
-
-        $sql = "SELECT ";
-        foreach (self::ChampsCopieur(true, 'all') as $nom_input => $props) {
-            $nom_db = $props['nom_db'];
-            $sql .= " `$nom_db` as $nom_input,";
-        }
-        $sql = rtrim($sql, ','); // Suppression de la virgule pour la dernière ligne
-
-
-        // WHERE et ORDER
-        foreach ($params as $nom_input => $props) {
-            $value = $props['value'];
-            if (trim($value) !== '' && isset($props['nom_db'])) {
-                $nom_db = $props['nom_db'];
-                
-                if ($nom_input !== 'order') {
-                    $where .= " AND `$nom_db` LIKE :$nom_input";
-                    switch ($props['valuePosition']) {
-                        case 'left':
-                            $value = '%' . $value;
-                        break;
-
-                        case 'right':
-                            $value = $value . '%';
-                        break;
-                    }
-                    $options[$nom_input] = $value;
-                } else {
-                    // order, $value = ASC || DESC
-                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
-                }
-            }
-        }
-
-
-        // LIMIT
-        $limit = '';
-        if ($enableLimit) {
-            $debut = (int)$params['debut']['value'];
-            $nb_results_page = (int)$params['nb_results_page']['value'];
-            $limit = "LIMIT $debut, $nb_results_page";
-        }
-        // Assemblage de la requete finale
-        $sql .= " FROM copieurs WHERE `STATUT PROJET` = '1 - LIVRE'
-                AND BDD = :bdd
-                AND `N° de Série` NOT IN (SELECT Numéro_série FROM compteurs_trimestre)
                 $where
                 $ordering
                 $limit";

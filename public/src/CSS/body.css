@@ -1,54 +1,16 @@
 :root {
     --light: #f2f2f2;
     --regularLight: rgba(000, 000, 000, .7);
-    --nav_width: 258px;
-}
-
-html,
-body {
-    /* height: 100%; */
 }
 
 body {
     color: var(--regularLight);
-    /* display: flex;
-    height: 100vh; */
-}
-
-.body_content {
-    /* overflow-y: scroll;
-    height: 100%;
-    flex-grow: 1;
-    padding: 20px; */
 }
 
 .obligatoire {
     color: red;
 }
 
-.info {
-    color: blue;
-}
-
-.gradient-custom {
-    border-right: 1px solid grey;
-}
-
-thead th {
-    font-weight: normal;
-}
-
-.highlightFirstRow {
-    background-color: green;
-}
-
-#header {
-    max-height: 500px !important;
-}
-
-#lesCheckbox {
-    overflow-x: scroll;
-}
 
 table {
     overflow: scroll;
@@ -59,6 +21,7 @@ table {
 
 table thead th {
     text-align: center !important;
+    font-weight: normal;
 }
 
 table thead tr {
@@ -76,4 +39,8 @@ table thead tr {
 
 #pagination a:not(#btn_exception):hover {
     background-color: #ddd;
+}
+
+.form-select {
+    width: unset;
 }

@@ -1,6 +1,5 @@
 $(function () {
     const navbar = document.querySelector('nav');
-
     const navbarOffsetTop = navbar.offsetTop; // Obtenir la position de la navbar
 
     window.onscroll = function() {
@@ -15,29 +14,14 @@ $(function () {
         }
     };
 
-    $(".selectize").selectize({
-        sortField: 'text'
+    $('.select').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('.modal'),
+        placeholder: 'Sélectionnez une option'
     });
 
     $("input[required], select[required]").attr("oninvalid", "this.setCustomValidity('Veuillez remplir ce champ.')");
     $("input[required], select[required]").attr("oninput", "setCustomValidity('')");
-
-    var csvAdded = false;
-    $('#downloadCSV').click(function (event) {
-        event.preventDefault();
-        if (!csvAdded) {
-            var url = window.location.href;
-            if (url.indexOf('?') > -1) {
-                if (url.indexOf('csv=') === -1) {
-                    url += '&csv=yes';
-                }
-            } else {
-                url += '?csv=yes';
-            }
-            window.location.href = url;
-            csvAdded = true;
-        }
-    });
 
     let dateInputs = document.querySelectorAll("input[type='date']");
     dateInputs.forEach(function(input) {

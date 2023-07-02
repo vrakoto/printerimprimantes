@@ -1,11 +1,4 @@
 <?php
-
-function validateDate($date, $format = 'd-m-Y'): bool
-{
-    $d = DateTime::createFromFormat($format, $date);
-    return $d && $d->format($format) == $date;
-}
-
 function convertDate(string $date, bool $heure = FALSE): string
 {
     if ($heure === TRUE) {
@@ -13,12 +6,6 @@ function convertDate(string $date, bool $heure = FALSE): string
     }
     $date = new DateTime($date);
     return $date->format('d/m/Y' . $heure);
-}
-
-function toAmericanDate(string $date): string
-{
-    $date = new DateTime($date);
-    return $date->format('Y-m-d');
 }
 
 

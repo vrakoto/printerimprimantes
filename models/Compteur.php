@@ -29,7 +29,7 @@ class Compteur extends Driver
                 $headers[$key]['valuePosition'] = 'exact';
             }
         }
-        
+
         return $headers;
     }
 
@@ -65,11 +65,10 @@ class Compteur extends Driver
 
 
         foreach ($params as $nom_input => $props) {
-            $value = $props['value'];
-            $anti_ambiguous = (isset($props['anti_ambiguous'])) ? $props['anti_ambiguous'] . '.' : '';
-            
-            if (trim($value) !== '' && isset($props['nom_db'])) {
+            if (isset($props['value']) && trim($props['value']) !== '' && isset($props['nom_db'])) {
+                $value = $props['value'];
                 $nom_db = $props['nom_db'];
+                $anti_ambiguous = (isset($props['anti_ambiguous'])) ? $props['anti_ambiguous'] . '.' : '';
                 
                 if ($nom_input !== 'order') {
                     $where .= " AND $anti_ambiguous`$nom_db` LIKE :$nom_input";
@@ -115,12 +114,80 @@ class Compteur extends Driver
                         WHERE Numéro_série = c.Numéro_série)";
         }
 
+        if (isset($params['trimestre'])) {
+            $trimestre = $params['trimestre']['t1'];
+            $begin = $trimestre['debut'];
+            $fin = $trimestre['fin'];
+            $where .= " AND date_maj BETWEEN '$begin' AND '$fin'";
+        }
+
         $sql .= " FROM compteurs c
                 LEFT JOIN profil p on p.id_profil = c.modif_par
                 $where
                 $ordering
                 $limit";
 
+        $p = self::$pdo->prepare($sql);
+        $p->execute($options);
+        return $p->fetchAll();
+    }
+
+    static function sansReleveTrimestre(array $params, bool $enableLimit = true): array
+    {
+        $where = '';
+        $options = [];
+        $ordering = '';
+
+        $sql = "SELECT ";
+        foreach (Imprimante::ChampsCopieur(true, 'all') as $nom_input => $props) {
+            $nom_db = $props['nom_db'];
+            $sql .= " `$nom_db` as $nom_input,";
+        }
+        $sql = rtrim($sql, ','); // Suppression de la virgule pour la dernière ligne
+
+
+        // WHERE et ORDER
+        foreach ($params as $nom_input => $props) {
+            $value = $props['value'];
+            if (trim($value) !== '' && isset($props['nom_db'])) {
+                $nom_db = $props['nom_db'];
+                
+                if ($nom_input !== 'order') {
+                    $where .= " AND `$nom_db` LIKE :$nom_input";
+                    switch ($props['valuePosition']) {
+                        case 'left':
+                            $value = '%' . $value;
+                        break;
+
+                        case 'right':
+                            $value = $value . '%';
+                        break;
+                    }
+                    $options[$nom_input] = $value;
+                } else {
+                    // order, $value = ASC || DESC
+                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
+                }
+            }
+        }
+
+
+        // LIMIT
+        $limit = '';
+        if ($enableLimit) {
+            $debut = (int)$params['debut']['value'];
+            $nb_results_page = (int)$params['nb_results_page']['value'];
+            $limit = "LIMIT $debut, $nb_results_page";
+        }
+        // Assemblage de la requete finale
+        $sql .= " FROM copieurs WHERE `STATUT PROJET` = '1 - LIVRE'
+                AND BDD = :bdd
+                AND `N° de Série` NOT IN (SELECT Numéro_série FROM compteurs_trimestre)
+                $where
+                $ordering
+                $limit";
+
+        $options['bdd'] = User::getBDD();
         $p = self::$pdo->prepare($sql);
         $p->execute($options);
         return $p->fetchAll();
@@ -140,5 +207,17 @@ class Compteur extends Driver
         ]);
 
         return !empty($p->fetch());
+    }
+
+    static function supprimerReleve($num_serie, $date_releve): bool
+    {
+        $query = "DELETE FROM compteurs WHERE `Numéro_série` = :num AND `Date` = :dr AND BDD = :bdd";
+
+        $p = self::$pdo->prepare($query);
+        return $p->execute([
+            'num' => $num_serie,
+            'dr' => $date_releve,
+            'bdd' => User::getBDD()
+        ]);
     }
 }

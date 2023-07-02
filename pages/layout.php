@@ -14,11 +14,10 @@ use App\Driver;
     <link rel="stylesheet" href="/src/CSS/fontawesome/CSS/all.min.css">
 
     <link type="text/css" rel="stylesheet" href="/src/CSS/body.css">
-    <link type="text/css" rel="stylesheet" href="/src/CSS/accueil.css">
     <link type="text/css" rel="stylesheet" href="/src/CSS/navbar.css">
 
-    <link rel="stylesheet" href="/src/CSS/contextmenu/main.css">
-    <link rel="stylesheet" href="/src/CSS/selectize/selectize.css">
+    <link href="/src/CSS/select2/select2.css" rel="stylesheet" />
+    <link href="/src/CSS/select2/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 
     <link rel="icon" href="/src/icon/print.png">
 
@@ -62,6 +61,7 @@ use App\Driver;
                             <li><a class="dropdown-item" href="<?= $router->url('list_counters') ?>"><i class="fa-solid fa-list"></i> Liste des Compteurs</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('counters_area') ?>"><i class="fa-solid fa-location-dot"></i> Compteurs de mon périmètre</a></li>
                             <div class="dropdown-divider"></div> <!-- Divider -->
+                            <li><a class="dropdown-item" href="<?= $router->url('counters_area_t2_2023') ?>"><i class="fa-solid fa-book"></i> Archive T2-2023</a></li>
                             <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_counter_3_months') ?>"><i class="fa-solid fa-xmark"></i> <i class="fa-solid fa-book"></i> Sans relevé ce Trimestre</a></li>
                         </ul>
                     </li>
@@ -100,11 +100,9 @@ use App\Driver;
     <?php if (Driver::estConnecte()) : ?>
 
         <script src="/src/JS/utils/jquery.js"></script>
-        <script src="/src/JS/utils/jquery_contextMenu.js"></script>
-        <script src="/src/JS/utils/jquery_ui_position.js"></script>
         <script src="/src/JS/utils/popper.min.js"></script>
         <script src="/src/JS/utils/bootstrap.min.js"></script>
-        <script src="/src/JS/utils/selectize.js"></script>
+        <script src="/src/JS/utils/select2.js"></script>
 
         <?php if (isset($jsfile)) : ?>
             <script src="/src/JS/<?= $jsfile ?>.js"></script>
