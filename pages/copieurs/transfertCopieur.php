@@ -5,7 +5,7 @@ use App\Coordsic;
 use App\Imprimante;
 use App\User;
 
-$title = "Transfert des Copieurs";
+$title = User::getBDD() . " - Transfert des Copieurs";
 $url = "transfert-copieur";
 $nb_results_par_page = 10;
 
@@ -17,8 +17,8 @@ $defaultOrderType = "DESC";
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'logique.php';
 
 try {
-    $lesResultats = Imprimante::getLesTransferts($laTable);
-    $lesResultatsSansPagination = Imprimante::getLesTransferts($laTable, false);
+    $lesResultats = Imprimante::getLesTransferts($laTable, true);
+    $lesResultatsSansPagination = Imprimante::getLesTransferts($laTable, true, false);
 } catch (\Throwable $th) {
     newException($th->getMessage());
 }
@@ -27,38 +27,48 @@ $total = count($lesResultatsSansPagination);
 $nb_pages = ceil($total / $nb_results_par_page);
 
 
+$erreur = '';
 if (isset($_POST['num_serie'], $_POST['bdd'])) {
-    $num_serie = htmlentities($_POST['num_serie']);
+    $num_serie = htmlentities(strtoupper($_POST['num_serie']));
     $bdd = htmlentities($_POST['bdd']);
 
-    if (!empty(trim($num_serie)) && !empty(trim($bdd))) {
+    if (empty(trim($num_serie)) || empty(trim($bdd))) {
         $erreur = 'Veuillez sélectionner un N° de Série et une Base de Défense';
     }
-
-    if (!empty($erreur)) {
+    
+    if (empty(Imprimante::getImprimante($num_serie))) {
+        $erreur = "Impossible de transférer l'imprimante : <b>$num_serie</b> car elle est inexistante sur SAPOLLON.";
+    } else if (Imprimante::getImprimante($num_serie)['bdd'] !== User::getBDD()) {
+        $erreur = "Cette imprimante ne fait pas partie de votre BdD.";
+    }
+        
+    if ($erreur === '') {
         try {
-            Coordsic::historiqueTransfert($num_serie, $bdd);
             Coordsic::transfererCopieur($num_serie, $bdd);
-            header('Location:' . $url . '?s=1');
+            Coordsic::historiqueTransfert($num_serie, $bdd);
+            header('Location:' . $url);
             exit();
         } catch (\Throwable $th) {
-            newFormError($th->getMessage());
+            $erreur = "Erreur interne";
         }
     }
 }
-
 
 if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
     Imprimante::downloadCSV(Imprimante::ChampsTransfert(), 'liste_transfert', $lesResultatsSansPagination);
 }
 ?>
 
-<div class="p-4 mt-">
+<div class="p-4">
+    <?php if ($erreur !== ''): ?>
+        <div class="alert alert-danger text-center">
+            <?= $erreur ?>
+        </div>
+    <?php endif ?>
     <?php require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'header.php' ?>
+    <?php require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'pagination.php' ?>
 
     <?php if ($page <= $nb_pages) : ?>
-        <?php require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'pagination.php' ?>
-
         <table class="table table-striped table-bordered personalTable">
             <thead>
                 <tr>
@@ -83,11 +93,10 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
         </table>
     <?php else : ?>
         <h3 class="mt-4">Aucun transfert trouvé</h3>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_transfert_machine"><i class="fa-solid fa-plus"></i> Transférer un copieur</button>
     <?php endif ?>
 </div>
 
-
+<?php if ($highPrivilege): ?>
 <div class="modal fade" id="modal_transfert_machine" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <form class="modal-content" method="post">
@@ -98,23 +107,23 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
             <div class="modal-body">
 
                 <div class="row mb-3">
-                    <label for="add_num_serie" class="col-sm-4">N° de Série</label>
-                    <select name="num_serie" class="select col-sm-4" placeholder="Sélectionnez un N° de Série...">
-                        <?php foreach ($lesNumeros as $numero) : $num = htmlentities($numero['num_serie']) ?>
-                            <option value="<?= $num ?>"><?= $num ?></option>
-                        <?php endforeach ?>
-                    </select>
+                    <label for="add_num_serie" class="col-sm-4">N° de série</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="add_num_serie" name="num_serie" class="form-control" placeholder="N° de Série">
+                    </div>
                 </div>
 
                 <div class="row">
-                    <label for="select_num_serie" class="col-sm-4">BDD ciblée</label>
-                    <select name="bdd" class="select col-sm-4" placeholder="Sélectionnez une BdD...">
-                        <?php foreach (BdD::getTousLesBDD() as $lesBdDs) : $bdd = htmlentities($lesBdDs['BDD']) ?>
-                            <?php if ($bdd !== User::getBDD()) : ?>
-                                <option value="<?= $bdd ?>"><?= $bdd ?></option>
-                            <?php endif ?>
-                        <?php endforeach ?>
-                    </select>
+                    <label for="select_num_serie" class="col-sm-4">Nouvelle BDD</label>
+                    <div class="col-sm-4">
+                        <select name="bdd" class="form-select" placeholder="Sélectionnez une BdD...">
+                            <?php foreach (BdD::getTousLesBDD() as $lesBdDs) : $bdd = htmlentities($lesBdDs['BDD']) ?>
+                                <?php if ($bdd !== User::getBDD()) : ?>
+                                    <option value="<?= $bdd ?>"><?= $bdd ?></option>
+                                <?php endif ?>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -123,6 +132,7 @@ if (isset($_GET['csv']) && $_GET['csv'] === "yes") {
         </form>
     </div>
 </div>
+<?php endif ?>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">

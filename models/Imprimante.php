@@ -216,7 +216,7 @@ class Imprimante extends Driver {
 
     static function getLesStatuts(): array
     {
-        $query = "SELECT * FROM statut_projet"; 
+        $query = "SELECT `STATUT PROJET` as statut FROM statut_projet"; 
         $p = self::$pdo->query($query);
         return $p->fetchAll();
     }
@@ -229,10 +229,16 @@ class Imprimante extends Driver {
 
             $query = "UPDATE `copieurs` SET `$nom_db` = :new_value WHERE `N° de Série` = :num_serie";
             $p = self::$pdo->prepare($query);
-            return $p->execute([
+            $etat = $p->execute([
                 'new_value' => $value,
                 'num_serie' => $num_serie,
             ]);
+
+            if ($etat) {
+                self::addLogs("a modifié l'information '$nom_db' de l'imprimante : $num_serie");
+            }
+
+            return $etat;
         }
     }
 
@@ -249,7 +255,7 @@ class Imprimante extends Driver {
         return $headers;
     }
 
-    static function getLesTransferts(array $params, bool $enableLimit = true): array
+    static function getLesTransferts(array $params, bool $perimetre = false, bool $enableLimit = true): array
     {
         $where = '';
         $options = [];
@@ -278,6 +284,12 @@ class Imprimante extends Driver {
                     $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
                 }
             }
+        }
+
+        if ($perimetre) {
+            $where .= " AND old_bdd = :old_bdd OR new_bdd = :new_bdd";
+            $options['old_bdd'] = User::getBDD();
+            $options['new_bdd'] = User::getBDD();
         }
 
         $limit = '';

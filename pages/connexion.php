@@ -1,6 +1,8 @@
 <?php
 use App\Connexion;
 
+$title = "Sapollon - Connexion";
+
 if (isset($_POST['messagerie'], $_POST['mdp'])) {
     $messagerie = htmlentities($_POST['messagerie']);
     $mdp = htmlentities($_POST['mdp']);
@@ -13,7 +15,6 @@ if (isset($_POST['messagerie'], $_POST['mdp'])) {
         $erreur = 'Authentification incorrect';
     }
 }
-$title = "Sapollon - Connexion";
 ?>
 <div class="mt-3 connexion container border p-3">
     <form action="" method="POST">

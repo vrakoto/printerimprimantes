@@ -6,6 +6,7 @@ class UsersCopieurs extends Driver {
     static function ChampUsersCopieurs(): array
     {
         $headers = [
+            "id_profil" => ['nom_db' => "id_profil", 'libelle' => "ID Profil", "valuePosition" => "exact"],
             "gpn" => ['nom_db' => "grade-prenom-nom", 'libelle' => "Grade Prénom Nom", "valuePosition" => "tout"],
             "num_serie" => ['nom_db' => "Numéro_série", 'libelle' => "N° de Série", "valuePosition" => "right"],
         ];
@@ -76,39 +77,5 @@ class UsersCopieurs extends Driver {
         $p = self::$pdo->prepare($sql);
         $p->execute($options);
         return $p->fetchAll();
-        /* $where = '';
-        $options = [];
-        $ordering = '';
-        foreach ($params as $nom_input => $props) {
-            $value = $props['value'];
-            if (trim($value) !== '') {
-                $nom_db = $props['nom_db'];
-                
-                if ($nom_input !== 'order') {
-                    $where .= " AND `$nom_db` LIKE :$nom_input";
-                    $options[$nom_input] = $props['valuePosition'];
-                } else {
-                    // order
-                    $ordering = ' ORDER BY `' . $nom_db . '` ' . $value;
-                }
-            }
-        }
-
-        if ($perimetre) {
-            $where .= " AND p.BDD = :bdd";
-            $options['bdd'] = User::getBDD();
-        }
-
-        $limit = (!empty($limits)) ? "LIMIT {$limits[0]}, {$limits[1]}" : '';
-        $sql = "SELECT p.`grade-prenom-nom` as gpn, `numéro_série` as num_serie
-                FROM users_copieurs uc
-                JOIN profil p on uc.`responsable` = p.`id_profil`
-                WHERE 1 $where
-                $ordering
-                $limit";
-
-        $p = self::$pdo->prepare($sql);
-        $p->execute($options);
-        return $p->fetchAll(); */
     }
 }

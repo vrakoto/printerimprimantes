@@ -1,7 +1,8 @@
 <?php
 use App\Imprimante;
+use App\User;
 
-$title = "Copieurs du périmètre sans responsable";
+$title = User::getBDD() . " - Copieurs sans responsable";
 $url = 'copieurs-sans-responsable';
 $perimetre = true;
 $nb_results_par_page = 10;

@@ -1,6 +1,7 @@
 <?php
 namespace App;
 use PDO;
+use PDOException;
 
 class Driver {
     protected static PDO $pdo;
@@ -43,5 +44,19 @@ class Driver {
         
         readfile('php://output');
         exit();
+    }
+
+    static function addLogs($action): bool
+    {
+        try {
+            $query = "INSERT INTO `logs` (`id_profil`, `action`) VALUES (:id_profil, :action)";
+            $p = self::$pdo->prepare($query);
+            $p->execute([
+                'id_profil' => User::getMonID(),
+                'action' => $action
+            ]);
+        } catch (PDOException $th) {
+        }
+        return true;
     }
 }

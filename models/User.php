@@ -66,7 +66,7 @@ class User extends Driver {
         (:num_serie, :bdd, :date_releve, :112_total, :113_total, :122_total, :123_total, :modif_par, :type_releve)";
 
         $p = self::$pdo->prepare($query);
-        return $p->execute([
+        $etat = $p->execute([
             'num_serie' => $num_serie,
             'bdd' => self::getBDD(),
             'date_releve' => $date_releve,
@@ -77,6 +77,12 @@ class User extends Driver {
             'modif_par' => self::getMonID(),
             'type_releve' => $type_releve
         ]);
+
+        if ($etat) {
+            self::addLogs("a ajouté un relevé de compteur pour la : " . $num_serie);
+        }
+
+        return $etat;
     }
 
     static function ajouterDansPerimetre($num_serie, $id_profil = NULL): bool
@@ -87,20 +93,32 @@ class User extends Driver {
         (:id_profil, :num_serie)";
 
         $p = self::$pdo->prepare($query);
-        return $p->execute([
+        $etat = $p->execute([
             'id_profil' => ($id_profil === NULL) ? User::getMonID() : $id_profil,
             'num_serie' => $num_serie
         ]);
+
+        if ($etat) {
+            self::addLogs("a ajouté un copieur dans son périmètre : " . $num_serie);
+        }
+
+        return $etat;
     }
 
-    static function retirerDansPerimetre($num_serie): bool
+    static function retirerDansPerimetre($num_serie, $id_profil = NULL): bool
     {
-        $query = "DELETE FROM users_copieurs WHERE `responsable` = :id_user AND `numéro_série` = :num_serie";
+        $query = "DELETE FROM users_copieurs WHERE `responsable` = :id_profil AND `numéro_série` = :num_serie";
         $p = self::$pdo->prepare($query);
-        return $p->execute([
-            'id_user' => self::getMonID(),
+        $etat = $p->execute([
+            'id_profil' => ($id_profil === NULL) ? User::getMonID() : $id_profil,
             'num_serie' => $num_serie
         ]);
+
+        if ($etat) {
+            self::addLogs("a retiré un copieur de son périmètre : " . $num_serie);
+        }
+
+        return $etat;
     }
 
     static function getUtilisateursPerimetre(array $params, bool $enableLimit = true): array
@@ -180,13 +198,9 @@ class User extends Driver {
         return $headers;
     }
 
-    static function setHistory()
-    {
-        debug($_SERVER['REQUEST_URI']);
-    }
-
     static function deconnexion(): void
     {
+        self::addLogs("s'est déconnecté");
         session_destroy();
         header('Location:/');
         exit();

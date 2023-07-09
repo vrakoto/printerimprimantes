@@ -13,18 +13,21 @@ if (isset($_GET['download_csv'])) {
 }
 
 $erreur = false;
-if (isset($_POST) && !empty($_POST)) {
+if (isset($_POST['id_profil'], $_POST['num_serie'])) {
     $id_profil = (int)$_POST['id_profil'];
-    $num_serie = htmlentities($_POST['num_serie']);
-    
+    $num_serie = htmlentities(strtoupper($_POST['num_serie']));
+
     if ($id_profil === 0 || empty($num_serie)) {
-        $erreur = true;
+        $erreur = "Veuillez remplir tous les champs";
+    } else if (empty(Imprimante::getImprimante($num_serie))) {
+        $erreur = "Le numéro de série : $num_serie est inexistant";
     }
 
     if (!$erreur) {
         try {
             Coordsic::ajouterDansPerimetre($num_serie, $id_profil);
-            success("Le copieur a bien été affecté à l'utilisateur.");
+            header('Location:' . $url . '?s=1');
+            exit();
         } catch (PDOException $th) {
             $msg = "Erreur interne";
             if ($th->getCode() === "23000") {
@@ -33,31 +36,74 @@ if (isset($_POST) && !empty($_POST)) {
             newFormError($msg);
         }
     } else {
-        newFormError("Veuillez remplir tous les champs");
+        newFormError($erreur);
+    }
+}
+
+
+if (isset($_POST['remove_machine_area_users'])) {
+    $id_profil = (int)$_POST['id_profil'];
+    $num_serie_to_remove = htmlentities($_POST['num_serie']);
+
+    try {
+        User::retirerDansPerimetre($num_serie_to_remove, $id_profil);
+        header('Location:' . $url);
+        exit();
+    } catch (PDOException $th) {
+        newFormError("Une erreur interne a été rencontrée.");
     }
 }
 ?>
 
 <div class="p-4">
+
+    <?php if (isset($_GET['s'])) : ?>
+        <div class="alert alert-success text-center">
+            Le copieur a bien été affecté à l'utilisateur.
+        </div>
+    <?php endif ?>
+
     <?php require_once 'header.php' ?>
+    <?php require_once 'pagination.php' ?>
 
     <?php if ($page <= $nb_pages) : ?>
-        <?php require_once 'pagination.php' ?>
-
         <table class="table table-striped table-bordered personalTable">
             <thead>
                 <tr>
+                    <th>Actions</th>
                     <?php foreach (UsersCopieurs::ChampUsersCopieurs() as $nom_input => $props) : ?>
+                        <?php if ($nom_input !== 'id_profil'): ?>
                         <th id="<?= $nom_input ?>"><?= $props['libelle'] ?></th>
+                        <?php endif ?>
                     <?php endforeach ?>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($lesResultats as $resultat) :
+                    $id_profil = (int)$resultat['id_profil'];
                     $gpn = htmlentities($resultat['gpn']);
                     $num_serie = htmlentities($resultat['num_serie']);
                 ?>
                     <tr>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-list"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <?php if (User::getRole() === 2 && $url === 'responsables-perimetre') : ?>
+                                        <li>
+                                            <form action="" method="post">
+                                                <input type="hidden" name="remove_machine_area_users">
+                                                <input type="hidden" name="id_profil" value="<?= $id_profil ?>">
+                                                <input type="hidden" name="num_serie" value="<?= $num_serie ?>">
+                                                <button type="submit" class="dropdown-item" onclick="return confirm('Voulez-vous supprimer la responsabilité de ce copieur pour cet utilisateur ?');"><i class="fa-solid fa-trash"></i> Supprimer la responsabilitée</button>
+                                            </form>
+                                        </li>
+                                    <?php endif ?>
+                                </ul>
+                            </div>
+                        </td>
                         <td><?= $gpn ?></td>
                         <td><a href="/imprimante/<?= $num_serie ?>"><?= $num_serie ?></a></td>
                     </tr>
@@ -108,7 +154,7 @@ if (isset($_POST) && !empty($_POST)) {
     </div>
 </div>
 
-<?php if (User::getRole() === 2 || User::getRole() === 4): ?>
+<?php if ($highPrivilege) : ?>
     <div class="modal fade" id="modal_assign_machine" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <form class="modal-content" method="post">
@@ -121,19 +167,17 @@ if (isset($_POST) && !empty($_POST)) {
                     <div class="row mb-3">
                         <label for="select_id" class="col-sm-6">Sélectionnez l'utilisateur</label>
                         <select class="select col-sm-5" name="id_profil" id="select_id" placeholder="Sélectionnez un utilisateur...">
-                            <?php foreach (Coordsic::getUsers() as $props): ?>
+                            <?php foreach (Coordsic::getUsers() as $props) : ?>
                                 <option value="<?= (int)$props['id_profil'] ?>"><?= htmlentities($props['gpn']) ?></option>
                             <?php endforeach ?>
                         </select>
                     </div>
 
                     <div class="row">
-                        <label for="select_num_serie" class="col-sm-6">Sélectionnez un N° de Série</label>
-                        <select name="num_serie" class="select col-sm-5" id="select_num_serie" placeholder="Sélectionnez un N° de Série...">
-                            <?php foreach (Imprimante::getImprimantes([], true, false) as $lesNumeros) : $leNumero = htmlentities($lesNumeros['num_serie']) ?>
-                                <option value="<?= $leNumero ?>"><?= $leNumero ?></option>
-                            <?php endforeach ?>
-                        </select>
+                        <label for="num_serie_id" class="col-sm-6">Saisir le n° de série</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" name="num_serie" id="num_serie_id">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

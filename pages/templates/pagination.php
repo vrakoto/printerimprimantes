@@ -1,5 +1,7 @@
 <?php
 use App\User;
+$highPrivilege = (User::getRole() === 2 || User::getRole() === 4); // COORDSIC AND ADMIN
+$lessPrivilege = (User::getRole() !== 2 && User::getRole() !== 4); // NO COORDSIC AND ADMIN
 ?>
 <div class="mt-5 mb-3">
     <div id="pagination">
@@ -20,17 +22,24 @@ use App\User;
 
         <span class="h4 mx-4 mt-3"><?= number_format($total, 0, ',', ' '); ?> résultat<?= ($total > 1) ? 's' : '' ?></span>
 
-        <?php if ($url === 'transfert-copieur'): ?>
+        <?php if ($url === 'transfert-copieur' && $highPrivilege): ?>
             <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_transfert_machine"><i class="fa-solid fa-plus"></i> Transférer un copieur</button>
+        <?php endif ?>
+
+        <?php if ($url === 'copieurs_perimetre' && $lessPrivilege): ?>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_add_machine_area">Ajouter un copieur dans mon périmètre</button>
         <?php endif ?>
 
         <?php if ($url === 'compteurs_perimetre'): ?>
             <button class="mx-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_add_counter"><i class="fa-solid fa-plus"></i> Ajouter un compteur</button>
         <?php endif ?>
 
-        <?php if ((User::getRole() === 2 || User::getRole() === 4) && $url === 'responsables-perimetre'): ?>
+        <?php if ($url === 'gestion-utilisateurs' && $highPrivilege): ?>
+            <button class="mx-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_create_user"><i class="fa-solid fa-plus"></i> Créer un utilisateur</button>
+        <?php endif ?>
+
+        <?php if ($url === 'responsables-perimetre' && $highPrivilege): ?>
             <button class="mx-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_assign_machine"><i class="fa-solid fa-plus"></i> Affecter un copieur à un utilisateur</button>
         <?php endif ?>
     </div>
-
 </div>

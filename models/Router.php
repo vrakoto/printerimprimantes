@@ -17,12 +17,6 @@ class Router {
         $this->router->map($method, $url, $view, $name);
         return $this;
     }
-
-    function requestAjax(string $url, string $name, string $method = 'GET')
-    {
-        $this->router->map($method, $url, '/ajax/controller.php', $name);
-        return $this;
-    }
     
     function url(string $name, array $params = []): string
     {

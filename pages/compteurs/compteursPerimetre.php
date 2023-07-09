@@ -1,5 +1,6 @@
 <?php
 use App\Compteur;
+use App\Imprimante;
 use App\User;
 
 $title = "Compteurs du périmètre";
@@ -19,7 +20,7 @@ $modalVariables = array_filter($laTable, function ($key) use ($keysToRemove) {
 }, ARRAY_FILTER_USE_KEY);
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (isset($_POST['num_serie'], $_POST['date'])) {
     $post_variables = [];
     foreach ($laTable as $nom_input => $props) {
         if (isset($_POST[$nom_input])) {
@@ -44,7 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 try {
     $lesResultats = Compteur::getLesReleves($laTable, $perimetre);
     $lesResultatsSansPagination = Compteur::getLesReleves($laTable, $perimetre, false);
-    require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'compteurs.php';
+    if (!empty(Imprimante::getImprimantes([], true, false))) {
+        require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'compteurs.php';
+    } else {
+        newFormError("Vous n'avez aucun copieur dans votre périmètre.");
+    }
 } catch (\Throwable $th) {
     newException($th->getMessage());
 }

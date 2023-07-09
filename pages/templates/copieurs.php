@@ -21,19 +21,9 @@ if (isset($_GET['switchColumns'])) {
 
 <div class="p-4">
     <?php require_once 'header.php' ?>
-
-    <?php if ($url === 'copieurs_perimetre' && (User::getRole() !== 2 && User::getRole() !== 4)) : ?>
-        <div class="mt-5">
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_add_machine_area">Ajouter un copieur dans mon périmètre</button>
-            <?php if ($total > 0) : ?>
-                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal_remove_machine_area">Retirer un copieur de mon périmètre</button>
-            <?php endif ?>
-        </div>
-    <?php endif ?>
-
+    <?php require_once 'pagination.php' ?>
+    
     <?php if ($atLeastOneResult) : ?>
-        <?php require_once 'pagination.php' ?>
-
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -45,7 +35,7 @@ if (isset($_GET['switchColumns'])) {
             </thead>
 
             <tbody>
-                <?php foreach ($lesResultats as $data) : $notEmptyNumSerie = !empty($data['num_serie']); ?>
+                <?php foreach ($lesResultats as $data): ?>
                     <tr>
                         <td>
                             <div class="dropdown">
@@ -53,10 +43,17 @@ if (isset($_GET['switchColumns'])) {
                                     <i class="fa-solid fa-list"></i>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="/imprimante/<?= $notEmptyNumSerie ? $data['num_serie'] : $data['num_ordo'] ?>"><i class="fa-solid fa-eye"></i> Voir</a></li>
-                                    <?php if ($notEmptyNumSerie): // uniquement les num_serie non vides ?>
-                                        <li><a class="dropdown-item" href="liste_compteurs?order=date_maj&num_serie=<?= htmlentities($data['num_serie']) ?>&ordertype=desc"><i class="fa-solid fa-book"></i> Relevés de compteurs</a></li>
+                                    <li><a class="dropdown-item" href="/imprimante/<?= $data['num_serie'] ?>"><i class="fa-solid fa-eye"></i> Voir l'imprimante</a></li>
+                                    <li><a class="dropdown-item" href="/liste_compteurs?order=date_maj&num_serie=<?= htmlentities($data['num_serie']) ?>&ordertype=desc"><i class="fa-solid fa-book"></i> Relevés de compteurs</a></li>
+                                    <?php if ($url === 'copieurs_perimetre' && $lessPrivilege): ?>
+                                        <li>
+                                            <form action="" method="post">
+                                                <input type="hidden" name="remove_num_serie" value="<?= htmlentities($data['num_serie']) ?>">
+                                                <button type="submit" class="dropdown-item"><i class="fa-solid fa-xmark"></i> Retirer ce copieur de mon périmètre</button>
+                                            </form>
+                                        </li>
                                     <?php endif ?>
+                                    <li><a class="dropdown-item" href="/liste-responsables?num_serie=<?= htmlentities($data['num_serie']) ?>"><i class="fa-solid fa-user-doctor"></i> Voir responsable(s)</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -102,13 +99,15 @@ if (isset($_GET['switchColumns'])) {
 
                 <?php if ($url !== 'copieurs-sans-releve-trimestre'): ?>
                     <div class="row mb-3">
-                        <label for="statut_projet" class="col-sm-4">Statut</label>
-                        <select class="form-select" name="statut_projet" id="statut_projet">
-                            <option value="%">0 - N'importe</option>
-                            <?php foreach (Imprimante::getLesStatuts() as $s) : $s = htmlentities($s['STATUT PROJET']); ?>
-                                <option value="<?= $s ?>" <?php if (getValeurInput('statut_projet') === $s) : ?>selected<?php endif ?>><?= $s ?></option>
-                            <?php endforeach ?>
-                        </select>
+                        <label for="statut_projet_id" class="col-sm-4">Statut</label>
+                        <div class="col-sm-4">
+                            <select class="form-select" name="statut_projet" id="statut_projet_id">
+                                <option value="%">0 - N'importe</option>
+                                <?php foreach (Imprimante::getLesStatuts() as $s) : $s = htmlentities($s['statut']); ?>
+                                    <option value="<?= $s ?>" <?php if (getValeurInput('statut_projet') === $s) : ?>selected<?php endif ?>><?= $s ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
                     </div>
                 <?php endif ?>
 
@@ -130,3 +129,28 @@ if (isset($_GET['switchColumns'])) {
         </form>
     </div>
 </div>
+
+
+<?php if ($url === 'copieurs_perimetre' && $lessPrivilege): ?>
+    <div class="modal fade" id="modal_add_machine_area" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form class="modal-content" method="post">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Ajouter un copieur dans mon périmètre</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <label for="add_num_serie" class="col-auto">N° de série</label>
+                        <div class="col-auto">
+                            <input type="text" id="add_num_serie" name="add_num_serie" class="form-control" placeholder="N° de Série">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<?php endif ?>

@@ -32,71 +32,49 @@ if (isset($_GET['uniqueCompteurs'])) {
 ?>
 
 <div class="p-4">
-
-    <?php if (isset($_GET['d'])) : ?>
-        <div class="alert alert-success text-center">
-            Le compteur a bien été supprimé.
-        </div>
-    <?php endif ?>
-    <?php if (isset($_GET['a'])) : ?>
-        <div class="alert alert-success text-center">
-            Le compteur a bien été ajouté.
-        </div>
-    <?php endif ?>
-    <?php if (isset($_GET['e'])) : ?>
-        <div class="alert alert-danger text-center">
-            Un problème technique a été rencontré.
-        </div>
-    <?php endif ?>
-
     <?php require_once 'header.php' ?>
-
     <?php require_once 'pagination.php' ?>
     
-    <?php if ($page <= $nb_pages) : ?>
-        <table class="table table-striped table-bordered personalTable">
-            <thead>
+    <table class="table table-striped table-bordered personalTable">
+        <thead>
+            <tr>
+                <td class="actions">Actions</td>
+                <?php foreach (Compteur::ChampsCompteur($perimetre) as $nom_input => $props) : ?>
+                    <th id="<?= $nom_input ?>"><?= $props['libelle'] ?></th>
+                <?php endforeach ?>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($lesResultats as $data) : $num_serie = htmlentities($data['num_serie']);
+                $date = htmlentities($data['date']); ?>
                 <tr>
-                    <td class="actions">Actions</td>
-                    <?php foreach (Compteur::ChampsCompteur($perimetre) as $nom_input => $props) : ?>
-                        <th id="<?= $nom_input ?>"><?= $props['libelle'] ?></th>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-list"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/imprimante/<?= $num_serie ?>"><i class="fa-solid fa-eye"></i> Voir l'imprimante</a></li>
+
+                                <?php //if ((Compteur::isMine($num_serie, $date) || User::getRole() === 2) && $url === 'compteurs_perimetre') : ?>
+                                    <!-- <li><a class="dropdown-item" href="supprimer-releve/<?php // $num_serie ?>/<?php // $date ?>" onclick="return confirm('Voulez-vous supprimer ce compteur ?');"><i class="fa-solid fa-trash"></i> Supprimer ce relevé</a></li> -->
+                                <?php // endif ?>
+                            </ul>
+                        </div>
+                    </td>
+                    <?php foreach ($data as $nom_input => $value) :
+                        if ($nom_input === 'date') {
+                            $value = convertDate($value);
+                        } else if ($nom_input === 'date_maj') {
+                            $value = convertDate($value, true);
+                        }
+                    ?>
+                        <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
                     <?php endforeach ?>
                 </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($lesResultats as $data) : $num_serie = htmlentities($data['num_serie']);
-                    $date = htmlentities($data['date']); ?>
-                    <tr>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa-solid fa-list"></i>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="/imprimante/<?= $num_serie ?>"><i class="fa-solid fa-eye"></i> Voir l'imprimante</a></li>
-
-                                    <?php if ((Compteur::isMine($num_serie, $date) || User::getRole() === 2) && $url === 'compteurs_perimetre') : ?>
-                                        <li><a class="dropdown-item" href="supprimer-releve/<?= $num_serie ?>/<?= $date ?>" onclick="return confirm('Voulez-vous supprimer ce compteur ?');"><i class="fa-solid fa-trash"></i> Supprimer ce relevé</a></li>
-                                    <?php endif ?>
-                                </ul>
-                            </div>
-                        </td>
-                        <?php foreach ($data as $nom_input => $value) :
-                            if ($nom_input === 'date') {
-                                $value = convertDate($value);
-                            } else if ($nom_input === 'date_maj') {
-                                $value = convertDate($value, true);
-                            }
-                        ?>
-                            <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
-                        <?php endforeach ?>
-                    </tr>
-                <?php endforeach ?>
-            </tbody>
-        </table>
-    <?php else : ?>
-        <h3 class="mt-5">Aucun compteur trouvé</h3>
-    <?php endif ?>
+            <?php endforeach ?>
+        </tbody>
+    </table>
 </div>
 
 
@@ -143,7 +121,6 @@ if (isset($_GET['uniqueCompteurs'])) {
     </div>
 </div>
 
-
 <!-- Ajouter un relevé de compteur -->
 <?php if ($url === 'compteurs_perimetre'): ?>
     <div class="modal fade" id="modal_add_counter" tabindex="-1" aria-hidden="true">
@@ -185,7 +162,7 @@ if (isset($_GET['uniqueCompteurs'])) {
 
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
                 </div>
             </form>
         </div>

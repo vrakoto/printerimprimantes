@@ -1,7 +1,3 @@
-<?php
-use App\User;
-?>
-
 <div class="mt-2" id="header">
     <h1><?= $title ?></h1>
 
@@ -22,10 +18,5 @@ use App\User;
             <input type="hidden" name="uniqueCompteurs">
             <button class="mx-3 btn btn-primary text-white"><i class="fa-solid fa-display"></i> <?= $_SESSION['uniqueCompteurs'] === "false" ? "Afficher uniquement les derniers compteurs à jour" : "Afficher l'historique complet" ?></button>
         </form>
-    <?php endif ?>
-
-
-    <?php if ((User::getRole() === 2 || User::getRole() === 4) && $url === 'gestion-utilisateurs'): ?>
-        <button class="mx-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_create_user"><i class="fa-solid fa-plus"></i> Créer un utilisateur</button>
     <?php endif ?>
 </div>

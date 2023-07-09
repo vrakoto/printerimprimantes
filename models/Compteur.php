@@ -103,7 +103,7 @@ class Compteur extends Driver
                 $where .= " AND c.`BDD` = :bdd";
                 $options['bdd'] = User::getBDD();
             } else {
-                $where .= " AND p.id_profil IN (SELECT responsable FROM users_copieurs WHERE responsable = :id_profil)";
+                $where .= " AND `Numéro_série` IN (SELECT `numéro_série` FROM users_copieurs WHERE responsable = :id_profil)";
                 $options['id_profil'] = User::getMonID();
             }
         }
@@ -214,10 +214,16 @@ class Compteur extends Driver
         $query = "DELETE FROM compteurs WHERE `Numéro_série` = :num AND `Date` = :dr AND BDD = :bdd";
 
         $p = self::$pdo->prepare($query);
-        return $p->execute([
+        $etat = $p->execute([
             'num' => $num_serie,
             'dr' => $date_releve,
             'bdd' => User::getBDD()
         ]);
+
+        if ($etat) {
+            self::addLogs("a supprimé un relevé pour la : $num_serie");
+        }
+
+        return $etat;
     }
 }

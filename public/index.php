@@ -36,7 +36,7 @@ if (Driver::estConnecte()) {
     $router->request('/liste_compteurs', COMPTEURS_FOLDER . 'listeCompteurs.php', 'list_counters');
     $router->request('/compteurs_perimetre', COMPTEURS_FOLDER . 'compteursPerimetre.php', 'counters_area');
     $router->request('/compteurs_perimetre', COMPTEURS_FOLDER . 'compteursPerimetre.php', 'add_counters', 'POST');
-    $router->request('/supprimer-releve/[*:num]/[i:year]-[i:month]-[i:day]', COMPTEURS_FOLDER . 'supprimerReleve.php', 'delete_counters');
+    // $router->request('/supprimer-releve/[*:num]/[i:year]-[i:month]-[i:day]', COMPTEURS_FOLDER . 'supprimerReleve.php', 'delete_counters');
 
     // les compteurs par trimestre
     $router->request('/compteurs-perimetre-T2-2023', COMPTEURS_ARCHIVES_FOLDER . 't2_2023.php', 'counters_area_t2_2023');

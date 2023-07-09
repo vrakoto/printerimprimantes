@@ -1,6 +1,7 @@
 <?php
-
 use App\Driver;
+
+// Driver::addLogs("a visité la page '$title'");
 ?>
 
 <!DOCTYPE html>
@@ -38,9 +39,9 @@ use App\Driver;
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="<?= $router->url('home') ?>">Compte</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="<?= $router->url('logs') ?>">Logs</a>
-                    </li>
+                    </li> -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Suivi des copieurs

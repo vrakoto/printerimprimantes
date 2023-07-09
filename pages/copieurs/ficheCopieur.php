@@ -19,7 +19,7 @@ unset($lesChamps['statut_projet']);
 if (!empty($_POST)) {
     $post_variables = [];
     foreach (Imprimante::ChampsCopieur(false, 'all') as $nom_input => $props) {
-        if (isset($_POST[$nom_input]) && trim($imprimante[$props['nom_db']]) !== trim($_POST[$nom_input])) {
+        if (isset($_POST[$nom_input]) && trim($imprimante[$nom_input]) !== trim($_POST[$nom_input])) {
             $post_variables[$nom_input] = ['nom_db' => $props['nom_db'], 'value' => htmlentities($_POST[$nom_input])];
         }
     }
@@ -72,32 +72,24 @@ HTML;
             <form action="" method="post" class="mt-3 p-3">
                 <div class="mt-5 p-3">
 
-                    <div class="row mb-3">
-                        <label for="bdd" class="col-sm-1 label">N° ORDO :</label>
-                        <div class="col-sm-2">
-                            <input type="text" id="num_ordo" class="form-control" value="<?= $imprimante['num_ordo'] ?>">
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <label for="num_serie" class="col-sm-1 label">N° de Série :</label>
-                        <div class="col-sm-2">
-                            <input type="text" id="num_serie" class="form-control" value="<?= $imprimante['num_serie'] ?>">
-                        </div>
-                    </div>
+                    <?= addInformationForm(false, 'num_ordo', 'N° ORDO', $imprimante['num_ordo']) ?>
+                    <?= addInformationForm(false, 'num_serie', 'N° de Série', $imprimante['num_serie']) ?>
 
                     <div class="row mb-3">
                         <label for="bdd" class="col-sm-1 label">BDD :</label>
                         <div class="col-sm-2">
-                            <input type="text" id="bdd" class="form-control" value="<?= $imprimante['bdd'] ?>">
+                            <input type="text" id="bdd" class="form-control" value="<?= $imprimante['bdd'] ?>" disabled>
+                        </div>
+                        <div class="col-sm-2">
+                            <a class="btn btn-secondary" href="/transfert-copieur">Modifier la BdD</a>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label for="statut_projet" class="col-sm-1 label">STATUT :</label>
-                            <select class="form-select col-sm-2" id="statut_projet" name="statut_projet">
-                            <?php foreach (Imprimante::getLesStatuts() as $libelle) : ?>
-                                <option value="<?= $libelle ?>"><?= $libelle ?></option>
+                        <select class="form-select col-sm-2" id="statut_projet" name="statut_projet">
+                            <?php foreach (Imprimante::getLesStatuts() as $l) : $libelle = htmlentities($l['statut']); ?>
+                                <option <?php if ($libelle === $imprimante['statut_projet']): ?>selected<?php endif ?> value="<?= $libelle ?>"><?= $libelle ?></option>
                             <?php endforeach ?>
                         </select>
                     </div>

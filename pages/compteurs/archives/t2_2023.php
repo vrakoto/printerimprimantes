@@ -11,7 +11,7 @@ $defaultOrder = "date_maj";
 $defaultOrderType = "DESC";
 require_once dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'logique.php';
 
-$laTable['trimestre'] = ['t1' => ['debut' => '2023-06-01', 'fin' => '2023-06-28']];
+$laTable['trimestre'] = ['t1' => ['debut' => '2023-06-01', 'fin' => '2023-06-28 11:00']];
 
 try {
     $lesResultats = Compteur::getLesReleves($laTable, $perimetre);

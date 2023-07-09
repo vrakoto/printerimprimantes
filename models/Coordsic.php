@@ -29,28 +29,40 @@ class Coordsic extends User {
         (:bdd, :gpn, :courriel, :role, :mdp, :unite)";
 
         $p = self::$pdo->prepare($query);
-        return $p->execute([
+        $etat = $p->execute([
             'bdd' => $bdd,
             'gpn' => $gpn,
             'courriel' => $courriel,
             'role' => $role,
             'mdp' => $mdp,
             'unite' => $unite
-        ]); 
+        ]);
+
+        if ($etat) {
+            self::addLogs("a créé un nouvel utilisateur : '$courriel'");   
+        }
+
+        return $etat;
     }
 
 
     static function transfererCopieur($num, $bdd): bool
     {
         $query = "UPDATE `copieurs` SET BDD = :new_bdd WHERE `N° de Série` = :num_serie AND BDD = :old_bdd";
-        $old_bdd = Imprimante::getImprimante($num)['BDD'];
+        $old_bdd = Imprimante::getImprimante($num)['bdd'];
 
         $p = self::$pdo->prepare($query);
-        return $p->execute([
+        $etat = $p->execute([
             'num_serie' => $num,
             'new_bdd' => $bdd,
             'old_bdd' => $old_bdd
         ]);
+
+        if ($etat) {
+            self::addLogs("a transféré le copieur $num vers la nouvelle BdD $bdd");   
+        }
+
+        return $etat;
     }
 
     static function historiqueTransfert($num, $bdd): bool
@@ -60,7 +72,7 @@ class Coordsic extends User {
         VALUES
         (:num_serie, :old_bdd, :new_bdd, :modif_par)";
 
-        $old_bdd = Imprimante::getImprimante($num)['BDD'];
+        $old_bdd = Imprimante::getImprimante($num)['bdd'];
 
         $p = self::$pdo->prepare($query);
         return $p->execute([
