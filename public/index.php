@@ -8,6 +8,8 @@ use App\Router;
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'elements' . DIRECTORY_SEPARATOR . 'helper.php';
 
 $VUES = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR;
+define("COMPTEURS_AJAX_FOLDER", "/compteurs/ajax/");
+define("COPIEURS_AJAX_FOLDER", "/copieurs/ajax/");
 define("COMPTEURS_FOLDER", "/compteurs/");
 define("COMPTEURS_ARCHIVES_FOLDER", "/compteurs/archives/");
 define("COPIEURS_FOLDER", "/copieurs/");
@@ -56,6 +58,9 @@ if (Driver::estConnecte()) {
     $router->request('/faq', COMPTEURS_FOLDER . 'faq.php', 'faq');
 
     $router->request('/deconnexion', USERS_FOLDER . 'deconnexion.php', 'logout', 'POST');
+
+    $router->request('/ajax/getImprimanteCompteurs', COMPTEURS_AJAX_FOLDER . 'getImprimanteCompteurs.php', 'ajax_getImprimanteCompteurs');
+    $router->request('/ajax/ajouterCompteur', COMPTEURS_AJAX_FOLDER . 'ajouterCompteur.php', 'ajax_ajouterCompteur', 'POST');
 } else {
     $router->request('/', 'connexion.php', 'home');
     $router->request('/', 'connexion.php', 'login_post', 'POST');

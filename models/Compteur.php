@@ -209,6 +209,21 @@ class Compteur extends Driver
         return !empty($p->fetch());
     }
 
+    static function estAJour($num_serie): bool
+    {
+        $query = "SELECT `Numéro_série` FROM compteurs
+                WHERE `Numéro_série` = :num_serie
+                AND MONTH(date_maj) = MONTH(CURRENT_DATE())
+                AND YEAR(date_maj) = YEAR(CURRENT_DATE())
+                LIMIT 1";
+        $p = self::$pdo->prepare($query);
+        $p->execute([
+            'num_serie' => $num_serie
+        ]);
+
+        return !empty($p->fetch());
+    }
+
     static function supprimerReleve($num_serie, $date_releve): bool
     {
         $query = "DELETE FROM compteurs WHERE `Numéro_série` = :num AND `Date` = :dr AND BDD = :bdd";
@@ -225,5 +240,29 @@ class Compteur extends Driver
         }
 
         return $etat;
+    }
+
+    static function getImprimanteCompteurs($num_serie): array
+    {
+        $query = "SELECT"; 
+        
+        foreach (self::ChampsCompteur(false) as $nom_input => $props) {
+            $anti_ambiguous = (isset($props['anti_ambiguous'])) ? $props['anti_ambiguous'] . '.' : '';
+            $nom_db = $props['nom_db'];
+            $query .= " $anti_ambiguous`$nom_db` as $nom_input,";
+        }
+        $query = rtrim($query, ',');
+        
+        $query .= " FROM compteurs c
+                  JOIN profil p on p.id_profil = c.modif_par
+                  WHERE c.`Numéro_série` = :num_serie
+                  ORDER BY `date_maj` DESC";
+
+        $p = self::$pdo->prepare($query);
+        $p->execute([
+            'num_serie' => $num_serie
+        ]);
+
+        return $p->fetchAll();
     }
 }

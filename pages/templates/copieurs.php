@@ -1,8 +1,9 @@
 <?php
 
+use App\Compteur;
 use App\Imprimante;
-use App\User;
 
+$jsfile = 'copieurs';
 $isURLCopieurs = true;
 $total = count($lesResultatsSansPagination);
 $atLeastOneResult = (count($lesResultats)) > 0 ? true : false;
@@ -22,7 +23,7 @@ if (isset($_GET['switchColumns'])) {
 <div class="p-4">
     <?php require_once 'header.php' ?>
     <?php require_once 'pagination.php' ?>
-    
+
     <?php if ($atLeastOneResult) : ?>
         <table class="table table-striped table-bordered">
             <thead>
@@ -35,30 +36,33 @@ if (isset($_GET['switchColumns'])) {
             </thead>
 
             <tbody>
-                <?php foreach ($lesResultats as $data): ?>
-                    <tr>
+                <?php foreach ($lesResultats as $data) :
+                    $num_serie = htmlentities($data['num_serie']);
+                    $enCampagne = (int)date('m') === 3 || (int)date('m') === 6 || (int)date('m') === 9 || (int)date('m') === 12; // lorsque la campagne de relevés est actif
+                ?>
+                    <tr data-num_serie="<?= $num_serie ?>" <?php if ($enCampagne && !Compteur::estAJour($num_serie)) : ?> style="background-color: #C0392B;" <?php endif ?>>
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-solid fa-list"></i>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="/imprimante/<?= $data['num_serie'] ?>"><i class="fa-solid fa-eye"></i> Voir l'imprimante</a></li>
-                                    <li><a class="dropdown-item" href="/liste_compteurs?order=date_maj&num_serie=<?= htmlentities($data['num_serie']) ?>&ordertype=desc"><i class="fa-solid fa-book"></i> Relevés de compteurs</a></li>
-                                    <?php if ($url === 'copieurs_perimetre' && $lessPrivilege): ?>
+                                    <li><a class="dropdown-item" href="/imprimante/<?= $num_serie ?>"><i class="fa-solid fa-eye"></i> Voir l'imprimante</a></li>
+                                    <li class="dropdown-item" onclick="toggle_compteurs_from_copieurs_page(this, <?= $perimetre ?>)" type="button" data-bs-toggle="modal" data-bs-target="#modal_compteurs"><i class="fa-solid fa-book"></i> Relevés de compteurs</li>
+                                    <?php if ($url === 'copieurs_perimetre' && $lessPrivilege) : ?>
                                         <li>
                                             <form action="" method="post">
-                                                <input type="hidden" name="remove_num_serie" value="<?= htmlentities($data['num_serie']) ?>">
+                                                <input type="hidden" name="remove_num_serie" value="<?= $num_serie ?>">
                                                 <button type="submit" class="dropdown-item"><i class="fa-solid fa-xmark"></i> Retirer ce copieur de mon périmètre</button>
                                             </form>
                                         </li>
                                     <?php endif ?>
-                                    <li><a class="dropdown-item" href="/liste-responsables?num_serie=<?= htmlentities($data['num_serie']) ?>"><i class="fa-solid fa-user-doctor"></i> Voir responsable(s)</a></li>
+                                    <li><a class="dropdown-item" href="/liste-responsables?num_serie=<?= $num_serie ?>"><i class="fa-solid fa-user-doctor"></i> Voir responsable(s)</a></li>
                                 </ul>
                             </div>
                         </td>
-                        <?php foreach ($data as $nom_input => $value): ?>
-                            <?php if (isset(Imprimante::ChampsCopieur($perimetre, $showColumns)[$nom_input])): ?>
+                        <?php foreach ($data as $nom_input => $value) : ?>
+                            <?php if (isset(Imprimante::ChampsCopieur($perimetre, $showColumns)[$nom_input])) : ?>
                                 <td class="<?= htmlentities($nom_input) ?>"><?= htmlentities($value) ?></td>
                             <?php endif ?>
                         <?php endforeach ?>
@@ -94,10 +98,10 @@ if (isset($_GET['switchColumns'])) {
                         <option value="DESC" <?php if ($ordertype === 'DESC') : ?>selected<?php endif ?>>Décroissant</option>
                     </select>
                 </div>
-                
+
                 <hr>
 
-                <?php if ($url !== 'copieurs-sans-releve-trimestre'): ?>
+                <?php if ($url !== 'copieurs-sans-releve-trimestre') : ?>
                     <div class="row mb-3">
                         <label for="statut_projet_id" class="col-sm-4">Statut</label>
                         <div class="col-sm-4">
@@ -111,8 +115,9 @@ if (isset($_GET['switchColumns'])) {
                     </div>
                 <?php endif ?>
 
-                <?php foreach (Imprimante::ChampsCopieur($perimetre, $showColumns) as $nom_input => $props): ?>
-                    <?php if ($nom_input !== 'statut_projet'): // statut_projet doit être personnalisé pour les select ?>
+                <?php foreach (Imprimante::ChampsCopieur($perimetre, $showColumns) as $nom_input => $props) : ?>
+                    <?php if ($nom_input !== 'statut_projet') : // statut_projet doit être personnalisé pour les select 
+                    ?>
                         <div class="row mb-3">
                             <label for="<?= $nom_input ?>" class="col-sm-4"><?= $props['libelle'] ?> :</label>
                             <div class="col-sm-3">
@@ -130,8 +135,23 @@ if (isset($_GET['switchColumns'])) {
     </div>
 </div>
 
+<!-- Modal relevé de compteur en direct dans les pages copieurs -->
+<div class="modal fade" id="modal_compteurs" tabindex="-1" aria-hidden="true">
+    <div class="container">
+        <div class="modal-dialog" style="max-width: unset;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modal_compteurs_title"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<?php if ($url === 'copieurs_perimetre' && $lessPrivilege): ?>
+
+<?php if ($url === 'copieurs_perimetre' && $lessPrivilege) : ?>
     <div class="modal fade" id="modal_add_machine_area" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <form class="modal-content" method="post">

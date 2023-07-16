@@ -44,3 +44,8 @@ table thead tr {
 .form-select {
     width: unset;
 }
+
+tbody tr:hover {
+    background-color: grey;
+    cursor: pointer;
+}

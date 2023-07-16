@@ -9,16 +9,16 @@ $lessPrivilege = (User::getRole() !== 2 && User::getRole() !== 4); // NO COORDSI
         <a class="<?= $page != 1 ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=1&<?= $fullURL ?>">1</a>
 
         <!-- Reculer d'une page -->
-        <a <?php if ($page <= 1) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page - 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-left"></i></a>
+        <a <?php if ($page <= 1) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page - 1 . $fullURL ?>"><i class="fa-solid fa-arrow-left"></i></a>
 
         <!-- N° Page courante -->
         <button class="btn btn-secondary" style="cursor: unset;"><?= $page ?></button>
 
         <!-- Avancer d'une page -->
-        <a <?php if ($page >= $nb_pages) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page + 1 ?>&<?= $fullURL ?>"><i class="fa-solid fa-arrow-right"></i></a>
+        <a <?php if ($page >= $nb_pages) : ?>style="pointer-events: none;" <?php endif ?> class="btn" href="?page=<?= $page + 1 . $fullURL ?>"><i class="fa-solid fa-arrow-right"></i></a>
 
-        <!-- Nombre total de pages -->
-        <a class="<?= $page != $nb_pages ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=<?= $nb_pages ?>&<?= $fullURL ?>"><?= $nb_pages ?></a>
+        <!-- Nombre total de pages (FIN) -->
+        <a class="<?= $page != $nb_pages ? 'btn' : 'btn btn-primary text-white' ?>" href="?page=<?= $nb_pages . '&' . $fullURL ?>"><?= $nb_pages ?></a>
 
         <span class="h4 mx-4 mt-3"><?= number_format($total, 0, ',', ' '); ?> résultat<?= ($total > 1) ? 's' : '' ?></span>
 

@@ -63,7 +63,7 @@ use App\Driver;
                             <li><a class="dropdown-item" href="<?= $router->url('counters_area') ?>"><i class="fa-solid fa-location-dot"></i> Compteurs de mon périmètre</a></li>
                             <div class="dropdown-divider"></div> <!-- Divider -->
                             <li><a class="dropdown-item" href="<?= $router->url('counters_area_t2_2023') ?>"><i class="fa-solid fa-book"></i> Archive T2-2023</a></li>
-                            <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_counter_3_months') ?>"><i class="fa-solid fa-xmark"></i> <i class="fa-solid fa-book"></i> Sans relevé ce Trimestre</a></li>
+                            <li><a class="dropdown-item" href="<?= $router->url('list_machines_without_counter_3_months') ?>"><i class="fa-solid fa-xmark"></i> <i class="fa-solid fa-book"></i> Sans relevé T3-2023</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

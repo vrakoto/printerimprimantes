@@ -3,7 +3,7 @@
 use App\Compteur;
 use App\Imprimante;
 
-$title = "Liste des Copieurs sans relevé ce trimestre";
+$title = "Liste des Copieurs sans relevé pour le T3-2023";
 $url = 'copieurs-sans-releve-trimestre';
 $perimetre = true;
 $nb_results_par_page = 10;

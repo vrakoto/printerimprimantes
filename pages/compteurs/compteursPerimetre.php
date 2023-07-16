@@ -34,7 +34,7 @@ if (isset($_POST['num_serie'], $_POST['date'])) {
         exit();
     } catch (\Throwable $th) {
         if ($th->getCode() === "23000") {
-            $msg = "Un relevé a déjà été effectué pour la machine " . $post_variables['num_serie'] . " à la date du " . convertDate($post_variables['date']) . '<br> Veuillez supprimer son compteur déjà existant.';
+            $msg = "Un relevé a déjà été effectué pour la machine " . $post_variables['num_serie'] . " à la date du " . convertDate($post_variables['date']);
         } else {
             $msg = "Une erreur interne a été rencontrée";
         }
